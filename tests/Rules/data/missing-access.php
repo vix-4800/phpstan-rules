@@ -27,6 +27,8 @@ namespace yii\filters {
 }
 
 namespace Fixtures {
+    use yii\filters\AccessControl;
+
     final class NoAccessController extends \yii\rest\Controller
     {
         public function actionIndex(): void
@@ -100,6 +102,28 @@ namespace Fixtures {
         }
 
         public function actionCreate(): void
+        {
+        }
+    }
+
+    final class ImportedAccessController extends \yii\rest\Controller
+    {
+        public function behaviors(): array
+        {
+            return [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'rules' => [
+                        [
+                            'allow' => true,
+                            'actions' => ['update-telegram-channel-id'],
+                        ],
+                    ],
+                ],
+            ];
+        }
+
+        public function actionUpdateTelegramChannelId(): void
         {
         }
     }

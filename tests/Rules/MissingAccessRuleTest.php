@@ -34,15 +34,15 @@ final class MissingAccessRuleTest extends RuleTestCase
             [
                 [
                     'Controller action actionIndex() is missing AccessControl behavior.',
-                    32,
+                    34,
                 ],
                 [
                     'Controller action actionCreateUsersBot() is missing AccessControl behavior.',
-                    55,
+                    57,
                 ],
                 [
                     'Controller action actionCreate() is missing AccessControl behavior.',
-                    79,
+                    81,
                 ],
             ],
         );
