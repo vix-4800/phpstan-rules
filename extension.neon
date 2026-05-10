@@ -1,6 +1,11 @@
 includes:
   - rules.neon
 
+parametersSchema:
+  yiiPolicy: structure([
+    allowedSaveFalseNamespaces: listOf(string()),
+  ])
+
 parameters:
   yiiPolicy:
     allowedSaveFalseNamespaces:
