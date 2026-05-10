@@ -1,5 +1,5 @@
 ---
-name: PHP Composer
+name: Tests
 
 on:
   push:
@@ -13,12 +13,17 @@ permissions:
   contents: read
 
 jobs:
-  build:
-
+  tests:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
 
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
@@ -33,7 +38,7 @@ jobs:
             ${{ runner.os }}-php-
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
+        run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Run test suite
         run: composer test
