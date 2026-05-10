@@ -21,10 +21,11 @@ use PHPStan\Reflection\ReflectionProvider;
 
 final readonly class YiiControllerFactory
 {
-    public function __construct(
-        private ReflectionProvider $reflectionProvider,
-    ) {
-        //
+    private YiiClassHierarchy $classHierarchy;
+
+    public function __construct(ReflectionProvider $reflectionProvider)
+    {
+        $this->classHierarchy = new YiiClassHierarchy($reflectionProvider);
     }
 
     public function getController(Class_ $class, Scope $scope): ?YiiController
@@ -180,31 +181,11 @@ final readonly class YiiControllerFactory
 
     private function isYiiController(Class_ $class, Scope $scope): bool
     {
-        if ($class->namespacedName === null && $class->extends === null) {
-            return false;
-        }
-
-        if ($class->namespacedName !== null) {
-            $className = $class->namespacedName->toString();
-        } elseif ($class->extends !== null) {
-            $className = $scope->resolveName($class->extends);
-        } else {
-            return false;
-        }
-
-        if ($class->extends !== null && $this->isControllerClassName($scope->resolveName($class->extends))) {
-            return true;
-        }
-
-        if ($this->isSubclassOf($className, 'yii\base\Controller')) {
-            return true;
-        }
-
-        if ($this->isSubclassOf($className, 'yii\web\Controller')) {
-            return true;
-        }
-
-        return $this->isSubclassOf($className, 'yii\rest\Controller');
+        return $this->classHierarchy->isSubclassOfAny(
+            $class,
+            $scope,
+            ['yii\base\Controller', 'yii\web\Controller', 'yii\rest\Controller'],
+        );
     }
 
     private function isClassNameValue(Expr $value, string $className): bool
@@ -241,28 +222,4 @@ final readonly class YiiControllerFactory
             || mb_substr($className, mb_strrpos($className, '\\') + 1) === $name->toString();
     }
 
-    private function isControllerClassName(string $className): bool
-    {
-        return in_array(
-            mb_ltrim($className, '\\'),
-            ['yii\base\Controller', 'yii\web\Controller', 'yii\rest\Controller'],
-            true,
-        );
-    }
-
-    private function isSubclassOf(string $className, string $parentClassName): bool
-    {
-        if (!$this->reflectionProvider->hasClass($className) || !$this->reflectionProvider->hasClass($parentClassName)) {
-            return false;
-        }
-
-        $class = $this->reflectionProvider->getClass($className);
-        $parentClass = $this->reflectionProvider->getClass($parentClassName);
-
-        if ($class->getName() === $parentClass->getName()) {
-            return true;
-        }
-
-        return $class->isSubclassOfClass($parentClass);
-    }
 }
