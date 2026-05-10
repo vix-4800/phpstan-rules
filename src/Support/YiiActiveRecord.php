@@ -9,6 +9,7 @@ use PhpParser\Node\Stmt\Class_;
 final readonly class YiiActiveRecord
 {
     /**
+     * @param Class_          $node
      * @param list<YiiMethod> $lifecycleMethods
      */
     public function __construct(

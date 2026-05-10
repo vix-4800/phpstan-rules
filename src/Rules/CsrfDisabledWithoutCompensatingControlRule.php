@@ -79,6 +79,9 @@ final readonly class CsrfDisabledWithoutCompensatingControlRule implements Rule
     }
 
     /**
+     * @param ClassMethod $method
+     * @param string      $location
+     *
      * @return list<IdentifierRuleError>
      */
     private function findCsrfDisableAssignments(ClassMethod $method, string $location): array
