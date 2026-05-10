@@ -33,15 +33,15 @@ final class MissingVerbFilterRuleTest extends RuleTestCase
             [__DIR__ . '/data/missing-verb-filter.php'],
             [
                 [
-                    'Controller action actionIndex() is missing VerbFilter behavior.',
+                    'Controller action \'index\' is missing VerbFilter behavior.',
                     32,
                 ],
                 [
-                    'Controller action actionCreateUsersBot() is missing VerbFilter behavior.',
+                    'Controller action \'create-users-bot\' is missing VerbFilter behavior.',
                     55,
                 ],
                 [
-                    'Controller action actionCreate() is missing VerbFilter behavior.',
+                    'Controller action \'create\' is missing VerbFilter behavior.',
                     80,
                 ],
             ],

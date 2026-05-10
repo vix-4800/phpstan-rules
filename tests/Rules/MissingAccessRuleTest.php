@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Vix\PhpstanYiiPolicyRules\Tests\Rules;
 
-use PHPStan\Rules\Rule;
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
 use Vix\PhpstanYiiPolicyRules\Rules\MissingAccessRule;
 
@@ -33,15 +33,15 @@ final class MissingAccessRuleTest extends RuleTestCase
             [__DIR__ . '/data/missing-access.php'],
             [
                 [
-                    'Controller action actionIndex() is missing AccessControl behavior.',
+                    'Controller action \'index\' is missing AccessControl behavior.',
                     34,
                 ],
                 [
-                    'Controller action actionCreateUsersBot() is missing AccessControl behavior.',
+                    'Controller action \'create-users-bot\' is missing AccessControl behavior.',
                     57,
                 ],
                 [
-                    'Controller action actionCreate() is missing AccessControl behavior.',
+                    'Controller action \'create\' is missing AccessControl behavior.',
                     81,
                 ],
             ],

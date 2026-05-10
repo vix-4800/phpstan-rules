@@ -33,11 +33,11 @@ final class MissingAjaxFilterRuleTest extends RuleTestCase
             [__DIR__ . '/data/missing-ajax-filter.php'],
             [
                 [
-                    'AJAX controller action actionSearch() is missing AjaxFilter behavior.',
+                    'AJAX controller action \'search\' is missing AjaxFilter behavior.',
                     37,
                 ],
                 [
-                    'AJAX controller action actionStatus() is missing AjaxFilter behavior.',
+                    'AJAX controller action \'status\' is missing AjaxFilter behavior.',
                     59,
                 ],
             ],

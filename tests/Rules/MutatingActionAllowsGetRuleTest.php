@@ -33,11 +33,11 @@ final class MutatingActionAllowsGetRuleTest extends RuleTestCase
             [__DIR__ . '/data/mutating-action-allows-get.php'],
             [
                 [
-                    'Mutating controller action actionUpdate() must not allow GET and must be restricted to POST, PUT, PATCH, or DELETE.',
+                    'Mutating controller action \'update\' must not allow GET and must be restricted to POST, PUT, PATCH, or DELETE.',
                     58,
                 ],
                 [
-                    'Mutating controller action actionDelete() must not allow GET and must be restricted to POST, PUT, PATCH, or DELETE.',
+                    'Mutating controller action \'delete\' must not allow GET and must be restricted to POST, PUT, PATCH, or DELETE.',
                     63,
                 ],
             ],
