@@ -41,3 +41,7 @@ class: Vix\PhpstanYiiPolicyRules\Rules\PublicAllowWithoutConstraintRule
     class: Vix\PhpstanYiiPolicyRules\Rules\RedirectReferrerWithoutFallbackRule
     tags:
       - phpstan.rules.rule
+  -
+    class: Vix\PhpstanYiiPolicyRules\Rules\NativeHeaderInControllerRule
+    tags:
+      - phpstan.rules.rule
