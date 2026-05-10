@@ -12,5 +12,7 @@
       "email": "Gordan.ei@protonmail.ch"
     }
   ],
-  "require": {}
+  "require": {
+    "nikic/php-parser": "^5.7"
+  }
 }
