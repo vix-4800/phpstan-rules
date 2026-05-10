@@ -42,7 +42,7 @@
     }
   },
   "scripts": {
-    "test": "phpunit --colors=always",
+    "test": "vendor/bin/phpunit --colors=always",
     "static-analysis": "vendor/bin/phpstan analyse src --level=max --no-progress --memory-limit=1G"
   }
 }
