@@ -8,7 +8,7 @@ PHPStan extension with policy checks for Yii2 projects.
     - [`yii.missingAccessRule`](#yiimissingaccessrule)
     - [`yii.missingVerbFilterRule`](#yiimissingverbfilterrule)
     - [`yii.missingAjaxFilterRule`](#yiimissingajaxfilterrule)
-- [`yii.unknownActionInBehavior`](#yiiunknownactioninbehavior)
+    - [`yii.unknownActionInBehavior`](#yiiunknownactioninbehavior)
     - [`yii.massSelectionWithoutLimit`](#yiimassselectionwithoutlimit)
     - [`yii.saveFalseWithoutReason`](#yiisavefalsewithoutreason)
     - [`yii.publicAllowWithoutConstraint`](#yiipublicallowwithoutconstraint)
@@ -113,4 +113,6 @@ Reports native `header()` calls inside Yii controllers.
 
 ### `yii.unboundedQueryResult`
 
-Reports ActiveQuery/Query result chains ending with `all()` or `column()` without `limit()` or `page()`.
+Reports ActiveQuery/Query result chains ending with `all()` or `column()` without a bounding or streaming strategy.
+
+The rule treats `batch()`, `each()`, `exists()`, `count()`, and DataProvider usage as safe alternatives when they are the intended access pattern.

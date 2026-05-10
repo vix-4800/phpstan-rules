@@ -24,16 +24,16 @@ final class UnboundedQueryResultRuleTest extends RuleTestCase
             [__DIR__ . '/data/unbounded-query-result.php'],
             [
                 [
-                    'Do not execute unbounded query result without limit(), page(), batch(), or each().',
-                    69,
+                    'Do not execute unbounded query result with all() or column(); use limit(), page(), batch(), each(), exists(), count(), or a DataProvider when appropriate.',
+                    112,
                 ],
                 [
-                    'Do not execute unbounded query result without limit(), page(), batch(), or each().',
-                    74,
+                    'Do not execute unbounded query result with all() or column(); use limit(), page(), batch(), each(), exists(), count(), or a DataProvider when appropriate.',
+                    117,
                 ],
                 [
-                    'Do not execute unbounded query result without limit(), page(), batch(), or each().',
-                    79,
+                    'Do not execute unbounded query result with all() or column(); use limit(), page(), batch(), each(), exists(), count(), or a DataProvider when appropriate.',
+                    122,
                 ],
             ],
         );
