@@ -49,6 +49,10 @@ final readonly class MissingAjaxFilterRule implements Rule
      */
     public function processNode(Node $node, Scope $scope): array
     {
+        if (!$node instanceof Class_) {
+            return [];
+        }
+
         if (!$this->helper->isYiiController($node, $scope)) {
             return [];
         }
