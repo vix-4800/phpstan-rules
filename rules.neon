@@ -9,3 +9,7 @@ services:
     class: Vix\PhpstanYiiPolicyRules\Rules\MissingAccessRule
     tags:
       - phpstan.rules.rule
+  -
+    class: Vix\PhpstanYiiPolicyRules\Rules\MissingVerbFilterRule
+    tags:
+      - phpstan.rules.rule
