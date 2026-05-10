@@ -25,11 +25,21 @@ use PHPStan\Rules\RuleErrorBuilder;
  */
 final readonly class RawSqlConditionWithVariableRule implements Rule
 {
-    private const array CONDITION_METHODS = [
-        'where',
-        'andWhere',
-        'orWhere',
-        'having',
+    private const array RAW_STRING_ARGUMENTS = [
+        'where' => [0],
+        'andWhere' => [0],
+        'orWhere' => [0],
+        'having' => [0],
+        'filterWhere' => [0],
+        'andFilterWhere' => [0],
+        'orFilterWhere' => [0],
+        'on' => [0],
+        'from' => [0],
+        'orderBy' => [0],
+        'join' => [1, 2],
+        'leftJoin' => [0, 1],
+        'rightJoin' => [0, 1],
+        'innerJoin' => [0, 1],
     ];
 
     public function getNodeType(): string
@@ -53,23 +63,30 @@ final readonly class RawSqlConditionWithVariableRule implements Rule
             return [];
         }
 
-        if (!in_array($node->name->toString(), self::CONDITION_METHODS, true)) {
+        $methodName = $node->name->toString();
+        $argumentIndexes = self::RAW_STRING_ARGUMENTS[$methodName] ?? null;
+
+        if ($argumentIndexes === null) {
             return [];
         }
 
-        if (!isset($node->args[0]) || !$node->args[0] instanceof Arg) {
-            return [];
+        foreach ($argumentIndexes as $argumentIndex) {
+            if (!isset($node->args[$argumentIndex]) || !$node->args[$argumentIndex] instanceof Arg) {
+                continue;
+            }
+
+            if (!$this->containsVariableSqlString($node->args[$argumentIndex]->value)) {
+                continue;
+            }
+
+            return [
+                RuleErrorBuilder::message('Do not build raw SQL condition strings with variables; use hash/operator format or bound params.')
+                    ->identifier('yii.rawSqlConditionWithVariable')
+                    ->build(),
+            ];
         }
 
-        if (!$this->containsVariableSqlString($node->args[0]->value)) {
-            return [];
-        }
-
-        return [
-            RuleErrorBuilder::message('Do not build raw SQL condition strings with variables; use hash/operator format or bound params.')
-                ->identifier('yii.rawSqlConditionWithVariable')
-                ->build(),
-        ];
+        return [];
     }
 
     private function containsVariableSqlString(Expr $expr): bool

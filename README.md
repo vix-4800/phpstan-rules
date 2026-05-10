@@ -97,7 +97,7 @@ Use only for endpoints with an explicit compensating control such as signature v
 
 ### `yii.rawSqlConditionWithVariable`
 
-Reports `where()`, `andWhere()`, `orWhere()`, and `having()` raw SQL strings built with interpolation or concatenated variables.
+Reports raw SQL strings built with interpolation or concatenated variables in `where()`-style conditions, `join()` / `on()`, `from()`, and `orderBy()`.
 
 ### `yii.queryOneWithoutLimit`
 
