@@ -9,6 +9,7 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use Vix\PhpstanYiiPolicyRules\Support\YiiControllerRuleHelper;
@@ -18,13 +19,12 @@ use Vix\PhpstanYiiPolicyRules\Support\YiiControllerRuleHelper;
  */
 final readonly class MissingAccessRule implements Rule
 {
-    private const string ACCESS_CONTROL = 'yii\\filters\\AccessControl';
+    private const string ACCESS_CONTROL = 'yii\filters\AccessControl';
 
     private YiiControllerRuleHelper $helper;
 
-    public function __construct(
-        ReflectionProvider $reflectionProvider,
-    ) {
+    public function __construct(ReflectionProvider $reflectionProvider)
+    {
         $this->helper = new YiiControllerRuleHelper($reflectionProvider);
     }
 
@@ -34,7 +34,10 @@ final readonly class MissingAccessRule implements Rule
     }
 
     /**
-     * @return list<\PHPStan\Rules\IdentifierRuleError>
+     * @param Node  $node
+     * @param Scope $scope
+     *
+     * @return list<IdentifierRuleError>
      */
     public function processNode(Node $node, Scope $scope): array
     {

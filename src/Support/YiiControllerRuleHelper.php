@@ -21,6 +21,7 @@ final readonly class YiiControllerRuleHelper
     public function __construct(
         private ReflectionProvider $reflectionProvider,
     ) {
+        //
     }
 
     public function isYiiController(Class_ $class, Scope $scope): bool
@@ -41,12 +42,14 @@ final readonly class YiiControllerRuleHelper
             return true;
         }
 
-        return $this->isSubclassOf($className, 'yii\\base\\Controller')
-            || $this->isSubclassOf($className, 'yii\\web\\Controller')
-            || $this->isSubclassOf($className, 'yii\\rest\\Controller');
+        return $this->isSubclassOf($className, 'yii\base\Controller')
+            || $this->isSubclassOf($className, 'yii\web\Controller')
+            || $this->isSubclassOf($className, 'yii\rest\Controller');
     }
 
     /**
+     * @param Class_ $class
+     *
      * @return list<ClassMethod>
      */
     public function getActionMethods(Class_ $class): array
@@ -60,7 +63,7 @@ final readonly class YiiControllerRuleHelper
                 continue;
             }
 
-            if (strlen($methodName) === strlen('action')) {
+            if (mb_strlen($methodName) === mb_strlen('action')) {
                 continue;
             }
 
@@ -72,13 +75,16 @@ final readonly class YiiControllerRuleHelper
 
     public function getActionId(ClassMethod $action): string
     {
-        $actionName = substr($action->name->toString(), strlen('action'));
+        $actionName = mb_substr($action->name->toString(), mb_strlen('action'));
         $actionId = preg_replace('/(?<!^)[A-Z]/', '-$0', $actionName);
 
-        return strtolower($actionId ?? $actionName);
+        return mb_strtolower($actionId ?? $actionName);
     }
 
     /**
+     * @param Class_ $class
+     * @param string $behaviorClassName
+     *
      * @return list<Array_>
      */
     public function getBehaviorsByClass(Class_ $class, string $behaviorClassName): array
@@ -108,6 +114,9 @@ final readonly class YiiControllerRuleHelper
     }
 
     /**
+     * @param Array_ $array
+     * @param string $key
+     *
      * @return list<string>|null
      */
     public function getStringListItem(Array_ $array, string $key): ?array
@@ -145,6 +154,9 @@ final readonly class YiiControllerRuleHelper
     }
 
     /**
+     * @param ClassMethod $method
+     * @param string      $behaviorClassName
+     *
      * @return list<Array_>
      */
     private function getMethodBehaviorsByClass(ClassMethod $method, string $behaviorClassName): array
@@ -188,7 +200,7 @@ final readonly class YiiControllerRuleHelper
         }
 
         if ($value instanceof String_) {
-            return ltrim($value->value, '\\') === $className;
+            return mb_ltrim($value->value, '\\') === $className;
         }
 
         if ($value instanceof ConstFetch) {
@@ -203,18 +215,18 @@ final readonly class YiiControllerRuleHelper
         $resolvedName = $name->getAttribute('resolvedName');
 
         if ($resolvedName instanceof Name) {
-            return ltrim($resolvedName->toString(), '\\') === $className;
+            return mb_ltrim($resolvedName->toString(), '\\') === $className;
         }
 
-        return ltrim($name->toString(), '\\') === $className
-            || substr($className, strrpos($className, '\\') + 1) === $name->toString();
+        return mb_ltrim($name->toString(), '\\') === $className
+            || mb_substr($className, mb_strrpos($className, '\\') + 1) === $name->toString();
     }
 
     private function isControllerClassName(string $className): bool
     {
         return in_array(
-            ltrim($className, '\\'),
-            ['yii\\base\\Controller', 'yii\\web\\Controller', 'yii\\rest\\Controller'],
+            mb_ltrim($className, '\\'),
+            ['yii\base\Controller', 'yii\web\Controller', 'yii\rest\Controller'],
             true,
         );
     }

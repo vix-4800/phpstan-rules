@@ -11,6 +11,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
+use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use Vix\PhpstanYiiPolicyRules\Support\YiiControllerRuleHelper;
@@ -20,13 +21,12 @@ use Vix\PhpstanYiiPolicyRules\Support\YiiControllerRuleHelper;
  */
 final readonly class MissingVerbFilterRule implements Rule
 {
-    private const string VERB_FILTER = 'yii\\filters\\VerbFilter';
+    private const string VERB_FILTER = 'yii\filters\VerbFilter';
 
     private YiiControllerRuleHelper $helper;
 
-    public function __construct(
-        ReflectionProvider $reflectionProvider,
-    ) {
+    public function __construct(ReflectionProvider $reflectionProvider)
+    {
         $this->helper = new YiiControllerRuleHelper($reflectionProvider);
     }
 
@@ -36,7 +36,10 @@ final readonly class MissingVerbFilterRule implements Rule
     }
 
     /**
-     * @return list<\PHPStan\Rules\IdentifierRuleError>
+     * @param Node  $node
+     * @param Scope $scope
+     *
+     * @return list<IdentifierRuleError>
      */
     public function processNode(Node $node, Scope $scope): array
     {

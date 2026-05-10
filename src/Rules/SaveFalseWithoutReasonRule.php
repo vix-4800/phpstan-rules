@@ -9,6 +9,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
+use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 
@@ -23,6 +24,7 @@ final readonly class SaveFalseWithoutReasonRule implements Rule
     public function __construct(
         private array $allowedNamespaces = [],
     ) {
+        //
     }
 
     public function getNodeType(): string
@@ -31,7 +33,10 @@ final readonly class SaveFalseWithoutReasonRule implements Rule
     }
 
     /**
-     * @return list<\PHPStan\Rules\IdentifierRuleError>
+     * @param Node  $node
+     * @param Scope $scope
+     *
+     * @return list<IdentifierRuleError>
      */
     public function processNode(Node $node, Scope $scope): array
     {
@@ -67,7 +72,7 @@ final readonly class SaveFalseWithoutReasonRule implements Rule
     private function isFalseLiteral(Node\Expr $expr): bool
     {
         return $expr instanceof ConstFetch
-            && strtolower($expr->name->toString()) === 'false';
+            && mb_strtolower($expr->name->toString()) === 'false';
     }
 
     private function isAllowedNamespace(Scope $scope): bool
