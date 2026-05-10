@@ -21,3 +21,7 @@ services:
     class: Vix\PhpstanYiiPolicyRules\Rules\MassSelectionWithoutLimitRule
     tags:
       - phpstan.rules.rule
+  -
+    class: Vix\PhpstanYiiPolicyRules\Rules\MutatingActionAllowsGetRule
+    tags:
+      - phpstan.rules.rule

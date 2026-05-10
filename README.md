@@ -51,3 +51,7 @@ Use `limit()` or `page()` before `all()` when loading records from `find()`.
 Reports calls to `save(false)`.
 
 Use validation, or place explicitly allowed namespaces in `yiiPolicy.allowedSaveFalseNamespaces` when validation bypass is expected.
+
+### `yii.mutatingActionAllowsGet`
+
+Reports mutating controller actions whose configured `VerbFilter` allows `GET`/`HEAD` or omits a mutating HTTP verb.
