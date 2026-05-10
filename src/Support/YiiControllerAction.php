@@ -34,4 +34,11 @@ final readonly class YiiControllerAction
     {
         return $this->method->getStartLine();
     }
+
+    public function actionName(): string
+    {
+        $name = lcfirst(mb_substr($this->methodName(), start: 6));
+
+        return strtolower(preg_replace('/([a-z])([A-Z])/', replacement: '$1-$2', subject: $name) ?? '');
+    }
 }

@@ -70,8 +70,8 @@ final readonly class MissingVerbFilterRule implements Rule
             }
 
             $errors[] = RuleErrorBuilder::message(sprintf(
-                'Controller action %s() is missing VerbFilter behavior.',
-                $action->methodName(),
+                'Controller action \'%s\' is missing VerbFilter behavior.',
+                $action->actionName(),
             ))
                 ->identifier('yii.missingVerbFilterRule')
                 ->line($action->line())

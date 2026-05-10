@@ -73,8 +73,8 @@ final readonly class MissingAjaxFilterRule implements Rule
             }
 
             $errors[] = RuleErrorBuilder::message(sprintf(
-                'AJAX controller action %s() is missing AjaxFilter behavior.',
-                $action->methodName(),
+                'AJAX controller action \'%s\' is missing AjaxFilter behavior.',
+                $action->actionName(),
             ))
                 ->identifier('yii.missingAjaxFilterRule')
                 ->line($action->line())

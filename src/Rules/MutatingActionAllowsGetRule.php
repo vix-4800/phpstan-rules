@@ -97,8 +97,8 @@ final readonly class MutatingActionAllowsGetRule implements Rule
             }
 
             $errors[] = RuleErrorBuilder::message(sprintf(
-                'Mutating controller action %s() must not allow GET and must be restricted to POST, PUT, PATCH, or DELETE.',
-                $action->methodName(),
+                'Mutating controller action \'%s\' must not allow GET and must be restricted to POST, PUT, PATCH, or DELETE.',
+                $action->actionName(),
             ))
                 ->identifier('yii.mutatingActionAllowsGet')
                 ->line($action->line())

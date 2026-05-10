@@ -69,8 +69,8 @@ final readonly class MissingAccessRule implements Rule
             }
 
             $errors[] = RuleErrorBuilder::message(sprintf(
-                'Controller action %s() is missing AccessControl behavior.',
-                $action->methodName(),
+                'Controller action \'%s\' is missing AccessControl behavior.',
+                $action->actionName(),
             ))
                 ->identifier('yii.missingAccessRule')
                 ->line($action->line())
