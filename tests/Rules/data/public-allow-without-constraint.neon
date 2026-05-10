@@ -1,0 +1,3 @@
+parameters:
+  scanFiles:
+    - public-allow-without-constraint.php

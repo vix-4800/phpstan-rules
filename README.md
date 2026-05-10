@@ -54,6 +54,11 @@ Reports calls to `save(false)`. Calls without explicit attribute list are report
 Use validation, or place explicitly allowed namespaces in `yiiPolicy.allowedSaveFalseNamespaces` when validation bypass is expected.
 Namespaces containing `migrations`, `tests`, `seeders`, or `seeds` are allowed.
 
+### `yii.publicAllowWithoutConstraint`
+
+Reports `AccessControl` rules with `'allow' => true` but without `roles`, `permissions`, `matchCallback`, `ips`,
+`verbs`, or `actions`.
+
 ### `yii.mutatingActionAllowsGet`
 
 Reports mutating controller actions whose configured `VerbFilter` allows `GET`/`HEAD` or omits a mutating HTTP verb.
