@@ -40,6 +40,26 @@ final class MutatingActionAllowsGetRuleTest extends RuleTestCase
                     'Mutating controller action \'delete\' must not allow GET and must be restricted to POST, PUT, PATCH, or DELETE.',
                     63,
                 ],
+                [
+                    'Mutating controller action \'update-attributes\' must not allow GET and must be restricted to POST, PUT, PATCH, or DELETE.',
+                    68,
+                ],
+                [
+                    'Mutating controller action \'update-counters\' must not allow GET and must be restricted to POST, PUT, PATCH, or DELETE.',
+                    73,
+                ],
+                [
+                    'Mutating controller action \'update-all-counters\' must not allow GET and must be restricted to POST, PUT, PATCH, or DELETE.',
+                    78,
+                ],
+                [
+                    'Mutating controller action \'insert\' must not allow GET and must be restricted to POST, PUT, PATCH, or DELETE.',
+                    83,
+                ],
+                [
+                    'Mutating controller action \'rename-file\' must not allow GET and must be restricted to POST, PUT, PATCH, or DELETE.',
+                    88,
+                ],
             ],
         );
     }

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Vix\PhpstanYiiPolicyRules\Rules;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
@@ -34,16 +36,37 @@ final readonly class MutatingActionAllowsGetRule implements Rule
     private const array MUTATING_METHODS = [
         'save',
         'delete',
-        'deleteAll',
-        'updateAll',
+        'deleteall',
+        'updateall',
+        'updateattributes',
+        'updatecounters',
+        'updateallcounters',
         'unlink',
         'push',
+        'saveas',
+        'rename',
     ];
 
-    private const array FILE_WRITE_FUNCTIONS = [
+    private const array CONDITIONAL_MUTATING_METHODS = [
+        'insert',
+        'update',
+    ];
+
+    private const array MUTATING_FUNCTIONS = [
         'file_put_contents',
-        'fopen',
         'fwrite',
+        'rename',
+        'unlink',
+        'mkdir',
+        'rmdir',
+        'copy',
+        'touch',
+        'chmod',
+        'chown',
+        'chgrp',
+        'symlink',
+        'link',
+        'move_uploaded_file',
     ];
 
     private const array MUTATING_HTTP_VERBS = [
@@ -113,33 +136,79 @@ final readonly class MutatingActionAllowsGetRule implements Rule
         $finder = new NodeFinder();
 
         foreach ($finder->findInstanceOf($action->stmts ?? [], MethodCall::class) as $methodCall) {
-            if (
-                $methodCall->name instanceof Identifier
-                && in_array($methodCall->name->toString(), self::MUTATING_METHODS, true)
-            ) {
+            if ($methodCall->name instanceof Identifier && $this->callIsMutating($methodCall->name, $methodCall->args)) {
                 return true;
             }
         }
 
         foreach ($finder->findInstanceOf($action->stmts ?? [], StaticCall::class) as $staticCall) {
-            if (
-                $staticCall->name instanceof Identifier
-                && in_array($staticCall->name->toString(), self::MUTATING_METHODS, true)
-            ) {
+            if ($staticCall->name instanceof Identifier && $this->callIsMutating($staticCall->name, $staticCall->args)) {
                 return true;
             }
         }
 
         foreach ($finder->findInstanceOf($action->stmts ?? [], FuncCall::class) as $funcCall) {
-            if (
-                $funcCall->name instanceof Name
-                && in_array(mb_strtolower($funcCall->name->toString()), self::FILE_WRITE_FUNCTIONS, true)
-            ) {
+            if ($funcCall->name instanceof Name && $this->functionCallIsMutating($funcCall)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * @param list<Arg> $args
+     */
+    private function callIsMutating(Identifier $name, array $args): bool
+    {
+        $methodName = mb_strtolower($name->toString());
+
+        if (in_array($methodName, self::MUTATING_METHODS, true)) {
+            return true;
+        }
+
+        if (!in_array($methodName, self::CONDITIONAL_MUTATING_METHODS, true)) {
+            return false;
+        }
+
+        return $this->firstArgumentIsFalse($args);
+    }
+
+    private function functionCallIsMutating(FuncCall $funcCall): bool
+    {
+        $functionName = mb_strtolower($funcCall->name->toString());
+
+        if ($functionName === 'fopen') {
+            return $this->fopenCanWrite($funcCall);
+        }
+
+        return in_array($functionName, self::MUTATING_FUNCTIONS, true);
+    }
+
+    /**
+     * @param list<Arg> $args
+     */
+    private function firstArgumentIsFalse(array $args): bool
+    {
+        if (!isset($args[0])) {
+            return false;
+        }
+
+        return $args[0]->value instanceof ConstFetch
+            && mb_strtolower($args[0]->value->name->toString()) === 'false';
+    }
+
+    private function fopenCanWrite(FuncCall $funcCall): bool
+    {
+        if (!isset($funcCall->args[1])) {
+            return true;
+        }
+
+        if (!$funcCall->args[1]->value instanceof String_) {
+            return true;
+        }
+
+        return preg_match('/[waxc+]/i', $funcCall->args[1]->value->value) === 1;
     }
 
     /**

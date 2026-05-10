@@ -87,6 +87,8 @@ Reports `AccessControl` rules with `'allow' => true` but without `roles`, `permi
 
 Reports mutating controller actions whose configured `VerbFilter` allows `GET`/`HEAD` or omits a mutating HTTP verb.
 
+Mutation detection covers common Active Record writes such as `updateAttributes()`, `updateCounters()`, `updateAllCounters()`, `insert(false)`, `update(false)`, and common filesystem writes such as `rename()`, `unlink()`, `mkdir()`, and `rmdir()`.
+
 ### `yii.csrfDisabledWithoutCompensatingControl`
 
 Reports `$this->enableCsrfValidation = false` inside controller actions and `beforeAction()`.
