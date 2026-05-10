@@ -62,3 +62,7 @@ Reports `AccessControl` rules with `'allow' => true` but without `roles`, `permi
 ### `yii.mutatingActionAllowsGet`
 
 Reports mutating controller actions whose configured `VerbFilter` allows `GET`/`HEAD` or omits a mutating HTTP verb.
+
+### `yii.rawSqlConditionWithVariable`
+
+Reports `where()`, `andWhere()`, `orWhere()`, and `having()` raw SQL strings built with interpolation or concatenated variables.
