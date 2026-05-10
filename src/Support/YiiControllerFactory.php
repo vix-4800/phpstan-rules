@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Vix\PhpstanYiiPolicyRules\Support;
 
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -13,6 +14,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeFinder;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
@@ -34,6 +36,7 @@ final readonly class YiiControllerFactory
         return new YiiController(
             $class,
             $this->getActions($class),
+            $this->getExternalActionIds($class),
             $this->getBehaviors($class),
             $this,
         );
@@ -100,14 +103,76 @@ final readonly class YiiControllerFactory
      */
     private function getMethodBehaviors(ClassMethod $method): array
     {
-        $finder = new NodeFinder();
         $behaviors = [];
 
-        foreach ($finder->findInstanceOf($method->stmts ?? [], Array_::class) as $array) {
-            $behaviors[] = new YiiControllerBehavior($array);
+        foreach ($this->getReturnedArrayItems($method) as $item) {
+            if (!$item->value instanceof Array_) {
+                continue;
+            }
+
+            $behaviors[] = new YiiControllerBehavior($item->value);
         }
 
         return $behaviors;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function getExternalActionIds(Class_ $class): array
+    {
+        foreach ($class->getMethods() as $method) {
+            if ($method->name->toString() !== 'actions') {
+                continue;
+            }
+
+            return $this->getMethodActionIds($method);
+        }
+
+        return [];
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function getMethodActionIds(ClassMethod $method): array
+    {
+        $actionIds = [];
+
+        foreach ($this->getReturnedArrayItems($method) as $item) {
+            if (!$item->key instanceof String_) {
+                continue;
+            }
+
+            $actionIds[] = $item->key->value;
+        }
+
+        return array_values(array_unique($actionIds));
+    }
+
+    /**
+     * @return list<ArrayItem>
+     */
+    private function getReturnedArrayItems(ClassMethod $method): array
+    {
+        $finder = new NodeFinder();
+        $items = [];
+
+        foreach ($finder->findInstanceOf($method->stmts ?? [], Return_::class) as $return) {
+            if (!$return->expr instanceof Array_) {
+                continue;
+            }
+
+            foreach ($return->expr->items as $item) {
+                if (!$item instanceof ArrayItem) {
+                    continue;
+                }
+
+                $items[] = $item;
+            }
+        }
+
+        return $items;
     }
 
     public function behaviorIsClass(YiiControllerBehavior $behavior, string $behaviorClassName): bool

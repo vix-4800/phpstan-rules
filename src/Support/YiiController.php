@@ -10,11 +10,13 @@ final readonly class YiiController
 {
     /**
      * @param list<YiiControllerAction>   $actions
+     * @param list<string>                $externalActionIds
      * @param list<YiiControllerBehavior> $behaviors
      */
     public function __construct(
         private Class_ $node,
         private array $actions,
+        private array $externalActionIds,
         private array $behaviors,
         private YiiControllerFactory $factory,
     ) {
@@ -32,6 +34,33 @@ final readonly class YiiController
     public function actions(): array
     {
         return $this->actions;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function actionIds(): array
+    {
+        return array_values(array_unique([
+            ...array_map(
+                static fn(YiiControllerAction $action): string => $action->id(),
+                $this->actions,
+            ),
+            ...$this->externalActionIds,
+        ]));
+    }
+
+    public function hasActionId(string $actionId): bool
+    {
+        return in_array($actionId, $this->actionIds(), true);
+    }
+
+    /**
+     * @return list<YiiControllerBehavior>
+     */
+    public function behaviors(): array
+    {
+        return $this->behaviors;
     }
 
     /**
