@@ -1,18 +1,47 @@
 {
   "name": "vix/phpstan-yii-policy-rules",
+  "description": "PHPStan rules for Yii2 policies",
+  "type": "phpstan-extension",
   "license": "MIT",
-  "autoload": {
-    "psr-4": {
-      "Vix\\PhpstanYiiPolicyRules\\": "src/"
-    }
-  },
   "authors": [
     {
       "name": "Anton Vix",
       "email": "Gordan.ei@protonmail.ch"
     }
   ],
+  "keywords": [
+    "phpstan",
+    "yii2",
+    "rules",
+    "extension"
+  ],
+  "prefer-stable": true,
+  "extra": {
+    "phpstan": {
+      "includes": [
+        "extension.neon"
+      ]
+    }
+  },
   "require": {
-    "nikic/php-parser": "^5.7"
+    "php": "^8.4",
+    "nikic/php-parser": "^5.7",
+    "phpstan/phpstan": "^2.1.54"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^13.1.8"
+  },
+  "autoload": {
+    "psr-4": {
+      "Vix\\PhpstanYiiPolicyRules\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Vix\\PhpstanYiiPolicyRules\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit --colors=always"
   }
 }
