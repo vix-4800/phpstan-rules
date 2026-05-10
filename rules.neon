@@ -1,5 +1,8 @@
 services:
   -
-    class: Vix\PHPStanYiiPolicy\Rules\NoSaveFalseRule
+    class: Vix\PhpstanYiiPolicyRules\Rules\SaveFalseWithoutReasonRule
+    arguments:
+      allowedNamespaces: %yiiPolicy.allowedSaveFalseNamespaces%
+    tags:
     tags:
       - phpstan.rules.rule
