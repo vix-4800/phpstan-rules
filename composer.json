@@ -1,0 +1,16 @@
+{
+  "name": "vix/phpstan-yii-policy-rules",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Vix\\PhpstanYiiPolicyRules\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Anton Vix",
+      "email": "Gordan.ei@protonmail.ch"
+    }
+  ],
+  "require": {}
+}
