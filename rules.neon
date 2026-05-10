@@ -4,5 +4,8 @@ services:
     arguments:
       allowedNamespaces: %yiiPolicy.allowedSaveFalseNamespaces%
     tags:
+      - phpstan.rules.rule
+  -
+    class: Vix\PhpstanYiiPolicyRules\Rules\MissingAccessRule
     tags:
       - phpstan.rules.rule
