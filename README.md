@@ -66,3 +66,7 @@ Reports mutating controller actions whose configured `VerbFilter` allows `GET`/`
 ### `yii.rawSqlConditionWithVariable`
 
 Reports `where()`, `andWhere()`, `orWhere()`, and `having()` raw SQL strings built with interpolation or concatenated variables.
+
+### `yii.queryOneWithoutLimit`
+
+Reports ActiveQuery/Query chains ending with `one()` without explicit `limit(1)`.
