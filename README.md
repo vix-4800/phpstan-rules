@@ -48,9 +48,11 @@ Use `limit()` or `page()` before `all()` when loading records from `find()`.
 
 ### `yii.saveFalseWithoutReason`
 
-Reports calls to `save(false)`.
+Reports calls to `save(false)`. Calls without explicit attribute list are reported as higher risk than
+`save(false, ['field'])`.
 
 Use validation, or place explicitly allowed namespaces in `yiiPolicy.allowedSaveFalseNamespaces` when validation bypass is expected.
+Namespaces containing `migrations`, `tests`, `seeders`, or `seeds` are allowed.
 
 ### `yii.mutatingActionAllowsGet`
 

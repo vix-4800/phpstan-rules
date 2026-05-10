@@ -7,6 +7,7 @@ namespace Vix\PhpstanYiiPolicyRules\Rules;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
@@ -42,6 +43,10 @@ final readonly class SaveFalseWithoutReasonRule implements Rule
      */
     public function processNode(Node $node, Scope $scope): array
     {
+        if (!$node instanceof MethodCall) {
+            return [];
+        }
+
         if (!$node->name instanceof Identifier) {
             return [];
         }
@@ -64,8 +69,16 @@ final readonly class SaveFalseWithoutReasonRule implements Rule
             return [];
         }
 
+        $hasExplicitAttributes = isset($node->args[1])
+            && $node->args[1] instanceof Arg
+            && $node->args[1]->value instanceof Array_;
+
+        $message = $hasExplicitAttributes
+            ? 'Avoid save(false, explicit attributes); validation is bypassed for selected fields.'
+            : 'Do not call save(false) without explicit validation bypass reason.';
+
         return [
-            RuleErrorBuilder::message('Do not call save(false) without explicit validation bypass reason.')
+            RuleErrorBuilder::message($message)
                 ->identifier('yii.saveFalseWithoutReason')
                 ->build(),
         ];
@@ -85,9 +98,18 @@ final readonly class SaveFalseWithoutReasonRule implements Rule
             return false;
         }
 
-        return array_any(
+        if (array_any(
             $this->allowedNamespaces,
             static fn(string $allowedNamespace): bool => $namespace === $allowedNamespace || str_starts_with($namespace, $allowedNamespace . '\\'),
+        )) {
+            return true;
+        }
+
+        $namespaceParts = array_map(
+            static fn(string $part): string => mb_strtolower($part),
+            explode('\\', $namespace),
         );
+
+        return array_intersect($namespaceParts, ['migrations', 'tests', 'seeders', 'seeds']) !== [];
     }
 }

@@ -14,6 +14,7 @@ namespace App {
     function usesSave(Model $model): void
     {
         $model->save(false);
+        $model->save(false, ['name']);
         $model->save(true);
         $model->save();
     }
@@ -21,6 +22,20 @@ namespace App {
 
 namespace console\migrations {
     function migrationSave(\App\Model $model): void
+    {
+        $model->save(false);
+    }
+}
+
+namespace app\tests {
+    function testSave(\App\Model $model): void
+    {
+        $model->save(false);
+    }
+}
+
+namespace app\seeders {
+    function seederSave(\App\Model $model): void
     {
         $model->save(false);
     }

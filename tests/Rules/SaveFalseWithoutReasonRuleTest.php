@@ -27,6 +27,10 @@ final class SaveFalseWithoutReasonRuleTest extends RuleTestCase
                     'Do not call save(false) without explicit validation bypass reason.',
                     16,
                 ],
+                [
+                    'Avoid save(false, explicit attributes); validation is bypassed for selected fields.',
+                    17,
+                ],
             ],
         );
     }
