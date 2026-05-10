@@ -25,15 +25,15 @@ final class UnboundedQueryResultRuleTest extends RuleTestCase
             [
                 [
                     'Do not execute unbounded query result with all() or column(); use limit(), page(), batch(), each(), exists(), count(), or a DataProvider when appropriate.',
-                    112,
+                    133,
                 ],
                 [
                     'Do not execute unbounded query result with all() or column(); use limit(), page(), batch(), each(), exists(), count(), or a DataProvider when appropriate.',
-                    117,
+                    138,
                 ],
                 [
                     'Do not execute unbounded query result with all() or column(); use limit(), page(), batch(), each(), exists(), count(), or a DataProvider when appropriate.',
-                    122,
+                    143,
                 ],
             ],
         );

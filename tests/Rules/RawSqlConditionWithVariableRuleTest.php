@@ -25,35 +25,35 @@ final class RawSqlConditionWithVariableRuleTest extends RuleTestCase
             [
                 [
                     'Do not build raw SQL condition strings with variables; use hash/operator format or bound params.',
-                    29,
+                    74,
                 ],
                 [
                     'Do not build raw SQL condition strings with variables; use hash/operator format or bound params.',
-                    30,
+                    75,
                 ],
                 [
                     'Do not build raw SQL condition strings with variables; use hash/operator format or bound params.',
-                    31,
+                    76,
                 ],
                 [
                     'Do not build raw SQL condition strings with variables; use hash/operator format or bound params.',
-                    32,
+                    77,
                 ],
                 [
                     'Do not build raw SQL condition strings with variables; use hash/operator format or bound params.',
-                    33,
+                    78,
                 ],
                 [
                     'Do not build raw SQL condition strings with variables; use hash/operator format or bound params.',
-                    34,
+                    79,
                 ],
                 [
                     'Do not build raw SQL condition strings with variables; use hash/operator format or bound params.',
-                    35,
+                    80,
                 ],
                 [
                     'Do not build raw SQL condition strings with variables; use hash/operator format or bound params.',
-                    36,
+                    81,
                 ],
             ],
         );

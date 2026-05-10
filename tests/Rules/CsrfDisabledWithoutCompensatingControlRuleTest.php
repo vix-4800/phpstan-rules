@@ -34,11 +34,11 @@ final class CsrfDisabledWithoutCompensatingControlRuleTest extends RuleTestCase
             [
                 [
                     'Disabling CSRF validation in action \'webhook\' requires a compensating control.',
-                    33,
+                    31,
                 ],
                 [
                     'Disabling CSRF validation in beforeAction() requires a compensating control.',
-                    38,
+                    36,
                 ],
             ],
         );

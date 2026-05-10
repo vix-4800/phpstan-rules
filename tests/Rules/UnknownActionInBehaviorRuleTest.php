@@ -34,23 +34,23 @@ final class UnknownActionInBehaviorRuleTest extends RuleTestCase
             [
                 [
                     'Behavior references unknown controller action id \'missing-only\' in only.',
-                    54,
+                    53,
                 ],
                 [
                     'Behavior references unknown controller action id \'missing-except\' in except.',
-                    55,
+                    54,
                 ],
                 [
                     'Behavior references unknown controller action id \'missing-rule\' in rules[*].actions.',
-                    57,
+                    56,
                 ],
                 [
                     'Behavior references unknown controller action id \'missing-ajax\' in AjaxFilter::only.',
-                    63,
+                    61,
                 ],
                 [
                     'Behavior references unknown controller action id \'missing-verb\' in VerbFilter::actions.',
-                    68,
+                    67,
                 ],
             ],
         );
