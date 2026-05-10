@@ -8,5 +8,4 @@ parametersSchema:
 
 parameters:
   yiiPolicy:
-    allowedSaveFalseNamespaces:
-      - console\migrations
+    allowedSaveFalseNamespaces: []
