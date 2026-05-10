@@ -2,6 +2,22 @@
 
 PHPStan extension with policy checks for Yii2 projects.
 
+- [PHPStan Yii Policy Rules](#phpstan-yii-policy-rules)
+  - [Setup](#setup)
+  - [Rules](#rules)
+    - [`yii.missingAccessRule`](#yiimissingaccessrule)
+    - [`yii.missingVerbFilterRule`](#yiimissingverbfilterrule)
+    - [`yii.missingAjaxFilterRule`](#yiimissingajaxfilterrule)
+    - [`yii.massSelectionWithoutLimit`](#yiimassselectionwithoutlimit)
+    - [`yii.saveFalseWithoutReason`](#yiisavefalsewithoutreason)
+    - [`yii.publicAllowWithoutConstraint`](#yiipublicallowwithoutconstraint)
+    - [`yii.mutatingActionAllowsGet`](#yiimutatingactionallowsget)
+    - [`yii.rawSqlConditionWithVariable`](#yiirawsqlconditionwithvariable)
+    - [`yii.queryOneWithoutLimit`](#yiiqueryonewithoutlimit)
+    - [`yii.redirectReferrerWithoutFallback`](#yiiredirectreferrerwithoutfallback)
+    - [`yii.nativeHeaderInController`](#yiinativeheaderincontroller)
+    - [`yii.unboundedQueryResult`](#yiiunboundedqueryresult)
+
 ## Setup
 
 Include extension config in PHPStan config:
