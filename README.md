@@ -70,3 +70,7 @@ Reports `where()`, `andWhere()`, `orWhere()`, and `having()` raw SQL strings bui
 ### `yii.queryOneWithoutLimit`
 
 Reports ActiveQuery/Query chains ending with `one()` without explicit `limit(1)`.
+
+### `yii.redirectReferrerWithoutFallback`
+
+Reports `redirect($request->referrer)` and `$referrer` redirects without a fallback route.

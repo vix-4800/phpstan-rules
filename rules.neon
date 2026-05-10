@@ -37,3 +37,7 @@ class: Vix\PhpstanYiiPolicyRules\Rules\PublicAllowWithoutConstraintRule
     class: Vix\PhpstanYiiPolicyRules\Rules\QueryOneWithoutLimitRule
     tags:
       - phpstan.rules.rule
+  -
+    class: Vix\PhpstanYiiPolicyRules\Rules\RedirectReferrerWithoutFallbackRule
+    tags:
+      - phpstan.rules.rule
