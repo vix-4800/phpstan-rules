@@ -39,7 +39,7 @@ final readonly class MissingAccessRule implements Rule
      */
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!$this->isYiiController($scope)) {
+        if (!$this->isYiiController($node, $scope)) {
             return [];
         }
 
@@ -64,17 +64,23 @@ final readonly class MissingAccessRule implements Rule
         return $errors;
     }
 
-    private function isYiiController(Scope $scope): bool
+    private function isYiiController(Class_ $class, Scope $scope): bool
     {
-        if (!$scope->isInClass()) {
+        if ($class->namespacedName === null && $class->extends === null) {
             return false;
         }
 
-        $controller = $scope->getClassReflection();
+        if ($class->namespacedName !== null) {
+            $className = $class->namespacedName->toString();
+        } elseif ($class->extends !== null) {
+            $className = $scope->resolveName($class->extends);
+        } else {
+            return false;
+        }
 
-        return $this->isSubclassOf($controller->getName(), 'yii\\base\\Controller')
-            || $this->isSubclassOf($controller->getName(), 'yii\\web\\Controller')
-            || $this->isSubclassOf($controller->getName(), 'yii\\rest\\Controller');
+        return $this->isSubclassOf($className, 'yii\\base\\Controller')
+            || $this->isSubclassOf($className, 'yii\\web\\Controller')
+            || $this->isSubclassOf($className, 'yii\\rest\\Controller');
     }
 
     private function isSubclassOf(string $className, string $parentClassName): bool
@@ -131,7 +137,12 @@ final readonly class MissingAccessRule implements Rule
         $finder = new NodeFinder();
 
         $accessControlNode = $finder->findFirst($method->stmts ?? [], function (Node $node): bool {
-            if ($node instanceof ClassConstFetch && $node->name->toString() === 'class') {
+            if (
+                $node instanceof ClassConstFetch
+                && $node->name instanceof Node\Identifier
+                && $node->name->toString() === 'class'
+                && $node->class instanceof Name
+            ) {
                 return $this->isAccessControlName($node->class);
             }
 
