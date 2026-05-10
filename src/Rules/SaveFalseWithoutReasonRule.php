@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Vix\PhpstanYiiPolicyRules\Rules;
 
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PHPStan\Analyser\Scope;
@@ -46,7 +47,9 @@ final readonly class SaveFalseWithoutReasonRule implements Rule
             return [];
         }
 
-        if (!$this->isFalseLiteral($node->args[0]->value)) {
+        $firstArgument = $node->args[0];
+
+        if (!$firstArgument instanceof Arg || !$this->isFalseLiteral($firstArgument->value)) {
             return [];
         }
 
