@@ -6,18 +6,25 @@ namespace Vix\PhpstanYiiPolicyRules\Rules;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Identifier;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use Vix\PhpstanYiiPolicyRules\Support\QueryChainInspector;
 
 /**
  * @implements Rule<MethodCall>
  */
 final readonly class MassSelectionWithoutLimitRule implements Rule
 {
+    private QueryChainInspector $queryChainInspector;
+
+    public function __construct()
+    {
+        $this->queryChainInspector = new QueryChainInspector();
+    }
+
     public function getNodeType(): string
     {
         return MethodCall::class;
@@ -31,6 +38,10 @@ final readonly class MassSelectionWithoutLimitRule implements Rule
      */
     public function processNode(Node $node, Scope $scope): array
     {
+        if (!$node instanceof MethodCall) {
+            return [];
+        }
+
         if (!$this->isUnboundedFindAll($node)) {
             return [];
         }
@@ -48,23 +59,6 @@ final readonly class MassSelectionWithoutLimitRule implements Rule
             return false;
         }
 
-        $hasFind = false;
-        $hasLimit = false;
-        $expr = $methodCall->var;
-
-        while ($expr instanceof MethodCall) {
-            if ($expr->name instanceof Identifier) {
-                $methodName = $expr->name->toString();
-                $hasLimit = $hasLimit || in_array($methodName, ['limit', 'page'], true);
-            }
-
-            $expr = $expr->var;
-        }
-
-        if ($expr instanceof StaticCall && $expr->name instanceof Identifier) {
-            $hasFind = $expr->name->toString() === 'find';
-        }
-
-        return $hasFind && !$hasLimit;
+        return $this->queryChainInspector->isUnboundedQueryCall($methodCall, ['all']);
     }
 }
