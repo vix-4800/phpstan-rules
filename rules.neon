@@ -22,7 +22,7 @@ services:
     tags:
       - phpstan.rules.rule
   -
-class: Vix\PhpstanYiiPolicyRules\Rules\PublicAllowWithoutConstraintRule
+    class: Vix\PhpstanYiiPolicyRules\Rules\PublicAllowWithoutConstraintRule
     tags:
       - phpstan.rules.rule
   -
@@ -43,5 +43,9 @@ class: Vix\PhpstanYiiPolicyRules\Rules\PublicAllowWithoutConstraintRule
       - phpstan.rules.rule
   -
     class: Vix\PhpstanYiiPolicyRules\Rules\NativeHeaderInControllerRule
+    tags:
+      - phpstan.rules.rule
+  -
+    class: Vix\PhpstanYiiPolicyRules\Rules\UnboundedQueryResultRule
     tags:
       - phpstan.rules.rule

@@ -78,3 +78,7 @@ Reports `redirect($request->referrer)` and `$referrer` redirects without a fallb
 ### `yii.nativeHeaderInController`
 
 Reports native `header()` calls inside Yii controllers.
+
+### `yii.unboundedQueryResult`
+
+Reports ActiveQuery/Query result chains ending with `all()` or `column()` without `limit()` or `page()`.
