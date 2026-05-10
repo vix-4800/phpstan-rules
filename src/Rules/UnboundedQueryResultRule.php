@@ -58,7 +58,7 @@ final readonly class UnboundedQueryResultRule implements Rule
             return [];
         }
 
-        if ($this->isInDataProviderContext($node)) {
+        if ($this->isInDataProviderContext($node, $scope)) {
             return [];
         }
 
@@ -73,8 +73,20 @@ final readonly class UnboundedQueryResultRule implements Rule
         ];
     }
 
-    private function isInDataProviderContext(MethodCall $node): bool
+    private function isInDataProviderContext(MethodCall $node, Scope $scope): bool
     {
+        $functionName = $scope->getFunctionName();
+
+        if ($functionName !== null && str_contains(mb_strtolower($functionName), 'dataprovider')) {
+            return true;
+        }
+
+        $classReflection = $scope->getClassReflection();
+
+        if ($classReflection !== null && str_ends_with($classReflection->getName(), 'DataProvider')) {
+            return true;
+        }
+
         $parent = $node->getAttribute('parent');
 
         while ($parent instanceof Node) {
