@@ -164,10 +164,6 @@ final readonly class YiiControllerFactory
             }
 
             foreach ($return->expr->items as $item) {
-                if (!$item instanceof ArrayItem) {
-                    continue;
-                }
-
                 $items[] = $item;
             }
         }

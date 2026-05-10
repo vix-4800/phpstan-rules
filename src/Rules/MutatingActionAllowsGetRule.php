@@ -16,6 +16,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\VariadicPlaceholder;
 use PhpParser\NodeFinder;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
@@ -148,7 +149,7 @@ final readonly class MutatingActionAllowsGetRule implements Rule
         }
 
         foreach ($finder->findInstanceOf($action->stmts ?? [], FuncCall::class) as $funcCall) {
-            if ($funcCall->name instanceof Name && $this->functionCallIsMutating($funcCall)) {
+            if ($funcCall->name instanceof Name && $this->functionCallIsMutating($funcCall->name, $funcCall->args)) {
                 return true;
             }
         }
@@ -157,7 +158,7 @@ final readonly class MutatingActionAllowsGetRule implements Rule
     }
 
     /**
-     * @param list<Arg> $args
+     * @param array<array-key, Arg|VariadicPlaceholder> $args
      */
     private function callIsMutating(Identifier $name, array $args): bool
     {
@@ -174,23 +175,26 @@ final readonly class MutatingActionAllowsGetRule implements Rule
         return $this->firstArgumentIsFalse($args);
     }
 
-    private function functionCallIsMutating(FuncCall $funcCall): bool
+    /**
+     * @param array<array-key, Arg|VariadicPlaceholder> $args
+     */
+    private function functionCallIsMutating(Name $name, array $args): bool
     {
-        $functionName = mb_strtolower($funcCall->name->toString());
+        $functionName = mb_strtolower($name->toString());
 
         if ($functionName === 'fopen') {
-            return $this->fopenCanWrite($funcCall);
+            return $this->fopenCanWrite($args);
         }
 
         return in_array($functionName, self::MUTATING_FUNCTIONS, true);
     }
 
     /**
-     * @param list<Arg> $args
+     * @param array<array-key, Arg|VariadicPlaceholder> $args
      */
     private function firstArgumentIsFalse(array $args): bool
     {
-        if (!isset($args[0])) {
+        if (!isset($args[0]) || !$args[0] instanceof Arg) {
             return false;
         }
 
@@ -198,17 +202,20 @@ final readonly class MutatingActionAllowsGetRule implements Rule
             && mb_strtolower($args[0]->value->name->toString()) === 'false';
     }
 
-    private function fopenCanWrite(FuncCall $funcCall): bool
+    /**
+     * @param array<array-key, Arg|VariadicPlaceholder> $args
+     */
+    private function fopenCanWrite(array $args): bool
     {
-        if (!isset($funcCall->args[1])) {
+        if (!isset($args[1]) || !$args[1] instanceof Arg) {
             return true;
         }
 
-        if (!$funcCall->args[1]->value instanceof String_) {
+        if (!$args[1]->value instanceof String_) {
             return true;
         }
 
-        return preg_match('/[waxc+]/i', $funcCall->args[1]->value->value) === 1;
+        return preg_match('/[waxc+]/i', $args[1]->value->value) === 1;
     }
 
     /**

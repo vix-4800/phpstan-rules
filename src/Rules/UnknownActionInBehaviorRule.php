@@ -108,7 +108,7 @@ final readonly class UnknownActionInBehaviorRule implements Rule
         $errors = [];
 
         foreach ($rules->items as $item) {
-            if ($item === null || !$item->value instanceof Array_) {
+            if (!$item->value instanceof Array_) {
                 continue;
             }
 
@@ -142,7 +142,7 @@ final readonly class UnknownActionInBehaviorRule implements Rule
         $errors = [];
 
         foreach ($actions->items as $item) {
-            if ($item === null || !$item->key instanceof String_) {
+            if (!$item->key instanceof String_) {
                 continue;
             }
 
@@ -164,7 +164,7 @@ final readonly class UnknownActionInBehaviorRule implements Rule
         $errors = [];
 
         foreach ($actions->items as $item) {
-            if ($item === null || !$item->value instanceof String_) {
+            if (!$item->value instanceof String_) {
                 continue;
             }
 

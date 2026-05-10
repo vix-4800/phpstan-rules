@@ -6,9 +6,7 @@ namespace Vix\PhpstanYiiPolicyRules\Rules;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
@@ -58,7 +56,7 @@ final readonly class UnboundedQueryResultRule implements Rule
             return [];
         }
 
-        if ($this->isInDataProviderContext($node, $scope)) {
+        if ($this->isInDataProviderContext($scope)) {
             return [];
         }
 
@@ -73,7 +71,7 @@ final readonly class UnboundedQueryResultRule implements Rule
         ];
     }
 
-    private function isInDataProviderContext(MethodCall $node, Scope $scope): bool
+    private function isInDataProviderContext(Scope $scope): bool
     {
         $functionName = $scope->getFunctionName();
 
@@ -87,29 +85,6 @@ final readonly class UnboundedQueryResultRule implements Rule
             return true;
         }
 
-        $parent = $node->getAttribute('parent');
-
-        while ($parent instanceof Node) {
-            if ($parent instanceof New_ && $parent->class instanceof Name) {
-                return $this->isDataProviderClassName($parent->class);
-            }
-
-            $parent = $parent->getAttribute('parent');
-        }
-
         return false;
-    }
-
-    private function isDataProviderClassName(Name $name): bool
-    {
-        $resolvedName = $name->getAttribute('resolvedName');
-
-        if ($resolvedName instanceof Name) {
-            $className = mb_ltrim($resolvedName->toString(), '\\');
-
-            return str_ends_with($className, 'DataProvider');
-        }
-
-        return str_ends_with(mb_ltrim($name->toString(), '\\'), 'DataProvider');
     }
 }
