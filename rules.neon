@@ -18,6 +18,10 @@ services:
     tags:
       - phpstan.rules.rule
   -
+    class: Vix\PhpstanYiiPolicyRules\Rules\UnknownActionInBehaviorRule
+    tags:
+      - phpstan.rules.rule
+  -
     class: Vix\PhpstanYiiPolicyRules\Rules\MassSelectionWithoutLimitRule
     tags:
       - phpstan.rules.rule

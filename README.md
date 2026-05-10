@@ -8,6 +8,7 @@ PHPStan extension with policy checks for Yii2 projects.
     - [`yii.missingAccessRule`](#yiimissingaccessrule)
     - [`yii.missingVerbFilterRule`](#yiimissingverbfilterrule)
     - [`yii.missingAjaxFilterRule`](#yiimissingajaxfilterrule)
+- [`yii.unknownActionInBehavior`](#yiiunknownactioninbehavior)
     - [`yii.massSelectionWithoutLimit`](#yiimassselectionwithoutlimit)
     - [`yii.saveFalseWithoutReason`](#yiisavefalsewithoutreason)
     - [`yii.publicAllowWithoutConstraint`](#yiipublicallowwithoutconstraint)
@@ -55,6 +56,12 @@ Public methods named `action*` must be listed in behavior `actions`. Rule respec
 Checks AJAX-style Yii controller actions for matching `yii\filters\AjaxFilter` behavior.
 
 Action is treated as AJAX endpoint when method body calls `asJson()` or references `yii\web\Response::FORMAT_JSON`. Rule respects behavior `only` and `except`.
+
+### `yii.unknownActionInBehavior`
+
+Reports behavior action references that do not match a controller `action*()` method or a literal external action key from `actions()`.
+
+Checks behavior `only` / `except`, `AccessControl rules[*].actions`, `VerbFilter::actions`, and `AjaxFilter::only`.
 
 ### `yii.massSelectionWithoutLimit`
 

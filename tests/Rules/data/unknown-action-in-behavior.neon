@@ -1,0 +1,3 @@
+parameters:
+  scanFiles:
+    - unknown-action-in-behavior.php
