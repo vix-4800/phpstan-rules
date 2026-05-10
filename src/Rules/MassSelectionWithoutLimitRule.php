@@ -7,6 +7,7 @@ namespace Vix\PhpstanYiiPolicyRules\Rules;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Identifier;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
@@ -43,7 +44,7 @@ final readonly class MassSelectionWithoutLimitRule implements Rule
 
     private function isUnboundedFindAll(MethodCall $methodCall): bool
     {
-        if (!$methodCall->name instanceof Node\Identifier || $methodCall->name->toString() !== 'all') {
+        if (!$methodCall->name instanceof Identifier || $methodCall->name->toString() !== 'all') {
             return false;
         }
 
@@ -52,7 +53,7 @@ final readonly class MassSelectionWithoutLimitRule implements Rule
         $expr = $methodCall->var;
 
         while ($expr instanceof MethodCall) {
-            if ($expr->name instanceof Node\Identifier) {
+            if ($expr->name instanceof Identifier) {
                 $methodName = $expr->name->toString();
                 $hasLimit = $hasLimit || in_array($methodName, ['limit', 'page'], true);
             }
@@ -60,7 +61,7 @@ final readonly class MassSelectionWithoutLimitRule implements Rule
             $expr = $expr->var;
         }
 
-        if ($expr instanceof StaticCall && $expr->name instanceof Node\Identifier) {
+        if ($expr instanceof StaticCall && $expr->name instanceof Identifier) {
             $hasFind = $expr->name->toString() === 'find';
         }
 

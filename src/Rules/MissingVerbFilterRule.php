@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Vix\PhpstanYiiPolicyRules\Rules;
 
 use PhpParser\Node;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
@@ -97,12 +98,9 @@ final readonly class MissingVerbFilterRule implements Rule
             return false;
         }
 
-        foreach ($actions->items as $item) {
-            if ($item->key instanceof String_ && $item->key->value === $actionId) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $actions->items,
+            static fn(ArrayItem $item): bool => $item->key instanceof String_ && $item->key->value === $actionId,
+        );
     }
 }

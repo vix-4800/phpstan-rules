@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Vix\PhpstanYiiPolicyRules\Support;
 
-use PhpParser\Node;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
@@ -42,9 +43,15 @@ final readonly class YiiControllerRuleHelper
             return true;
         }
 
-        return $this->isSubclassOf($className, 'yii\base\Controller')
-            || $this->isSubclassOf($className, 'yii\web\Controller')
-            || $this->isSubclassOf($className, 'yii\rest\Controller');
+        if ($this->isSubclassOf($className, 'yii\base\Controller')) {
+            return true;
+        }
+
+        if ($this->isSubclassOf($className, 'yii\web\Controller')) {
+            return true;
+        }
+
+        return $this->isSubclassOf($className, 'yii\rest\Controller');
     }
 
     /**
@@ -59,7 +66,15 @@ final readonly class YiiControllerRuleHelper
         foreach ($class->getMethods() as $method) {
             $methodName = $method->name->toString();
 
-            if (!$method->isPublic() || !str_starts_with($methodName, 'action') || $methodName === 'actions') {
+            if (!$method->isPublic()) {
+                continue;
+            }
+
+            if (!str_starts_with($methodName, 'action')) {
+                continue;
+            }
+
+            if ($methodName === 'actions') {
                 continue;
             }
 
@@ -140,10 +155,14 @@ final readonly class YiiControllerRuleHelper
         return $strings;
     }
 
-    public function getArrayItem(Array_ $array, string $key): ?Node\Expr
+    public function getArrayItem(Array_ $array, string $key): ?Expr
     {
         foreach ($array->items as $item) {
-            if (!$item->key instanceof String_ || $item->key->value !== $key) {
+            if (!$item->key instanceof String_) {
+                continue;
+            }
+
+            if ($item->key->value !== $key) {
                 continue;
             }
 
@@ -178,7 +197,11 @@ final readonly class YiiControllerRuleHelper
     private function isBehaviorClass(Array_ $array, string $behaviorClassName): bool
     {
         foreach ($array->items as $item) {
-            if (!$item->key instanceof String_ || $item->key->value !== 'class') {
+            if (!$item->key instanceof String_) {
+                continue;
+            }
+
+            if ($item->key->value !== 'class') {
                 continue;
             }
 
@@ -188,11 +211,11 @@ final readonly class YiiControllerRuleHelper
         return false;
     }
 
-    private function isClassNameValue(Node\Expr $value, string $className): bool
+    private function isClassNameValue(Expr $value, string $className): bool
     {
         if (
             $value instanceof ClassConstFetch
-            && $value->name instanceof Node\Identifier
+            && $value->name instanceof Identifier
             && $value->name->toString() === 'class'
             && $value->class instanceof Name
         ) {
@@ -240,6 +263,10 @@ final readonly class YiiControllerRuleHelper
         $class = $this->reflectionProvider->getClass($className);
         $parentClass = $this->reflectionProvider->getClass($parentClassName);
 
-        return $class->getName() === $parentClass->getName() || $class->isSubclassOfClass($parentClass);
+        if ($class->getName() === $parentClass->getName()) {
+            return true;
+        }
+
+        return $class->isSubclassOfClass($parentClass);
     }
 }

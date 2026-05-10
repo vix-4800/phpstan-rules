@@ -7,6 +7,7 @@ namespace Vix\PhpstanYiiPolicyRules\Rules;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\IdentifierRuleError;
@@ -70,7 +71,7 @@ final readonly class MissingAccessRule implements Rule
         return $errors;
     }
 
-    private function hasAccessControlForAction(Class_ $class, Node\Stmt\ClassMethod $action): bool
+    private function hasAccessControlForAction(Class_ $class, ClassMethod $action): bool
     {
         $actionId = $this->helper->getActionId($action);
 

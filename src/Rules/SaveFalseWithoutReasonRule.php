@@ -6,8 +6,10 @@ namespace Vix\PhpstanYiiPolicyRules\Rules;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Identifier;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
@@ -40,7 +42,7 @@ final readonly class SaveFalseWithoutReasonRule implements Rule
      */
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!$node->name instanceof Node\Identifier) {
+        if (!$node->name instanceof Identifier) {
             return [];
         }
 
@@ -69,7 +71,7 @@ final readonly class SaveFalseWithoutReasonRule implements Rule
         ];
     }
 
-    private function isFalseLiteral(Node\Expr $expr): bool
+    private function isFalseLiteral(Expr $expr): bool
     {
         return $expr instanceof ConstFetch
             && mb_strtolower($expr->name->toString()) === 'false';
@@ -83,12 +85,9 @@ final readonly class SaveFalseWithoutReasonRule implements Rule
             return false;
         }
 
-        foreach ($this->allowedNamespaces as $allowedNamespace) {
-            if ($namespace === $allowedNamespace || str_starts_with($namespace, $allowedNamespace . '\\')) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $this->allowedNamespaces,
+            static fn(string $allowedNamespace): bool => $namespace === $allowedNamespace || str_starts_with($namespace, $allowedNamespace . '\\'),
+        );
     }
 }
