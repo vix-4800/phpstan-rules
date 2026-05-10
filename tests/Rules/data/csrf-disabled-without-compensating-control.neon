@@ -1,0 +1,3 @@
+parameters:
+  scanFiles:
+    - csrf-disabled-without-compensating-control.php

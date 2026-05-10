@@ -13,6 +13,7 @@ PHPStan extension with policy checks for Yii2 projects.
     - [`yii.saveFalseWithoutReason`](#yiisavefalsewithoutreason)
     - [`yii.publicAllowWithoutConstraint`](#yiipublicallowwithoutconstraint)
     - [`yii.mutatingActionAllowsGet`](#yiimutatingactionallowsget)
+    - [`yii.csrfDisabledWithoutCompensatingControl`](#yiicsrfdisabledwithoutcompensatingcontrol)
     - [`yii.rawSqlConditionWithVariable`](#yiirawsqlconditionwithvariable)
     - [`yii.queryOneWithoutLimit`](#yiiqueryonewithoutlimit)
     - [`yii.redirectReferrerWithoutFallback`](#yiiredirectreferrerwithoutfallback)
@@ -85,6 +86,12 @@ Reports `AccessControl` rules with `'allow' => true` but without `roles`, `permi
 ### `yii.mutatingActionAllowsGet`
 
 Reports mutating controller actions whose configured `VerbFilter` allows `GET`/`HEAD` or omits a mutating HTTP verb.
+
+### `yii.csrfDisabledWithoutCompensatingControl`
+
+Reports `$this->enableCsrfValidation = false` inside controller actions and `beforeAction()`.
+
+Use only for endpoints with an explicit compensating control such as signature verification or another boundary check.
 
 ### `yii.rawSqlConditionWithVariable`
 
