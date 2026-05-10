@@ -20,7 +20,9 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
-use Vix\PhpstanYiiPolicyRules\Support\YiiControllerRuleHelper;
+use Vix\PhpstanYiiPolicyRules\Support\YiiController;
+use Vix\PhpstanYiiPolicyRules\Support\YiiControllerAction;
+use Vix\PhpstanYiiPolicyRules\Support\YiiControllerFactory;
 
 /**
  * @implements Rule<Class_>
@@ -51,11 +53,11 @@ final readonly class MutatingActionAllowsGetRule implements Rule
         'DELETE',
     ];
 
-    private YiiControllerRuleHelper $helper;
+    private YiiControllerFactory $controllerFactory;
 
     public function __construct(ReflectionProvider $reflectionProvider)
     {
-        $this->helper = new YiiControllerRuleHelper($reflectionProvider);
+        $this->controllerFactory = new YiiControllerFactory($reflectionProvider);
     }
 
     public function getNodeType(): string
@@ -75,18 +77,20 @@ final readonly class MutatingActionAllowsGetRule implements Rule
             return [];
         }
 
-        if (!$this->helper->isYiiController($node, $scope)) {
+        $controller = $this->controllerFactory->getController($node, $scope);
+
+        if ($controller === null) {
             return [];
         }
 
         $errors = [];
 
-        foreach ($this->helper->getActionMethods($node) as $action) {
-            if (!$this->actionHasMutation($action)) {
+        foreach ($controller->actions() as $action) {
+            if (!$this->actionHasMutation($action->method())) {
                 continue;
             }
 
-            $verbs = $this->getConfiguredVerbs($node, $this->helper->getActionId($action));
+            $verbs = $this->getConfiguredVerbs($controller, $action);
 
             if ($verbs === null || $this->verbsAreSafeForMutation($verbs)) {
                 continue;
@@ -94,10 +98,10 @@ final readonly class MutatingActionAllowsGetRule implements Rule
 
             $errors[] = RuleErrorBuilder::message(sprintf(
                 'Mutating controller action %s() must not allow GET and must be restricted to POST, PUT, PATCH, or DELETE.',
-                $action->name->toString(),
+                $action->methodName(),
             ))
                 ->identifier('yii.mutatingActionAllowsGet')
-                ->line($action->getStartLine())
+                ->line($action->line())
                 ->build();
         }
 
@@ -141,21 +145,21 @@ final readonly class MutatingActionAllowsGetRule implements Rule
     /**
      * @return list<string>|null
      */
-    private function getConfiguredVerbs(Class_ $class, string $actionId): ?array
+    private function getConfiguredVerbs(YiiController $controller, YiiControllerAction $action): ?array
     {
-        foreach ($this->helper->getBehaviorsByClass($class, self::VERB_FILTER) as $behavior) {
-            if (!$this->helper->behaviorAppliesToAction($behavior, $actionId)) {
+        foreach ($controller->behaviorsByClass(self::VERB_FILTER) as $behavior) {
+            if (!$behavior->appliesToAction($action)) {
                 continue;
             }
 
-            $actions = $this->helper->getArrayItem($behavior, 'actions');
+            $actions = $behavior->arrayItem('actions');
 
             if (!$actions instanceof Array_) {
                 continue;
             }
 
             foreach ($actions->items as $item) {
-                if (!$item->key instanceof String_ || $item->key->value !== $actionId) {
+                if (!$item->key instanceof String_ || $item->key->value !== $action->id()) {
                     continue;
                 }
 

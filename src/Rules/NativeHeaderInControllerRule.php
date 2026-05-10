@@ -14,18 +14,19 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
-use Vix\PhpstanYiiPolicyRules\Support\YiiControllerRuleHelper;
+use Vix\PhpstanYiiPolicyRules\Support\YiiController;
+use Vix\PhpstanYiiPolicyRules\Support\YiiControllerFactory;
 
 /**
  * @implements Rule<Class_>
  */
 final readonly class NativeHeaderInControllerRule implements Rule
 {
-    private YiiControllerRuleHelper $helper;
+    private YiiControllerFactory $controllerFactory;
 
     public function __construct(ReflectionProvider $reflectionProvider)
     {
-        $this->helper = new YiiControllerRuleHelper($reflectionProvider);
+        $this->controllerFactory = new YiiControllerFactory($reflectionProvider);
     }
 
     public function getNodeType(): string
@@ -45,14 +46,24 @@ final readonly class NativeHeaderInControllerRule implements Rule
             return [];
         }
 
-        if (!$this->helper->isYiiController($node, $scope)) {
+        $controller = $this->controllerFactory->getController($node, $scope);
+
+        if ($controller === null) {
             return [];
         }
 
+        return $this->findNativeHeaders($controller);
+    }
+
+    /**
+     * @return list<IdentifierRuleError>
+     */
+    private function findNativeHeaders(YiiController $controller): array
+    {
         $finder = new NodeFinder();
         $errors = [];
 
-        foreach ($finder->findInstanceOf($node->stmts, FuncCall::class) as $funcCall) {
+        foreach ($finder->findInstanceOf($controller->node()->stmts, FuncCall::class) as $funcCall) {
             if (!$funcCall->name instanceof Name || mb_strtolower($funcCall->name->toString()) !== 'header') {
                 continue;
             }

@@ -15,7 +15,8 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
-use Vix\PhpstanYiiPolicyRules\Support\YiiControllerRuleHelper;
+use Vix\PhpstanYiiPolicyRules\Support\YiiController;
+use Vix\PhpstanYiiPolicyRules\Support\YiiControllerFactory;
 
 /**
  * @implements Rule<Class_>
@@ -33,11 +34,11 @@ final readonly class PublicAllowWithoutConstraintRule implements Rule
         'actions',
     ];
 
-    private YiiControllerRuleHelper $helper;
+    private YiiControllerFactory $controllerFactory;
 
     public function __construct(ReflectionProvider $reflectionProvider)
     {
-        $this->helper = new YiiControllerRuleHelper($reflectionProvider);
+        $this->controllerFactory = new YiiControllerFactory($reflectionProvider);
     }
 
     public function getNodeType(): string
@@ -57,14 +58,24 @@ final readonly class PublicAllowWithoutConstraintRule implements Rule
             return [];
         }
 
-        if (!$this->helper->isYiiController($node, $scope)) {
+        $controller = $this->controllerFactory->getController($node, $scope);
+
+        if ($controller === null) {
             return [];
         }
 
+        return $this->findPublicAllowWithoutConstraint($controller);
+    }
+
+    /**
+     * @return list<IdentifierRuleError>
+     */
+    private function findPublicAllowWithoutConstraint(YiiController $controller): array
+    {
         $errors = [];
 
-        foreach ($this->helper->getBehaviorsByClass($node, self::ACCESS_CONTROL) as $behavior) {
-            $rules = $this->helper->getArrayItem($behavior, 'rules');
+        foreach ($controller->behaviorsByClass(self::ACCESS_CONTROL) as $behavior) {
+            $rules = $behavior->arrayItem('rules');
 
             if (!$rules instanceof Array_) {
                 continue;
@@ -93,7 +104,7 @@ final readonly class PublicAllowWithoutConstraintRule implements Rule
 
     private function isPublicAllowWithoutConstraint(Array_ $rule): bool
     {
-        $allow = $this->helper->getArrayItem($rule, 'allow');
+        $allow = $this->getArrayItem($rule, 'allow');
 
         if (!$this->isTrueLiteral($allow)) {
             return false;
@@ -116,5 +127,18 @@ final readonly class PublicAllowWithoutConstraintRule implements Rule
     {
         return $expr instanceof ConstFetch
             && mb_strtolower($expr->name->toString()) === 'true';
+    }
+
+    private function getArrayItem(Array_ $array, string $key): ?Expr
+    {
+        foreach ($array->items as $item) {
+            if (!$item->key instanceof String_ || $item->key->value !== $key) {
+                continue;
+            }
+
+            return $item->value;
+        }
+
+        return null;
     }
 }

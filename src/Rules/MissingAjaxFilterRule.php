@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Vix\PhpstanYiiPolicyRules\Rules;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
@@ -18,7 +17,10 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
-use Vix\PhpstanYiiPolicyRules\Support\YiiControllerRuleHelper;
+use Vix\PhpstanYiiPolicyRules\Support\YiiController;
+use Vix\PhpstanYiiPolicyRules\Support\YiiControllerAction;
+use Vix\PhpstanYiiPolicyRules\Support\YiiControllerBehavior;
+use Vix\PhpstanYiiPolicyRules\Support\YiiControllerFactory;
 
 /**
  * @implements Rule<Class_>
@@ -29,11 +31,11 @@ final readonly class MissingAjaxFilterRule implements Rule
 
     private const string RESPONSE = 'yii\web\Response';
 
-    private YiiControllerRuleHelper $helper;
+    private YiiControllerFactory $controllerFactory;
 
     public function __construct(ReflectionProvider $reflectionProvider)
     {
-        $this->helper = new YiiControllerRuleHelper($reflectionProvider);
+        $this->controllerFactory = new YiiControllerFactory($reflectionProvider);
     }
 
     public function getNodeType(): string
@@ -53,27 +55,29 @@ final readonly class MissingAjaxFilterRule implements Rule
             return [];
         }
 
-        if (!$this->helper->isYiiController($node, $scope)) {
+        $controller = $this->controllerFactory->getController($node, $scope);
+
+        if ($controller === null) {
             return [];
         }
 
         $errors = [];
 
-        foreach ($this->helper->getActionMethods($node) as $action) {
-            if (!$this->isAjaxEndpoint($action)) {
+        foreach ($controller->actions() as $action) {
+            if (!$this->isAjaxEndpoint($action->method())) {
                 continue;
             }
 
-            if ($this->hasAjaxFilterForAction($node, $action)) {
+            if ($this->hasAjaxFilterForAction($controller, $action)) {
                 continue;
             }
 
             $errors[] = RuleErrorBuilder::message(sprintf(
                 'AJAX controller action %s() is missing AjaxFilter behavior.',
-                $action->name->toString(),
+                $action->methodName(),
             ))
                 ->identifier('yii.missingAjaxFilterRule')
-                ->line($action->getStartLine())
+                ->line($action->line())
                 ->build();
         }
 
@@ -107,13 +111,11 @@ final readonly class MissingAjaxFilterRule implements Rule
             && $this->isClassName($node->class, self::RESPONSE);
     }
 
-    private function hasAjaxFilterForAction(Class_ $class, ClassMethod $action): bool
+    private function hasAjaxFilterForAction(YiiController $controller, YiiControllerAction $action): bool
     {
-        $actionId = $this->helper->getActionId($action);
-
         return array_any(
-            $this->helper->getBehaviorsByClass($class, self::AJAX_FILTER),
-            fn(Array_ $behavior): bool => $this->helper->behaviorAppliesToAction($behavior, $actionId),
+            $controller->behaviorsByClass(self::AJAX_FILTER),
+            static fn(YiiControllerBehavior $behavior): bool => $behavior->appliesToAction($action),
         );
     }
 

@@ -6,14 +6,17 @@ namespace Vix\PhpstanYiiPolicyRules\Rules;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
-use Vix\PhpstanYiiPolicyRules\Support\YiiControllerRuleHelper;
+use Vix\PhpstanYiiPolicyRules\Support\YiiController;
+use Vix\PhpstanYiiPolicyRules\Support\YiiControllerAction;
+use Vix\PhpstanYiiPolicyRules\Support\YiiControllerBehavior;
+use Vix\PhpstanYiiPolicyRules\Support\YiiControllerFactory;
 
 /**
  * @implements Rule<Class_>
@@ -22,11 +25,11 @@ final readonly class MissingAccessRule implements Rule
 {
     private const string ACCESS_CONTROL = 'yii\filters\AccessControl';
 
-    private YiiControllerRuleHelper $helper;
+    private YiiControllerFactory $controllerFactory;
 
     public function __construct(ReflectionProvider $reflectionProvider)
     {
-        $this->helper = new YiiControllerRuleHelper($reflectionProvider);
+        $this->controllerFactory = new YiiControllerFactory($reflectionProvider);
     }
 
     public function getNodeType(): string
@@ -46,11 +49,13 @@ final readonly class MissingAccessRule implements Rule
             return [];
         }
 
-        if (!$this->helper->isYiiController($node, $scope)) {
+        $controller = $this->controllerFactory->getController($node, $scope);
+
+        if ($controller === null) {
             return [];
         }
 
-        $actions = $this->helper->getActionMethods($node);
+        $actions = $controller->actions();
 
         if ($actions === []) {
             return [];
@@ -59,32 +64,30 @@ final readonly class MissingAccessRule implements Rule
         $errors = [];
 
         foreach ($actions as $action) {
-            if ($this->hasAccessControlForAction($node, $action)) {
+            if ($this->hasAccessControlForAction($controller, $action)) {
                 continue;
             }
 
             $errors[] = RuleErrorBuilder::message(sprintf(
                 'Controller action %s() is missing AccessControl behavior.',
-                $action->name->toString(),
+                $action->methodName(),
             ))
                 ->identifier('yii.missingAccessRule')
-                ->line($action->getStartLine())
+                ->line($action->line())
                 ->build();
         }
 
         return $errors;
     }
 
-    private function hasAccessControlForAction(Class_ $class, ClassMethod $action): bool
+    private function hasAccessControlForAction(YiiController $controller, YiiControllerAction $action): bool
     {
-        $actionId = $this->helper->getActionId($action);
-
-        foreach ($this->helper->getBehaviorsByClass($class, self::ACCESS_CONTROL) as $behavior) {
-            if (!$this->helper->behaviorAppliesToAction($behavior, $actionId)) {
+        foreach ($controller->behaviorsByClass(self::ACCESS_CONTROL) as $behavior) {
+            if (!$behavior->appliesToAction($action)) {
                 continue;
             }
 
-            if ($this->accessRulesCoverAction($behavior, $actionId)) {
+            if ($this->accessRulesCoverAction($behavior, $action->id())) {
                 return true;
             }
         }
@@ -92,9 +95,9 @@ final readonly class MissingAccessRule implements Rule
         return false;
     }
 
-    private function accessRulesCoverAction(Array_ $behavior, string $actionId): bool
+    private function accessRulesCoverAction(YiiControllerBehavior $behavior, string $actionId): bool
     {
-        $rules = $this->helper->getArrayItem($behavior, 'rules');
+        $rules = $behavior->arrayItem('rules');
 
         if (!$rules instanceof Array_) {
             return true;
@@ -105,7 +108,7 @@ final readonly class MissingAccessRule implements Rule
                 continue;
             }
 
-            $actions = $this->helper->getStringListItem($item->value, 'actions');
+            $actions = $this->getStringListItem($item->value, 'actions');
 
             if ($actions === null || in_array($actionId, $actions, true)) {
                 return true;
@@ -113,5 +116,35 @@ final readonly class MissingAccessRule implements Rule
         }
 
         return false;
+    }
+
+    /**
+     * @return list<string>|null
+     */
+    private function getStringListItem(Array_ $array, string $key): ?array
+    {
+        foreach ($array->items as $item) {
+            if (!$item->key instanceof String_ || $item->key->value !== $key) {
+                continue;
+            }
+
+            if (!$item->value instanceof Array_) {
+                return null;
+            }
+
+            $strings = [];
+
+            foreach ($item->value->items as $valueItem) {
+                if (!$valueItem->value instanceof String_) {
+                    return null;
+                }
+
+                $strings[] = $valueItem->value->value;
+            }
+
+            return $strings;
+        }
+
+        return null;
     }
 }

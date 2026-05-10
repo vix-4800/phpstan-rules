@@ -9,13 +9,15 @@ use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
-use Vix\PhpstanYiiPolicyRules\Support\YiiControllerRuleHelper;
+use Vix\PhpstanYiiPolicyRules\Support\YiiController;
+use Vix\PhpstanYiiPolicyRules\Support\YiiControllerAction;
+use Vix\PhpstanYiiPolicyRules\Support\YiiControllerBehavior;
+use Vix\PhpstanYiiPolicyRules\Support\YiiControllerFactory;
 
 /**
  * @implements Rule<Class_>
@@ -24,11 +26,11 @@ final readonly class MissingVerbFilterRule implements Rule
 {
     private const string VERB_FILTER = 'yii\filters\VerbFilter';
 
-    private YiiControllerRuleHelper $helper;
+    private YiiControllerFactory $controllerFactory;
 
     public function __construct(ReflectionProvider $reflectionProvider)
     {
-        $this->helper = new YiiControllerRuleHelper($reflectionProvider);
+        $this->controllerFactory = new YiiControllerFactory($reflectionProvider);
     }
 
     public function getNodeType(): string
@@ -48,11 +50,13 @@ final readonly class MissingVerbFilterRule implements Rule
             return [];
         }
 
-        if (!$this->helper->isYiiController($node, $scope)) {
+        $controller = $this->controllerFactory->getController($node, $scope);
+
+        if ($controller === null) {
             return [];
         }
 
-        $actions = $this->helper->getActionMethods($node);
+        $actions = $controller->actions();
 
         if ($actions === []) {
             return [];
@@ -61,32 +65,30 @@ final readonly class MissingVerbFilterRule implements Rule
         $errors = [];
 
         foreach ($actions as $action) {
-            if ($this->hasVerbFilterForAction($node, $action)) {
+            if ($this->hasVerbFilterForAction($controller, $action)) {
                 continue;
             }
 
             $errors[] = RuleErrorBuilder::message(sprintf(
                 'Controller action %s() is missing VerbFilter behavior.',
-                $action->name->toString(),
+                $action->methodName(),
             ))
                 ->identifier('yii.missingVerbFilterRule')
-                ->line($action->getStartLine())
+                ->line($action->line())
                 ->build();
         }
 
         return $errors;
     }
 
-    private function hasVerbFilterForAction(Class_ $class, ClassMethod $action): bool
+    private function hasVerbFilterForAction(YiiController $controller, YiiControllerAction $action): bool
     {
-        $actionId = $this->helper->getActionId($action);
-
-        foreach ($this->helper->getBehaviorsByClass($class, self::VERB_FILTER) as $behavior) {
-            if (!$this->helper->behaviorAppliesToAction($behavior, $actionId)) {
+        foreach ($controller->behaviorsByClass(self::VERB_FILTER) as $behavior) {
+            if (!$behavior->appliesToAction($action)) {
                 continue;
             }
 
-            if ($this->verbActionsContainAction($behavior, $actionId)) {
+            if ($this->verbActionsContainAction($behavior, $action->id())) {
                 return true;
             }
         }
@@ -94,9 +96,9 @@ final readonly class MissingVerbFilterRule implements Rule
         return false;
     }
 
-    private function verbActionsContainAction(Array_ $behavior, string $actionId): bool
+    private function verbActionsContainAction(YiiControllerBehavior $behavior, string $actionId): bool
     {
-        $actions = $this->helper->getArrayItem($behavior, 'actions');
+        $actions = $behavior->arrayItem('actions');
 
         if (!$actions instanceof Array_) {
             return false;
