@@ -44,12 +44,7 @@ final readonly class FileValidatorTooLooseRule implements Rule
             return [];
         }
 
-        $classReflection = $scope->getClassReflection();
-
-        if (
-            $classReflection === null
-            || (!$classReflection->isSubclassOf(self::MODEL_CLASS) && strcasecmp($classReflection->getName(), self::MODEL_CLASS) !== 0)
-        ) {
+        if (!$this->isYiiModel($scope)) {
             return [];
         }
 
@@ -131,5 +126,16 @@ final readonly class FileValidatorTooLooseRule implements Rule
         $validator = $rule->items[1] ?? null;
 
         return $validator?->value->getStartLine() ?? $rule->getStartLine();
+    }
+
+    private function isYiiModel(Scope $scope): bool
+    {
+        $classReflection = $scope->getClassReflection();
+
+        return $classReflection !== null
+            && (
+                $classReflection->isSubclassOf(self::MODEL_CLASS)
+                || strcasecmp($classReflection->getName(), self::MODEL_CLASS) === 0
+            );
     }
 }

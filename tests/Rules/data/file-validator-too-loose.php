@@ -34,7 +34,7 @@ namespace Fixtures {
         }
     }
 
-    final class HelperRules
+    final class PlainClassWithRules
     {
         /**
          * @return list<array<mixed>>
