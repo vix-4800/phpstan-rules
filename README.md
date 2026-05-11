@@ -13,6 +13,7 @@ PHPStan extension with policy checks for Yii2 projects.
     - [`yii.saveFalseWithoutReason`](#yiisavefalsewithoutreason)
     - [`yii.lifecycleParentCall`](#yiilifecycleparentcall)
     - [`yii.componentInitParentCall`](#yiicomponentinitparentcall)
+    - [`yii.lifecycleSelfSave`](#yiilifecycleselfsave)
     - [`yii.publicAllowWithoutConstraint`](#yiipublicallowwithoutconstraint)
     - [`yii.mutatingActionAllowsGet`](#yiimutatingactionallowsget)
     - [`yii.csrfDisabledWithoutCompensatingControl`](#yiicsrfdisabledwithoutcompensatingcontrol)
@@ -85,6 +86,18 @@ Namespaces containing `migrations`, `tests`, `seeders`, or `seeds` are allowed.
 Reports Active Record overrides of `beforeValidate()`, `beforeSave()`, `afterSave()`, `afterFind()`, and `afterDelete()` that do not call the matching `parent::*()` method.
 
 Skipping the parent call can break Yii events, attached behaviors, and audit hooks.
+
+### `yii.componentInitParentCall`
+
+Reports `init()` overrides in Yii `Component`, `Widget`, `Behavior`, and `AssetBundle` subclasses that do not call `parent::init()`.
+
+This catches Yii-specific initialization bugs that generic PHP static analysis does not understand.
+
+### `yii.lifecycleSelfSave`
+
+Reports `$this->save()`, `$this->update()`, and `$this->delete()` inside Active Record lifecycle hooks.
+
+These self-mutations are high risk because they can recurse, trigger duplicate events, or leave model state inconsistent.
 
 ### `yii.publicAllowWithoutConstraint`
 
