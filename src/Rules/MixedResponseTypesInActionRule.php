@@ -26,8 +26,8 @@ final readonly class MixedResponseTypesInActionRule implements Rule
 {
     private const array HTML_RESPONSE_METHODS = [
         'render',
-        'renderajax',
-        'renderpartial',
+        'renderAjax',
+        'renderPartial',
     ];
 
     private YiiControllerFactory $controllerFactory;
@@ -115,10 +115,22 @@ final readonly class MixedResponseTypesInActionRule implements Rule
             return 'json';
         }
 
-        if (in_array($methodName, self::HTML_RESPONSE_METHODS, true)) {
+        if ($this->isHtmlResponseMethod($methodName)) {
             return 'html';
         }
 
         return null;
+    }
+
+    private function isHtmlResponseMethod(string $methodName): bool
+    {
+        return in_array(
+            $methodName,
+            array_map(
+                static fn(string $htmlMethodName): string => mb_strtolower($htmlMethodName),
+                self::HTML_RESPONSE_METHODS,
+            ),
+            true,
+        );
     }
 }
