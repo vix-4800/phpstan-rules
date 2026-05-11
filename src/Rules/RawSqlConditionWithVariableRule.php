@@ -40,6 +40,7 @@ final readonly class RawSqlConditionWithVariableRule implements Rule
         'leftJoin' => [0, 1],
         'rightJoin' => [0, 1],
         'innerJoin' => [0, 1],
+        'createCommand' => [0],
     ];
 
     public function getNodeType(): string
@@ -80,7 +81,7 @@ final readonly class RawSqlConditionWithVariableRule implements Rule
             }
 
             return [
-                RuleErrorBuilder::message('Do not build raw SQL condition strings with variables; use hash/operator format or bound params.')
+                RuleErrorBuilder::message('Do not build raw SQL strings with variables; use hash/operator format or bound params.')
                     ->identifier('yii.rawSqlConditionWithVariable')
                     ->build(),
             ];
