@@ -2,6 +2,9 @@
 
 PHPStan extension with policy checks for Yii2 projects.
 
+[![PHPStan](https://github.com/vix-4800/phpstan-yii-policy-rules/actions/workflows/phpstan.yml/badge.svg)](https://github.com/vix-4800/phpstan-yii-policy-rules/actions/workflows/phpstan.yml)
+[![Tests](https://github.com/vix-4800/phpstan-yii-policy-rules/actions/workflows/php.yml/badge.svg)](https://github.com/vix-4800/phpstan-yii-policy-rules/actions/workflows/php.yml)
+
 - [PHPStan Yii Policy Rules](#phpstan-yii-policy-rules)
   - [Setup](#setup)
   - [Versioning](#versioning)
