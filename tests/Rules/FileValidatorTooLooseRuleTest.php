@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Vix\PhpstanYiiPolicyRules\Tests\Rules;
 
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
 use Vix\PhpstanYiiPolicyRules\Rules\FileValidatorTooLooseRule;
@@ -23,7 +24,7 @@ final class FileValidatorTooLooseRuleTest extends RuleTestCase
 
     protected function getRule(): Rule
     {
-        return new FileValidatorTooLooseRule();
+        return new FileValidatorTooLooseRule(self::getContainer()->getByType(ReflectionProvider::class));
     }
 
     public function testReportsVariousFileValidatorFormatsWithoutTypeConstraints(): void

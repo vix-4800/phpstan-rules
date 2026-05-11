@@ -10,16 +10,19 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeFinder;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use Vix\PhpstanYiiPolicyRules\Support\YiiClassHierarchy;
 
 /**
- * @implements Rule<ClassMethod>
+ * @implements Rule<Class_>
  */
 final readonly class FileValidatorTooLooseRule implements Rule
 {
@@ -29,9 +32,16 @@ final readonly class FileValidatorTooLooseRule implements Rule
 
     private const int VALIDATOR_INDEX = 1;
 
+    private YiiClassHierarchy $classHierarchy;
+
+    public function __construct(ReflectionProvider $reflectionProvider)
+    {
+        $this->classHierarchy = new YiiClassHierarchy($reflectionProvider);
+    }
+
     public function getNodeType(): string
     {
-        return ClassMethod::class;
+        return Class_::class;
     }
 
     /**
@@ -42,18 +52,24 @@ final readonly class FileValidatorTooLooseRule implements Rule
      */
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!$node instanceof ClassMethod || $node->name->toString() !== 'rules') {
+        if (!$node instanceof Class_) {
             return [];
         }
 
-        if (!$this->isYiiModel($scope)) {
+        if (!$this->classHierarchy->isSubclassOfAny($node, $scope, [self::MODEL_CLASS])) {
+            return [];
+        }
+
+        $rulesMethod = $this->findRulesMethod($node);
+
+        if ($rulesMethod === null) {
             return [];
         }
 
         $finder = new NodeFinder();
         $errors = [];
 
-        foreach ($finder->findInstanceOf($node->stmts ?? [], Return_::class) as $return) {
+        foreach ($finder->findInstanceOf($rulesMethod->stmts ?? [], Return_::class) as $return) {
             if (!$return->expr instanceof Array_) {
                 continue;
             }
@@ -130,14 +146,14 @@ final readonly class FileValidatorTooLooseRule implements Rule
         return $validator?->value->getStartLine() ?? $rule->getStartLine();
     }
 
-    private function isYiiModel(Scope $scope): bool
+    private function findRulesMethod(Class_ $class): ?ClassMethod
     {
-        $classReflection = $scope->getClassReflection();
+        foreach ($class->getMethods() as $method) {
+            if ($method->name->toString() === 'rules') {
+                return $method;
+            }
+        }
 
-        return $classReflection !== null
-            && (
-                $classReflection->isSubclassOf(self::MODEL_CLASS)
-                || strcasecmp($classReflection->getName(), self::MODEL_CLASS) === 0
-            );
+        return null;
     }
 }
