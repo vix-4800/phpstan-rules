@@ -14,7 +14,7 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Scalar\Encapsed;
+use PhpParser\Node\Scalar\InterpolatedString;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
@@ -96,7 +96,7 @@ final readonly class RawSqlConditionWithVariableRule implements Rule
 
     private function containsVariableSqlString(Expr $expr): bool
     {
-        if ($expr instanceof Encapsed) {
+        if ($expr instanceof InterpolatedString) {
             return array_any(
                 $expr->parts,
                 static fn(Node $part): bool => $part instanceof Expr,
@@ -133,6 +133,6 @@ final readonly class RawSqlConditionWithVariableRule implements Rule
             return $this->containsVariableValue($expr->right);
         }
 
-        return $expr instanceof Encapsed;
+        return $expr instanceof InterpolatedString;
     }
 }
