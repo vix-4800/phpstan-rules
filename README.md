@@ -18,9 +18,11 @@ PHPStan extension with policy checks for Yii2 projects.
     - [`yii.mutatingActionAllowsGet`](#yiimutatingactionallowsget)
     - [`yii.csrfDisabledWithoutCompensatingControl`](#yiicsrfdisabledwithoutcompensatingcontrol)
     - [`yii.rawSqlConditionWithVariable`](#yiirawsqlconditionwithvariable)
+    - [`yii.transactionWithoutRollbackHandling`](#yiitransactionwithoutrollbackhandling)
     - [`yii.queryOneWithoutLimit`](#yiiqueryonewithoutlimit)
     - [`yii.redirectReferrerWithoutFallback`](#yiiredirectreferrerwithoutfallback)
     - [`yii.nativeHeaderInController`](#yiinativeheaderincontroller)
+    - [`yii.mixedResponseTypesInAction`](#yiimixedresponsetypesinaction)
     - [`yii.unboundedQueryResult`](#yiiunboundedqueryresult)
 
 ## Setup
@@ -120,6 +122,10 @@ Use only for endpoints with an explicit compensating control such as signature v
 
 Reports raw SQL strings built with interpolation or concatenated variables in `where()`-style conditions, `join()` / `on()`, `from()`, and `orderBy()`.
 
+### `yii.transactionWithoutRollbackHandling`
+
+Reports methods that call `beginTransaction()` but do not call `rollBack()` / `rollback()` from a `catch` block.
+
 ### `yii.queryOneWithoutLimit`
 
 Reports ActiveQuery/Query chains ending with `one()` without explicit `limit(1)`.
@@ -131,6 +137,10 @@ Reports `redirect($request->referrer)` and `$referrer` redirects without a fallb
 ### `yii.nativeHeaderInController`
 
 Reports native `header()` calls inside Yii controllers.
+
+### `yii.mixedResponseTypesInAction`
+
+Reports controller actions that return HTML via `render*()` in one path and JSON via `asJson()` in another path.
 
 ### `yii.unboundedQueryResult`
 
