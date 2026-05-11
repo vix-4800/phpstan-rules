@@ -62,7 +62,7 @@ final readonly class ImageValidatorTooLooseRule implements Rule
 
         $errors = [];
 
-        foreach ($this->getRulesMethod($node)?->stmts ?? [] as $statement) {
+        foreach ($this->getRulesMethod($node)->stmts ?? [] as $statement) {
             if (!$statement instanceof Return_ || !$statement->expr instanceof Array_) {
                 continue;
             }
