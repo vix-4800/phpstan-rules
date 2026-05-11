@@ -68,8 +68,8 @@ final readonly class DeleteAllOrUpdateAllWithoutWhereRule implements Rule
     }
 
     /**
-     * @param list<Arg|VariadicPlaceholder> $args
-     * @param string                        $methodName
+     * @param array<int|string, Arg|VariadicPlaceholder> $args
+     * @param string                                     $methodName
      */
     private function getConditionArgument(array $args, string $methodName): ?Arg
     {
