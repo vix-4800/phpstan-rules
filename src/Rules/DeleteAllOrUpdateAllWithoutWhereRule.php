@@ -47,7 +47,7 @@ final readonly class DeleteAllOrUpdateAllWithoutWhereRule implements Rule
 
         $methodName = $node->name->toString();
 
-        if ($methodName !== 'deleteAll' && $methodName !== 'updateAll') {
+        if (!in_array($methodName, ['deleteAll', 'updateAll'], true)) {
             return [];
         }
 
@@ -68,7 +68,8 @@ final readonly class DeleteAllOrUpdateAllWithoutWhereRule implements Rule
     }
 
     /**
-     * @param array<Arg|VariadicPlaceholder> $args
+     * @param list<Arg|VariadicPlaceholder> $args
+     * @param string                        $methodName
      */
     private function getConditionArgument(array $args, string $methodName): ?Arg
     {

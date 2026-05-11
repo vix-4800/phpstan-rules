@@ -68,6 +68,8 @@ final readonly class PublicAllowWithoutConstraintRule implements Rule
     }
 
     /**
+     * @param YiiController $controller
+     *
      * @return list<IdentifierRuleError>
      */
     private function findPublicAllowWithoutConstraint(YiiController $controller): array
@@ -132,7 +134,11 @@ final readonly class PublicAllowWithoutConstraintRule implements Rule
     private function getArrayItem(Array_ $array, string $key): ?Expr
     {
         foreach ($array->items as $item) {
-            if (!$item->key instanceof String_ || $item->key->value !== $key) {
+            if (!$item->key instanceof String_) {
+                continue;
+            }
+
+            if ($item->key->value !== $key) {
                 continue;
             }
 

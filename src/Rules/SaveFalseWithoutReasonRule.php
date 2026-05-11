@@ -98,15 +98,17 @@ final readonly class SaveFalseWithoutReasonRule implements Rule
             return false;
         }
 
-        if (array_any(
-            $this->allowedNamespaces,
-            static fn(string $allowedNamespace): bool => $namespace === $allowedNamespace || str_starts_with($namespace, $allowedNamespace . '\\'),
-        )) {
+        if (
+            array_any(
+                $this->allowedNamespaces,
+                static fn(string $allowedNamespace): bool => $namespace === $allowedNamespace || str_starts_with($namespace, $allowedNamespace . '\\'),
+            )
+        ) {
             return true;
         }
 
         $namespaceParts = array_map(
-            static fn(string $part): string => mb_strtolower($part),
+            mb_strtolower(...),
             explode('\\', $namespace),
         );
 

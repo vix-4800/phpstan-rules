@@ -56,6 +56,8 @@ final readonly class NativeHeaderInControllerRule implements Rule
     }
 
     /**
+     * @param YiiController $controller
+     *
      * @return list<IdentifierRuleError>
      */
     private function findNativeHeaders(YiiController $controller): array
@@ -64,7 +66,11 @@ final readonly class NativeHeaderInControllerRule implements Rule
         $errors = [];
 
         foreach ($finder->findInstanceOf($controller->node()->stmts, FuncCall::class) as $funcCall) {
-            if (!$funcCall->name instanceof Name || mb_strtolower($funcCall->name->toString()) !== 'header') {
+            if (!$funcCall->name instanceof Name) {
+                continue;
+            }
+
+            if (mb_strtolower($funcCall->name->toString()) !== 'header') {
                 continue;
             }
 

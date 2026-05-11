@@ -81,10 +81,6 @@ final readonly class UnboundedQueryResultRule implements Rule
 
         $classReflection = $scope->getClassReflection();
 
-        if ($classReflection !== null && str_ends_with($classReflection->getName(), 'DataProvider')) {
-            return true;
-        }
-
-        return false;
+        return $classReflection !== null && str_ends_with($classReflection->getName(), 'DataProvider');
     }
 }

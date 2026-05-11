@@ -61,7 +61,11 @@ final readonly class LifecycleParentCallRule implements Rule
         foreach (self::REQUIRED_PARENT_CALL_METHODS as $methodName) {
             $method = $activeRecord->lifecycleMethod($methodName);
 
-            if ($method === null || $method->hasParentCall($methodName)) {
+            if ($method === null) {
+                continue;
+            }
+
+            if ($method->hasParentCall($methodName)) {
                 continue;
             }
 

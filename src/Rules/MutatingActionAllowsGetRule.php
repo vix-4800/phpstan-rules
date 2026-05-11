@@ -116,7 +116,11 @@ final readonly class MutatingActionAllowsGetRule implements Rule
 
             $verbs = $this->getConfiguredVerbs($controller, $action);
 
-            if ($verbs === null || $this->verbsAreSafeForMutation($verbs)) {
+            if ($verbs === null) {
+                continue;
+            }
+
+            if ($this->verbsAreSafeForMutation($verbs)) {
                 continue;
             }
 
@@ -148,16 +152,14 @@ final readonly class MutatingActionAllowsGetRule implements Rule
             }
         }
 
-        foreach ($finder->findInstanceOf($action->stmts ?? [], FuncCall::class) as $funcCall) {
-            if ($funcCall->name instanceof Name && $this->functionCallIsMutating($funcCall->name, $funcCall->args)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $finder->findInstanceOf($action->stmts ?? [], FuncCall::class),
+            fn(FuncCall $funcCall): bool => $funcCall->name instanceof Name && $this->functionCallIsMutating($funcCall->name, $funcCall->args),
+        );
     }
 
     /**
+     * @param Identifier                                $name
      * @param array<array-key, Arg|VariadicPlaceholder> $args
      */
     private function callIsMutating(Identifier $name, array $args): bool
@@ -176,6 +178,7 @@ final readonly class MutatingActionAllowsGetRule implements Rule
     }
 
     /**
+     * @param Name                                      $name
      * @param array<array-key, Arg|VariadicPlaceholder> $args
      */
     private function functionCallIsMutating(Name $name, array $args): bool
@@ -219,6 +222,9 @@ final readonly class MutatingActionAllowsGetRule implements Rule
     }
 
     /**
+     * @param YiiController       $controller
+     * @param YiiControllerAction $action
+     *
      * @return list<string>|null
      */
     private function getConfiguredVerbs(YiiController $controller, YiiControllerAction $action): ?array
@@ -235,7 +241,11 @@ final readonly class MutatingActionAllowsGetRule implements Rule
             }
 
             foreach ($actions->items as $item) {
-                if (!$item->key instanceof String_ || $item->key->value !== $action->id()) {
+                if (!$item->key instanceof String_) {
+                    continue;
+                }
+
+                if ($item->key->value !== $action->id()) {
                     continue;
                 }
 
@@ -251,6 +261,8 @@ final readonly class MutatingActionAllowsGetRule implements Rule
     }
 
     /**
+     * @param Array_ $verbs
+     *
      * @return list<string>|null
      */
     private function getVerbList(Array_ $verbs): ?array

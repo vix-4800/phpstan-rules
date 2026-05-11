@@ -74,6 +74,10 @@ final readonly class UnknownActionInBehaviorRule implements Rule
     }
 
     /**
+     * @param YiiController         $controller
+     * @param YiiControllerBehavior $behavior
+     * @param string                $key
+     *
      * @return list<IdentifierRuleError>
      */
     private function validateBehaviorActionList(
@@ -91,6 +95,9 @@ final readonly class UnknownActionInBehaviorRule implements Rule
     }
 
     /**
+     * @param YiiController         $controller
+     * @param YiiControllerBehavior $behavior
+     *
      * @return list<IdentifierRuleError>
      */
     private function validateAccessRuleActions(YiiController $controller, YiiControllerBehavior $behavior): array
@@ -112,7 +119,7 @@ final readonly class UnknownActionInBehaviorRule implements Rule
                 continue;
             }
 
-            $actions = (new YiiControllerBehavior($item->value))->arrayItem('actions');
+            $actions = new YiiControllerBehavior($item->value)->arrayItem('actions');
 
             if (!$actions instanceof Array_) {
                 continue;
@@ -125,6 +132,9 @@ final readonly class UnknownActionInBehaviorRule implements Rule
     }
 
     /**
+     * @param YiiController         $controller
+     * @param YiiControllerBehavior $behavior
+     *
      * @return list<IdentifierRuleError>
      */
     private function validateVerbFilterActions(YiiController $controller, YiiControllerBehavior $behavior): array
@@ -157,6 +167,10 @@ final readonly class UnknownActionInBehaviorRule implements Rule
     }
 
     /**
+     * @param YiiController $controller
+     * @param Array_        $actions
+     * @param string        $source
+     *
      * @return list<IdentifierRuleError>
      */
     private function validateStringActionList(YiiController $controller, Array_ $actions, string $source): array

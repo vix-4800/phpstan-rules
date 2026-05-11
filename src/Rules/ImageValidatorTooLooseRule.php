@@ -63,12 +63,20 @@ final readonly class ImageValidatorTooLooseRule implements Rule
         $errors = [];
 
         foreach ($this->getRulesMethod($node)->stmts ?? [] as $statement) {
-            if (!$statement instanceof Return_ || !$statement->expr instanceof Array_) {
+            if (!$statement instanceof Return_) {
+                continue;
+            }
+
+            if (!$statement->expr instanceof Array_) {
                 continue;
             }
 
             foreach ($statement->expr->items as $item) {
-                if (!$item->value instanceof Array_ || !$this->isTooLooseImageValidatorRule($item->value)) {
+                if (!$item->value instanceof Array_) {
+                    continue;
+                }
+
+                if (!$this->isTooLooseImageValidatorRule($item->value)) {
                     continue;
                 }
 
@@ -163,7 +171,7 @@ final readonly class ImageValidatorTooLooseRule implements Rule
                 return $item->value;
             }
 
-            $position++;
+            ++$position;
         }
 
         return null;

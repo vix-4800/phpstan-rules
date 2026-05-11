@@ -26,8 +26,8 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\Int_;
-use PhpParser\Node\VarLikeIdentifier;
 use PhpParser\Node\VariadicPlaceholder;
+use PhpParser\Node\VarLikeIdentifier;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
@@ -108,7 +108,8 @@ final readonly class QueryPerformanceSmellRule implements Rule
 
     private function isOneNullComparison(BinaryOp $binaryOp): bool
     {
-        if (!$binaryOp instanceof Identical
+        if (
+            !$binaryOp instanceof Identical
             && !$binaryOp instanceof NotIdentical
             && !$binaryOp instanceof Equal
             && !$binaryOp instanceof NotEqual
@@ -116,8 +117,11 @@ final readonly class QueryPerformanceSmellRule implements Rule
             return false;
         }
 
-        return ($this->isQueryOneCall($binaryOp->left) && $this->isNull($binaryOp->right))
-            || ($this->isNull($binaryOp->left) && $this->isQueryOneCall($binaryOp->right));
+        if ($this->isQueryOneCall($binaryOp->left) && $this->isNull($binaryOp->right)) {
+            return true;
+        }
+
+        return $this->isNull($binaryOp->left) && $this->isQueryOneCall($binaryOp->right);
     }
 
     private function isCountExistenceComparison(BinaryOp $binaryOp): bool
@@ -182,7 +186,7 @@ final readonly class QueryPerformanceSmellRule implements Rule
 
         $functionName = mb_strtolower($funcCall->name->toString());
 
-        if ($functionName !== 'count' && $functionName !== 'sizeof') {
+        if (!in_array($functionName, ['count', 'sizeof'], true)) {
             return false;
         }
 
@@ -211,7 +215,8 @@ final readonly class QueryPerformanceSmellRule implements Rule
     }
 
     /**
-     * @param array<Arg|VariadicPlaceholder> $args
+     * @param list<Arg|VariadicPlaceholder> $args
+     * @param int                           $index
      */
     private function getArgument(array $args, int $index): ?Arg
     {
@@ -253,7 +258,7 @@ final readonly class QueryPerformanceSmellRule implements Rule
 
         $name = $expr->name instanceof Identifier ? $expr->name->toString() : null;
 
-        if ($name !== 'user' && $name !== 'getUser') {
+        if (!in_array($name, ['user', 'getUser'], true)) {
             return false;
         }
 

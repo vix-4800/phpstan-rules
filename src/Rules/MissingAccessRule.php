@@ -119,12 +119,19 @@ final readonly class MissingAccessRule implements Rule
     }
 
     /**
+     * @param Array_ $array
+     * @param string $key
+     *
      * @return list<string>|null
      */
     private function getStringListItem(Array_ $array, string $key): ?array
     {
         foreach ($array->items as $item) {
-            if (!$item->key instanceof String_ || $item->key->value !== $key) {
+            if (!$item->key instanceof String_) {
+                continue;
+            }
+
+            if ($item->key->value !== $key) {
                 continue;
             }
 

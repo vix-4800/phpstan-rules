@@ -96,11 +96,7 @@ final readonly class MissingAjaxFilterRule implements Rule
 
     private function isAjaxEndpointNode(Node $node): bool
     {
-        if (
-            $node instanceof MethodCall
-            && $node->name instanceof Identifier
-            && $node->name->toString() === 'asJson'
-        ) {
+        if ($node instanceof MethodCall && $node->name instanceof Identifier && $node->name->toString() === 'asJson') {
             return true;
         }
 

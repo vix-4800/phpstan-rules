@@ -45,7 +45,7 @@ final readonly class FileValidatorTooLooseRule implements Rule
     }
 
     /**
-     * @param Node $node
+     * @param Node  $node
      * @param Scope $scope
      *
      * @return list<IdentifierRuleError>
@@ -79,7 +79,11 @@ final readonly class FileValidatorTooLooseRule implements Rule
                     continue;
                 }
 
-                if (!$this->isFileValidatorRule($item->value) || $this->hasTypeConstraint($item->value)) {
+                if (!$this->isFileValidatorRule($item->value)) {
+                    continue;
+                }
+
+                if ($this->hasTypeConstraint($item->value)) {
                     continue;
                 }
 
@@ -119,9 +123,9 @@ final readonly class FileValidatorTooLooseRule implements Rule
             return false;
         }
 
-        $className = ltrim($validator->value->class->toString(), '\\');
+        $className = mb_ltrim($validator->value->class->toString(), '\\');
 
-        return $className === self::FILE_VALIDATOR_CLASS || $className === 'FileValidator';
+        return in_array($className, [self::FILE_VALIDATOR_CLASS, 'FileValidator'], true);
     }
 
     private function hasTypeConstraint(Array_ $rule): bool

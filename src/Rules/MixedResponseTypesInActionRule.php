@@ -88,6 +88,8 @@ final readonly class MixedResponseTypesInActionRule implements Rule
     }
 
     /**
+     * @param ClassMethod $action
+     *
      * @return list<string>
      */
     private function collectResponseKinds(ClassMethod $action): array
@@ -132,7 +134,7 @@ final readonly class MixedResponseTypesInActionRule implements Rule
         return in_array(
             $methodName,
             array_map(
-                static fn(string $responseMethodName): string => mb_strtolower($responseMethodName),
+                mb_strtolower(...),
                 self::NON_JSON_RESPONSE_METHODS,
             ),
             true,

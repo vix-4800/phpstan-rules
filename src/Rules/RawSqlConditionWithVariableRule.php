@@ -72,7 +72,11 @@ final readonly class RawSqlConditionWithVariableRule implements Rule
         }
 
         foreach ($argumentIndexes as $argumentIndex) {
-            if (!isset($node->args[$argumentIndex]) || !$node->args[$argumentIndex] instanceof Arg) {
+            if (!isset($node->args[$argumentIndex])) {
+                continue;
+            }
+
+            if (!$node->args[$argumentIndex] instanceof Arg) {
                 continue;
             }
 
@@ -100,7 +104,11 @@ final readonly class RawSqlConditionWithVariableRule implements Rule
         }
 
         if ($expr instanceof Concat) {
-            return $this->containsVariableValue($expr->left) || $this->containsVariableValue($expr->right);
+            if ($this->containsVariableValue($expr->left)) {
+                return true;
+            }
+
+            return $this->containsVariableValue($expr->right);
         }
 
         return false;
@@ -118,13 +126,13 @@ final readonly class RawSqlConditionWithVariableRule implements Rule
         }
 
         if ($expr instanceof Concat) {
-            return $this->containsVariableValue($expr->left) || $this->containsVariableValue($expr->right);
+            if ($this->containsVariableValue($expr->left)) {
+                return true;
+            }
+
+            return $this->containsVariableValue($expr->right);
         }
 
-        if ($expr instanceof Encapsed) {
-            return true;
-        }
-
-        return false;
+        return $expr instanceof Encapsed;
     }
 }
