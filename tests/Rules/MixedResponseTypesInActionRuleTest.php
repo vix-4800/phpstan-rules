@@ -33,12 +33,16 @@ final class MixedResponseTypesInActionRuleTest extends RuleTestCase
             [__DIR__ . '/data/mixed-response-types-in-action.php'],
             [
                 [
-                    'Controller action \'index\' mixes JSON and HTML responses; keep one response type per action.',
-                    36,
+                    'Controller action \'index\' mixes JSON and non-JSON responses; keep one response type per action.',
+                    41,
                 ],
                 [
-                    'Controller action \'preview\' mixes JSON and HTML responses; keep one response type per action.',
-                    59,
+                    'Controller action \'preview\' mixes JSON and non-JSON responses; keep one response type per action.',
+                    64,
+                ],
+                [
+                    'Controller action \'delete\' mixes JSON and non-JSON responses; keep one response type per action.',
+                    73,
                 ],
             ],
         );

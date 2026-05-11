@@ -24,10 +24,11 @@ use Vix\PhpstanYiiPolicyRules\Support\YiiControllerFactory;
  */
 final readonly class MixedResponseTypesInActionRule implements Rule
 {
-    private const array HTML_RESPONSE_METHODS = [
+    private const array NON_JSON_RESPONSE_METHODS = [
         'render',
         'renderAjax',
         'renderPartial',
+        'redirect',
     ];
 
     private YiiControllerFactory $controllerFactory;
@@ -68,7 +69,7 @@ final readonly class MixedResponseTypesInActionRule implements Rule
             }
 
             $errors[] = RuleErrorBuilder::message(sprintf(
-                'Controller action \'%s\' mixes JSON and HTML responses; keep one response type per action.',
+                'Controller action \'%s\' mixes JSON and non-JSON responses; keep one response type per action.',
                 $action->actionName(),
             ))
                 ->identifier('yii.mixedResponseTypesInAction')
@@ -83,7 +84,7 @@ final readonly class MixedResponseTypesInActionRule implements Rule
     {
         $responseKinds = $this->collectResponseKinds($action);
 
-        return in_array('html', $responseKinds, true) && in_array('json', $responseKinds, true);
+        return in_array('non-json', $responseKinds, true) && in_array('json', $responseKinds, true);
     }
 
     /**
@@ -119,20 +120,20 @@ final readonly class MixedResponseTypesInActionRule implements Rule
             return 'json';
         }
 
-        if ($this->isHtmlResponseMethod($methodName)) {
-            return 'html';
+        if ($this->isNonJsonResponseMethod($methodName)) {
+            return 'non-json';
         }
 
         return null;
     }
 
-    private function isHtmlResponseMethod(string $methodName): bool
+    private function isNonJsonResponseMethod(string $methodName): bool
     {
         return in_array(
             $methodName,
             array_map(
-                static fn(string $htmlMethodName): string => mb_strtolower($htmlMethodName),
-                self::HTML_RESPONSE_METHODS,
+                static fn(string $responseMethodName): string => mb_strtolower($responseMethodName),
+                self::NON_JSON_RESPONSE_METHODS,
             ),
             true,
         );

@@ -140,7 +140,7 @@ Reports native `header()` calls inside Yii controllers.
 
 ### `yii.mixedResponseTypesInAction`
 
-Reports controller actions that return HTML via `render*()` in one path and JSON via `asJson()` in another path.
+Reports controller actions that return JSON via `asJson()` in one path and non-JSON responses via `render*()` or `redirect()` in another path.
 
 ### `yii.unboundedQueryResult`
 

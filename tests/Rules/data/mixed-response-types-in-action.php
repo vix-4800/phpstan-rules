@@ -19,6 +19,11 @@ namespace yii\base {
         {
             return $view;
         }
+
+        public function redirect(mixed $url): mixed
+        {
+            return $url;
+        }
     }
 }
 
@@ -63,6 +68,15 @@ namespace Fixtures {
             }
 
             return $this->asJson(['preview' => true]);
+        }
+
+        public function actionDelete(): mixed
+        {
+            if ($this->isAjax) {
+                return $this->asJson(['success' => true]);
+            }
+
+            return $this->redirect(['index']);
         }
     }
 }
