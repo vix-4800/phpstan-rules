@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Vix\PhpstanYiiPolicyRules\Support;
 
 use PhpParser\Node;
+use PHPStan\Analyser\NodeCallbackInvoker;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleError;
@@ -35,8 +36,8 @@ final readonly class ConfigurableRule implements Rule
     }
 
     /**
-     * @param Node  $node
-     * @param Scope $scope
+     * @param Node                      $node
+     * @param NodeCallbackInvoker&Scope $scope
      *
      * @return list<RuleError>
      */
