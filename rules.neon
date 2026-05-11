@@ -6,6 +6,10 @@ services:
     tags:
       - phpstan.rules.rule
   -
+    class: Vix\PhpstanYiiPolicyRules\Rules\LifecycleParentCallRule
+    tags:
+      - phpstan.rules.rule
+  -
     class: Vix\PhpstanYiiPolicyRules\Rules\MissingAccessRule
     tags:
       - phpstan.rules.rule

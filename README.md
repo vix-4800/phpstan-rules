@@ -11,6 +11,7 @@ PHPStan extension with policy checks for Yii2 projects.
     - [`yii.unknownActionInBehavior`](#yiiunknownactioninbehavior)
     - [`yii.massSelectionWithoutLimit`](#yiimassselectionwithoutlimit)
     - [`yii.saveFalseWithoutReason`](#yiisavefalsewithoutreason)
+    - [`yii.lifecycleParentCall`](#yiilifecycleparentcall)
     - [`yii.publicAllowWithoutConstraint`](#yiipublicallowwithoutconstraint)
     - [`yii.mutatingActionAllowsGet`](#yiimutatingactionallowsget)
     - [`yii.csrfDisabledWithoutCompensatingControl`](#yiicsrfdisabledwithoutcompensatingcontrol)
@@ -77,6 +78,12 @@ Reports calls to `save(false)`. Calls without explicit attribute list are report
 
 Use validation, or place explicitly allowed namespaces in `yiiPolicy.allowedSaveFalseNamespaces` when validation bypass is expected.
 Namespaces containing `migrations`, `tests`, `seeders`, or `seeds` are allowed.
+
+### `yii.lifecycleParentCall`
+
+Reports Active Record overrides of `beforeValidate()`, `beforeSave()`, `afterSave()`, `afterFind()`, and `afterDelete()` that do not call the matching `parent::*()` method.
+
+Skipping the parent call can break Yii events, attached behaviors, and audit hooks.
 
 ### `yii.publicAllowWithoutConstraint`
 
