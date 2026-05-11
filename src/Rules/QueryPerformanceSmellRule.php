@@ -67,10 +67,6 @@ final readonly class QueryPerformanceSmellRule implements Rule
      */
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!$node instanceof Expr) {
-            return [];
-        }
-
         if ($node instanceof FuncCall && $this->isCountOrSizeofLoadedQueryResult($node)) {
             return [$this->buildError(self::COUNT_ALL_MESSAGE, 'yii.queryCountLoadedResult')];
         }
@@ -231,16 +227,16 @@ final readonly class QueryPerformanceSmellRule implements Rule
         }
 
         if ($expr instanceof PropertyFetch) {
-            return $expr->var instanceof Expr && $this->containsYiiCurrentUserReference($expr->var);
+            return $this->containsYiiCurrentUserReference($expr->var);
         }
 
         if ($expr instanceof MethodCall) {
-            return $expr->var instanceof Expr && $this->containsYiiCurrentUserReference($expr->var);
+            return $this->containsYiiCurrentUserReference($expr->var);
         }
 
         if ($expr instanceof Array_) {
             foreach ($expr->items as $item) {
-                if ($item !== null && $this->containsYiiCurrentUserReference($item->value)) {
+                if ($this->containsYiiCurrentUserReference($item->value)) {
                     return true;
                 }
             }
