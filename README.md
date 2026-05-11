@@ -4,6 +4,7 @@ PHPStan extension with policy checks for Yii2 projects.
 
 - [PHPStan Yii Policy Rules](#phpstan-yii-policy-rules)
   - [Setup](#setup)
+  - [Versioning](#versioning)
   - [Rules](#rules)
     - [`yii.missingAccessRule`](#yiimissingaccessrule)
     - [`yii.missingVerbFilterRule`](#yiimissingverbfilterrule)
@@ -45,6 +46,22 @@ parameters:
     yiiPolicy:
         allowedSaveFalseNamespaces:
             - app\migrations
+```
+
+## Versioning
+
+This package follows Semantic Versioning.
+
+- `main` is aliased to `0.1.x-dev` until the first stable release line moves forward.
+- The first stable tag for this package should be `v0.1.0`.
+- Stable installs should use a constraint such as `^0.1` once `v0.1.0` is tagged.
+- Before the first stable tag exists, use the development constraint `0.1.x-dev`.
+
+Example constraints:
+
+```bash
+composer require --dev vix/phpstan-yii-policy-rules:^0.1
+composer require --dev vix/phpstan-yii-policy-rules:0.1.x-dev
 ```
 
 ## Rules
