@@ -34,19 +34,19 @@ final class LifecycleSelfSaveRuleTest extends RuleTestCase
             [
                 [
                     'ActiveRecord lifecycle method \'afterFind()\' must not call $this->save(), $this->update(), or $this->delete().',
-                    71,
-                ],
-                [
-                    'ActiveRecord lifecycle method \'beforeSave()\' must not call $this->save(), $this->update(), or $this->delete().',
                     79,
                 ],
                 [
+                    'ActiveRecord lifecycle method \'beforeSave()\' must not call $this->save(), $this->update(), or $this->delete().',
+                    87,
+                ],
+                [
                     'ActiveRecord lifecycle method \'afterDelete()\' must not call $this->save(), $this->update(), or $this->delete().',
-                    88,
+                    97,
                 ],
                 [
                     'ActiveRecord lifecycle method \'afterValidate()\' must not call $this->save(), $this->update(), or $this->delete().',
-                    97,
+                    106,
                 ],
             ],
         );

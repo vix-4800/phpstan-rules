@@ -34,19 +34,19 @@ final class ComponentInitParentCallRuleTest extends RuleTestCase
             [
                 [
                     'Yii init() override must call parent::init().',
-                    43,
+                    39,
                 ],
                 [
                     'Yii init() override must call parent::init().',
-                    50,
+                    46,
                 ],
                 [
                     'Yii init() override must call parent::init().',
-                    57,
+                    53,
                 ],
                 [
                     'Yii init() override must call parent::init().',
-                    64,
+                    60,
                 ],
             ],
         );
