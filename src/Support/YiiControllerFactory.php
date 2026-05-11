@@ -44,6 +44,8 @@ final readonly class YiiControllerFactory
     }
 
     /**
+     * @param Class_ $class
+     *
      * @return list<YiiControllerAction>
      */
     private function getActions(Class_ $class): array
@@ -84,6 +86,8 @@ final readonly class YiiControllerFactory
     }
 
     /**
+     * @param Class_ $class
+     *
      * @return list<YiiControllerBehavior>
      */
     private function getBehaviors(Class_ $class): array
@@ -100,6 +104,8 @@ final readonly class YiiControllerFactory
     }
 
     /**
+     * @param ClassMethod $method
+     *
      * @return list<YiiControllerBehavior>
      */
     private function getMethodBehaviors(ClassMethod $method): array
@@ -118,6 +124,8 @@ final readonly class YiiControllerFactory
     }
 
     /**
+     * @param Class_ $class
+     *
      * @return list<string>
      */
     private function getExternalActionIds(Class_ $class): array
@@ -134,6 +142,8 @@ final readonly class YiiControllerFactory
     }
 
     /**
+     * @param ClassMethod $method
+     *
      * @return list<string>
      */
     private function getMethodActionIds(ClassMethod $method): array
@@ -152,6 +162,8 @@ final readonly class YiiControllerFactory
     }
 
     /**
+     * @param ClassMethod $method
+     *
      * @return list<ArrayItem>
      */
     private function getReturnedArrayItems(ClassMethod $method): array
@@ -221,5 +233,4 @@ final readonly class YiiControllerFactory
         return mb_ltrim($name->toString(), '\\') === $className
             || mb_substr($className, mb_strrpos($className, '\\') + 1) === $name->toString();
     }
-
 }

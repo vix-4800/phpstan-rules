@@ -42,6 +42,8 @@ final readonly class YiiActiveRecordFactory
     }
 
     /**
+     * @param Class_ $class
+     *
      * @return list<YiiMethod>
      */
     private function getLifecycleMethods(Class_ $class): array

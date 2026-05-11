@@ -17,6 +17,8 @@ final readonly class YiiClassHierarchy
     }
 
     /**
+     * @param Class_       $class
+     * @param Scope        $scope
      * @param list<string> $parentClassNames
      */
     public function isSubclassOfAny(Class_ $class, Scope $scope, array $parentClassNames): bool
@@ -39,13 +41,10 @@ final readonly class YiiClassHierarchy
             }
         }
 
-        foreach ($parentClassNames as $parentClassName) {
-            if ($this->isSubclassOf($className, $parentClassName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $parentClassNames,
+            fn(string $parentClassName): bool => $this->isSubclassOf($className, $parentClassName),
+        );
     }
 
     private function resolveClassName(Class_ $class, Scope $scope): ?string

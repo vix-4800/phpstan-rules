@@ -16,6 +16,8 @@ final readonly class ConfigurableRule implements Rule
 {
     /**
      * @param Rule<Node>          $rule
+     * @param string              $ruleName
+     * @param bool                $allRules
      * @param array<string, bool> $enabledRules
      */
     public function __construct(
@@ -33,6 +35,9 @@ final readonly class ConfigurableRule implements Rule
     }
 
     /**
+     * @param Node  $node
+     * @param Scope $scope
+     *
      * @return list<RuleError>
      */
     public function processNode(Node $node, Scope $scope): array

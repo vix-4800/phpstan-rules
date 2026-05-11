@@ -39,6 +39,6 @@ final readonly class YiiControllerAction
     {
         $name = lcfirst(mb_substr($this->methodName(), start: 6));
 
-        return strtolower(preg_replace('/([a-z])([A-Z])/', replacement: '$1-$2', subject: $name) ?? '');
+        return mb_strtolower(preg_replace('/([a-z])([A-Z])/', replacement: '$1-$2', subject: $name) ?? '');
     }
 }

@@ -52,6 +52,8 @@ final readonly class YiiControllerBehavior
     }
 
     /**
+     * @param string $key
+     *
      * @return list<string>|null
      */
     public function stringListItem(string $key): ?array

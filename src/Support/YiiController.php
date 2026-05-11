@@ -9,9 +9,11 @@ use PhpParser\Node\Stmt\Class_;
 final readonly class YiiController
 {
     /**
+     * @param Class_                      $node
      * @param list<YiiControllerAction>   $actions
      * @param list<string>                $externalActionIds
      * @param list<YiiControllerBehavior> $behaviors
+     * @param YiiControllerFactory        $factory
      */
     public function __construct(
         private Class_ $node,
@@ -64,6 +66,8 @@ final readonly class YiiController
     }
 
     /**
+     * @param string $behaviorClassName
+     *
      * @return list<YiiControllerBehavior>
      */
     public function behaviorsByClass(string $behaviorClassName): array

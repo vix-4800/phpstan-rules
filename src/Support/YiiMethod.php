@@ -14,8 +14,10 @@ use PhpParser\NodeFinder;
 
 final readonly class YiiMethod
 {
-    public function __construct(private ClassMethod $node)
-    {
+    public function __construct(
+        private ClassMethod $node,
+    ) {
+        //
     }
 
     public function node(): ClassMethod
@@ -39,7 +41,11 @@ final readonly class YiiMethod
         $finder = new NodeFinder();
 
         foreach ($finder->findInstanceOf($this->node->stmts ?? [], StaticCall::class) as $call) {
-            if (!$call->class instanceof Name || !$call->name instanceof Identifier) {
+            if (!$call->class instanceof Name) {
+                continue;
+            }
+
+            if (!$call->name instanceof Identifier) {
                 continue;
             }
 
@@ -68,13 +74,17 @@ final readonly class YiiMethod
     public function callsAnyThisMethod(array $methodNames): bool
     {
         $targetMethodNames = array_map(
-            static fn(string $name): string => mb_strtolower($name),
+            mb_strtolower(...),
             $methodNames,
         );
         $finder = new NodeFinder();
 
         foreach ($finder->findInstanceOf($this->node->stmts ?? [], MethodCall::class) as $call) {
-            if (!$call->var instanceof Variable || $call->var->name !== 'this') {
+            if (!$call->var instanceof Variable) {
+                continue;
+            }
+
+            if ($call->var->name !== 'this') {
                 continue;
             }
 
