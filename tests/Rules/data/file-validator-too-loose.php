@@ -19,6 +19,9 @@ namespace Fixtures {
 
     final class UploadForm extends \yii\base\Model
     {
+        /**
+         * @return list<array<mixed>>
+         */
         public function rules(): array
         {
             return [
@@ -33,6 +36,9 @@ namespace Fixtures {
 
     final class HelperRules
     {
+        /**
+         * @return list<array<mixed>>
+         */
         public function rules(): array
         {
             return [

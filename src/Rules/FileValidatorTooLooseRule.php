@@ -48,7 +48,7 @@ final readonly class FileValidatorTooLooseRule implements Rule
 
         if (
             $classReflection === null
-            || ($classReflection->getName() !== self::MODEL_CLASS && !$classReflection->isSubclassOf(self::MODEL_CLASS))
+            || (!$classReflection->isSubclassOf(self::MODEL_CLASS) && strcasecmp($classReflection->getName(), self::MODEL_CLASS) !== 0)
         ) {
             return [];
         }
@@ -62,7 +62,7 @@ final readonly class FileValidatorTooLooseRule implements Rule
             }
 
             foreach ($return->expr->items as $item) {
-                if ($item === null || !$item->value instanceof Array_) {
+                if (!$item->value instanceof Array_) {
                     continue;
                 }
 
@@ -114,7 +114,7 @@ final readonly class FileValidatorTooLooseRule implements Rule
     private function hasTypeConstraint(Array_ $rule): bool
     {
         foreach ($rule->items as $item) {
-            if ($item === null || !$item->key instanceof String_) {
+            if (!$item->key instanceof String_) {
                 continue;
             }
 

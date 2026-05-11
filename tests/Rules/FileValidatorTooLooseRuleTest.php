@@ -33,15 +33,15 @@ final class FileValidatorTooLooseRuleTest extends RuleTestCase
             [
                 [
                     'Yii file validator should declare at least one of \'extensions\' or \'mimeTypes\'; consider \'maxSize\' too.',
-                    24,
+                    28,
                 ],
                 [
                     'Yii file validator should declare at least one of \'extensions\' or \'mimeTypes\'; consider \'maxSize\' too.',
-                    25,
+                    29,
                 ],
                 [
                     'Yii file validator should declare at least one of \'extensions\' or \'mimeTypes\'; consider \'maxSize\' too.',
-                    26,
+                    30,
                 ],
             ],
         );
