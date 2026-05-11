@@ -27,13 +27,15 @@ final readonly class FileValidatorTooLooseRule implements Rule
 
     private const string FILE_VALIDATOR_CLASS = 'yii\validators\FileValidator';
 
+    private const int VALIDATOR_INDEX = 1;
+
     public function getNodeType(): string
     {
         return ClassMethod::class;
     }
 
     /**
-     * @param Node  $node
+     * @param Node $node
      * @param Scope $scope
      *
      * @return list<IdentifierRuleError>
@@ -79,21 +81,21 @@ final readonly class FileValidatorTooLooseRule implements Rule
 
     private function isFileValidatorRule(Array_ $rule): bool
     {
-        $validator = $rule->items[1] ?? null;
+        $validator = $rule->items[self::VALIDATOR_INDEX] ?? null;
 
         if ($validator === null) {
             return false;
         }
 
         if ($validator->value instanceof String_) {
-            return mb_strtolower($validator->value->value) === 'file';
+            return strcasecmp($validator->value->value, 'file') === 0;
         }
 
         if (!$validator->value instanceof ClassConstFetch || !$validator->value->name instanceof Identifier) {
             return false;
         }
 
-        if (mb_strtolower($validator->value->name->toString()) !== 'class') {
+        if (strcasecmp($validator->value->name->toString(), 'class') !== 0) {
             return false;
         }
 
@@ -123,7 +125,7 @@ final readonly class FileValidatorTooLooseRule implements Rule
 
     private function validatorLine(Array_ $rule): int
     {
-        $validator = $rule->items[1] ?? null;
+        $validator = $rule->items[self::VALIDATOR_INDEX] ?? null;
 
         return $validator?->value->getStartLine() ?? $rule->getStartLine();
     }
