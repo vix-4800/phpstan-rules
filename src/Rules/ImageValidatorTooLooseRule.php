@@ -11,9 +11,11 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
@@ -35,6 +37,12 @@ final readonly class ImageValidatorTooLooseRule implements Rule
         'maxWidth',
     ];
 
+    public function __construct(
+        private ReflectionProvider $reflectionProvider,
+    ) {
+        //
+    }
+
     public function getNodeType(): string
     {
         return ClassMethod::class;
@@ -52,9 +60,9 @@ final readonly class ImageValidatorTooLooseRule implements Rule
             return [];
         }
 
-        $classReflection = $scope->getClassReflection();
+        $class = $node->getAttribute('parent');
 
-        if ($classReflection === null || !$classReflection->isSubclassOf(self::MODEL_CLASS)) {
+        if (!$class instanceof Class_ || !$this->isModelClass($class, $scope)) {
             return [];
         }
 
@@ -66,7 +74,7 @@ final readonly class ImageValidatorTooLooseRule implements Rule
             }
 
             foreach ($statement->expr->items as $item) {
-                if (!$item?->value instanceof Array_ || !$this->isTooLooseImageValidatorRule($item->value)) {
+                if (!$item->value instanceof Array_ || !$this->isTooLooseImageValidatorRule($item->value)) {
                     continue;
                 }
 
@@ -80,6 +88,22 @@ final readonly class ImageValidatorTooLooseRule implements Rule
         }
 
         return $errors;
+    }
+
+    private function isModelClass(Class_ $class, Scope $scope): bool
+    {
+        if ($class->extends === null) {
+            return false;
+        }
+
+        $parentClassName = mb_ltrim($scope->resolveName($class->extends), '\\');
+
+        if ($parentClassName === self::MODEL_CLASS) {
+            return true;
+        }
+
+        return $this->reflectionProvider->hasClass($parentClassName)
+            && $this->reflectionProvider->getClass($parentClassName)->isSubclassOf(self::MODEL_CLASS);
     }
 
     private function isTooLooseImageValidatorRule(Array_ $rule): bool
@@ -105,7 +129,7 @@ final readonly class ImageValidatorTooLooseRule implements Rule
     private function hasConstraint(Array_ $rule): bool
     {
         foreach ($rule->items as $item) {
-            if (!$item?->key instanceof String_) {
+            if (!$item->key instanceof String_) {
                 continue;
             }
 
@@ -122,10 +146,6 @@ final readonly class ImageValidatorTooLooseRule implements Rule
         $position = 0;
 
         foreach ($rule->items as $item) {
-            if ($item === null) {
-                continue;
-            }
-
             if ($item->key instanceof String_ && $item->key->value === 'validator') {
                 return $item->value;
             }
