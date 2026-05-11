@@ -3,6 +3,28 @@
 declare(strict_types=1);
 
 namespace Fixtures {
+    final class Command
+    {
+    }
+
+    final class DbConnection
+    {
+        public function createCommand(string $sql = '', array $params = []): Command
+        {
+            return new Command();
+        }
+    }
+
+    final class Application
+    {
+        public DbConnection $db;
+
+        public function __construct()
+        {
+            $this->db = new DbConnection();
+        }
+    }
+
     final class Query
     {
         public function where(array|string $condition, array $params = []): self
@@ -84,4 +106,20 @@ namespace Fixtures {
         $query->having('active = 1');
         $query->orWhere('status = ' . 'active');
     }
+
+    function commands(int $userId, string $role): void
+    {
+        \Yii::$app->db->createCommand('DELETE FROM user WHERE id = :id', [':id' => $userId]);
+        \Yii::$app->db->createCommand("UPDATE user SET role = '$role'");
+        \Yii::$app->db->createCommand('DELETE FROM user WHERE id = ' . $userId);
+    }
+}
+
+namespace {
+    final class Yii
+    {
+        public static \Fixtures\Application $app;
+    }
+
+    Yii::$app = new \Fixtures\Application();
 }
