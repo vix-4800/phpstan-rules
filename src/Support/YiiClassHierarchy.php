@@ -27,6 +27,10 @@ final readonly class YiiClassHierarchy
             return false;
         }
 
+        if (in_array($className, $parentClassNames, true)) {
+            return false;
+        }
+
         if ($class->extends !== null) {
             $parentName = mb_ltrim($scope->resolveName($class->extends), '\\');
 
