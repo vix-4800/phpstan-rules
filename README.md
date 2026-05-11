@@ -26,6 +26,7 @@ PHPStan extension with policy checks for Yii2 projects.
     - [`yii.nativeHeaderInController`](#yiinativeheaderincontroller)
     - [`yii.mixedResponseTypesInAction`](#yiimixedresponsetypesinaction)
     - [`yii.unboundedQueryResult`](#yiiunboundedqueryresult)
+    - [`yii.queryPerformanceSmell`](#yiiqueryperformancesmell)
     - [`yii.imageValidatorTooLoose`](#yiiimagevalidatortooloose)
 
 ## Setup
@@ -160,6 +161,12 @@ Reports controller actions that return JSON via `asJson()` in one path and non-J
 Reports ActiveQuery/Query result chains ending with `all()` or `column()` without a bounding or streaming strategy.
 
 The rule treats `batch()`, `each()`, `exists()`, `count()`, and DataProvider usage as safe alternatives when they are the intended access pattern.
+
+### `yii.queryPerformanceSmell`
+
+Reports Yii query expressions that execute unnecessary or inefficient SQL/data loading when a cheaper Yii API is available.
+
+Covered patterns include `count(Model::find()->all())` / `sizeof((new Query())->column())`, `one() === null` / `one() !== null` existence checks, query `count()` comparisons such as `count() >= 1`, `count() !== 0`, `count() === 0`, `count() < 1` and mirrored variants such as `0 < count()`, plus `findOne(Yii::$app->user->id)` / `findOne(Yii::$app->user->identity->id)` current-user lookups that should reuse `Yii::$app->user->identity`.
 
 ### `yii.imageValidatorTooLoose`
 

@@ -86,6 +86,10 @@ services:
     tags:
       - phpstan.rules.rule
   -
+    class: Vix\PhpstanYiiPolicyRules\Rules\QueryPerformanceSmellRule
+    tags:
+      - phpstan.rules.rule
+  -
     class: Vix\PhpstanYiiPolicyRules\Rules\ImageValidatorTooLooseRule
     tags:
       - phpstan.rules.rule

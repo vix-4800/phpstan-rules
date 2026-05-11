@@ -23,11 +23,7 @@ final readonly class QueryChainInspector
         array $terminalMethods,
         array $limitMethods = ['limit', 'page'],
     ): bool {
-        if (!$terminalCall->name instanceof Identifier) {
-            return false;
-        }
-
-        if (!in_array($terminalCall->name->toString(), $terminalMethods, true)) {
+        if (!$this->hasQueryTerminalMethod($terminalCall, $terminalMethods)) {
             return false;
         }
 
@@ -47,6 +43,35 @@ final readonly class QueryChainInspector
         }
 
         return $this->isQuerySource($expr);
+    }
+
+    /**
+     * @param MethodCall   $terminalCall
+     * @param list<string> $terminalMethods
+     */
+    public function isQueryCall(MethodCall $terminalCall, array $terminalMethods): bool
+    {
+        if (!$this->hasQueryTerminalMethod($terminalCall, $terminalMethods)) {
+            return false;
+        }
+
+        $expr = $terminalCall->var;
+
+        while ($expr instanceof MethodCall) {
+            $expr = $expr->var;
+        }
+
+        return $this->isQuerySource($expr);
+    }
+
+    /**
+     * @param MethodCall   $terminalCall
+     * @param list<string> $terminalMethods
+     */
+    private function hasQueryTerminalMethod(MethodCall $terminalCall, array $terminalMethods): bool
+    {
+        return $terminalCall->name instanceof Identifier
+            && in_array($terminalCall->name->toString(), $terminalMethods, true);
     }
 
     private function isQuerySource(Expr $expr): bool
