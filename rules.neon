@@ -6,6 +6,10 @@ services:
     tags:
       - phpstan.rules.rule
   -
+    class: Vix\PhpstanYiiPolicyRules\Rules\FileValidatorTooLooseRule
+    tags:
+      - phpstan.rules.rule
+  -
     class: Vix\PhpstanYiiPolicyRules\Rules\LifecycleParentCallRule
     tags:
       - phpstan.rules.rule
@@ -83,5 +87,9 @@ services:
       - phpstan.rules.rule
   -
     class: Vix\PhpstanYiiPolicyRules\Rules\QueryPerformanceSmellRule
+    tags:
+      - phpstan.rules.rule
+  -
+    class: Vix\PhpstanYiiPolicyRules\Rules\ImageValidatorTooLooseRule
     tags:
       - phpstan.rules.rule

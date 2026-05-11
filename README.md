@@ -11,6 +11,7 @@ PHPStan extension with policy checks for Yii2 projects.
     - [`yii.unknownActionInBehavior`](#yiiunknownactioninbehavior)
     - [`yii.massSelectionWithoutLimit`](#yiimassselectionwithoutlimit)
     - [`yii.saveFalseWithoutReason`](#yiisavefalsewithoutreason)
+    - [`yii.fileValidatorTooLoose`](#yiifilevalidatortooloose)
     - [`yii.lifecycleParentCall`](#yiilifecycleparentcall)
     - [`yii.componentInitParentCall`](#yiicomponentinitparentcall)
     - [`yii.lifecycleSelfSave`](#yiilifecycleselfsave)
@@ -26,6 +27,7 @@ PHPStan extension with policy checks for Yii2 projects.
     - [`yii.mixedResponseTypesInAction`](#yiimixedresponsetypesinaction)
     - [`yii.unboundedQueryResult`](#yiiunboundedqueryresult)
     - [`yii.queryPerformanceSmell`](#yiiqueryperformancesmell)
+    - [`yii.imageValidatorTooLoose`](#yiiimagevalidatortooloose)
 
 ## Setup
 
@@ -85,6 +87,12 @@ Reports calls to `save(false)`. Calls without explicit attribute list are report
 Use validation, or place explicitly allowed namespaces in `yiiPolicy.allowedSaveFalseNamespaces` when validation bypass is expected.
 Namespaces containing `migrations`, `tests`, `seeders`, or `seeds` are allowed.
 
+### `yii.fileValidatorTooLoose`
+
+Reports Yii model `file` validators declared without at least one of `extensions` or `mimeTypes`.
+
+This catches overly broad upload rules such as `[['file'], 'file']`. `maxSize` is still recommended, but it is not enough on its own.
+
 ### `yii.lifecycleParentCall`
 
 Reports Active Record overrides of `beforeValidate()`, `beforeSave()`, `afterSave()`, `afterFind()`, and `afterDelete()` that do not call the matching `parent::*()` method.
@@ -122,7 +130,7 @@ Use only for endpoints with an explicit compensating control such as signature v
 
 ### `yii.rawSqlConditionWithVariable`
 
-Reports raw SQL strings built with interpolation or concatenated variables in `where()`-style conditions, `join()` / `on()`, `from()`, and `orderBy()`.
+Reports raw SQL strings built with interpolation or concatenated variables in `where()`-style conditions, `join()` / `on()`, `from()`, `orderBy()`, and `createCommand()`.
 
 ### `yii.deleteAllOrUpdateAllWithoutWhere`
 
@@ -159,3 +167,9 @@ The rule treats `batch()`, `each()`, `exists()`, `count()`, and DataProvider usa
 Reports Yii query expressions that execute unnecessary or inefficient SQL/data loading when a cheaper Yii API is available.
 
 Covered patterns include `count(Model::find()->all())` / `sizeof((new Query())->column())`, `one() === null` / `one() !== null` existence checks, query `count()` comparisons such as `count() >= 1`, `count() !== 0`, `count() === 0`, `count() < 1` and mirrored variants such as `0 < count()`, plus `findOne(Yii::$app->user->id)` / `findOne(Yii::$app->user->identity->id)` current-user lookups that should reuse `Yii::$app->user->identity`.
+
+### `yii.imageValidatorTooLoose`
+
+Reports Yii `image` validator rules that do not declare any file type, size, or dimension constraint.
+
+At least one of `extensions`, `mimeTypes`, `maxSize`, `minWidth`, or `maxWidth` should be present for `[['field'], 'image']`.
