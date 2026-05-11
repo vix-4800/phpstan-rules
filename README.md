@@ -18,6 +18,7 @@ PHPStan extension with policy checks for Yii2 projects.
     - [`yii.mutatingActionAllowsGet`](#yiimutatingactionallowsget)
     - [`yii.csrfDisabledWithoutCompensatingControl`](#yiicsrfdisabledwithoutcompensatingcontrol)
     - [`yii.rawSqlConditionWithVariable`](#yiirawsqlconditionwithvariable)
+    - [`yii.deleteAllOrUpdateAllWithoutWhere`](#yiideleteallorupdateallwithoutwhere)
     - [`yii.transactionWithoutRollbackHandling`](#yiitransactionwithoutrollbackhandling)
     - [`yii.queryOneWithoutLimit`](#yiiqueryonewithoutlimit)
     - [`yii.redirectReferrerWithoutFallback`](#yiiredirectreferrerwithoutfallback)
@@ -121,6 +122,10 @@ Use only for endpoints with an explicit compensating control such as signature v
 ### `yii.rawSqlConditionWithVariable`
 
 Reports raw SQL strings built with interpolation or concatenated variables in `where()`-style conditions, `join()` / `on()`, `from()`, and `orderBy()`.
+
+### `yii.deleteAllOrUpdateAllWithoutWhere`
+
+Reports `deleteAll()` and `updateAll()` calls without a condition argument, or with an empty condition such as `''`, `[]`, or `null`.
 
 ### `yii.transactionWithoutRollbackHandling`
 

@@ -54,6 +54,10 @@ services:
     tags:
       - phpstan.rules.rule
   -
+    class: Vix\PhpstanYiiPolicyRules\Rules\DeleteAllOrUpdateAllWithoutWhereRule
+    tags:
+      - phpstan.rules.rule
+  -
     class: Vix\PhpstanYiiPolicyRules\Rules\TransactionWithoutRollbackHandlingRule
     tags:
       - phpstan.rules.rule
