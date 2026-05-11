@@ -1,0 +1,3 @@
+parameters:
+  scanFiles:
+    - file-validator-too-loose.php

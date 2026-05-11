@@ -11,6 +11,7 @@ PHPStan extension with policy checks for Yii2 projects.
     - [`yii.unknownActionInBehavior`](#yiiunknownactioninbehavior)
     - [`yii.massSelectionWithoutLimit`](#yiimassselectionwithoutlimit)
     - [`yii.saveFalseWithoutReason`](#yiisavefalsewithoutreason)
+    - [`yii.fileValidatorTooLoose`](#yiifilevalidatortooloose)
     - [`yii.lifecycleParentCall`](#yiilifecycleparentcall)
     - [`yii.componentInitParentCall`](#yiicomponentinitparentcall)
     - [`yii.lifecycleSelfSave`](#yiilifecycleselfsave)
@@ -83,6 +84,12 @@ Reports calls to `save(false)`. Calls without explicit attribute list are report
 
 Use validation, or place explicitly allowed namespaces in `yiiPolicy.allowedSaveFalseNamespaces` when validation bypass is expected.
 Namespaces containing `migrations`, `tests`, `seeders`, or `seeds` are allowed.
+
+### `yii.fileValidatorTooLoose`
+
+Reports Yii model `file` validators declared without at least one of `extensions` or `mimeTypes`.
+
+This catches overly broad upload rules such as `[['file'], 'file']`. `maxSize` is still recommended, but it is not enough on its own.
 
 ### `yii.lifecycleParentCall`
 
