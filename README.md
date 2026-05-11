@@ -48,6 +48,28 @@ includes:
     - vendor/vix/phpstan-yii-policy-rules/extension.neon
 ```
 
+When `phpstan/extension-installer` is installed, `extension.neon` is loaded automatically.
+
+Enable all rules:
+
+```neon
+parameters:
+    yiiPolicy:
+        rules:
+            all: true
+```
+
+Or enable selected rules:
+
+```neon
+parameters:
+    yiiPolicy:
+        rules:
+            missingAccessRule: true
+            missingVerbFilterRule: true
+            queryOneWithoutLimit: true
+```
+
 Optional config:
 
 ```neon
