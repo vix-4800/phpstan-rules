@@ -24,6 +24,7 @@ PHPStan extension with policy checks for Yii2 projects.
     - [`yii.nativeHeaderInController`](#yiinativeheaderincontroller)
     - [`yii.mixedResponseTypesInAction`](#yiimixedresponsetypesinaction)
     - [`yii.unboundedQueryResult`](#yiiunboundedqueryresult)
+    - [`yii.imageValidatorTooLoose`](#yiiimagevalidatortooloose)
 
 ## Setup
 
@@ -147,3 +148,9 @@ Reports controller actions that return JSON via `asJson()` in one path and non-J
 Reports ActiveQuery/Query result chains ending with `all()` or `column()` without a bounding or streaming strategy.
 
 The rule treats `batch()`, `each()`, `exists()`, `count()`, and DataProvider usage as safe alternatives when they are the intended access pattern.
+
+### `yii.imageValidatorTooLoose`
+
+Reports Yii `image` validator rules that do not declare any file type, size, or dimension constraint.
+
+At least one of `extensions`, `mimeTypes`, `maxSize`, `minWidth`, or `maxWidth` should be present for `[['field'], 'image']`.

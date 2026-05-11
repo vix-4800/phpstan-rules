@@ -77,3 +77,7 @@ services:
     class: Vix\PhpstanYiiPolicyRules\Rules\UnboundedQueryResultRule
     tags:
       - phpstan.rules.rule
+  -
+    class: Vix\PhpstanYiiPolicyRules\Rules\ImageValidatorTooLooseRule
+    tags:
+      - phpstan.rules.rule
