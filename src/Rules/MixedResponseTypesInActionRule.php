@@ -50,10 +50,6 @@ final readonly class MixedResponseTypesInActionRule implements Rule
      */
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!$node instanceof Class_) {
-            return [];
-        }
-
         $controller = $this->controllerFactory->getController($node, $scope);
 
         if ($controller === null) {

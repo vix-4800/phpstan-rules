@@ -33,10 +33,6 @@ final readonly class TransactionWithoutRollbackHandlingRule implements Rule
      */
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!$node instanceof ClassMethod) {
-            return [];
-        }
-
         $beginTransactionCall = $this->findBeginTransactionCall($node);
 
         if (!$beginTransactionCall instanceof MethodCall || $this->hasRollbackHandling($node)) {
