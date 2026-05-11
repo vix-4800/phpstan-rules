@@ -1,6 +1,6 @@
 {
   "name": "vix/phpstan-yii-policy-rules",
-  "description": "PHPStan rules for Yii2 policies",
+  "description": "PHPStan rules for Yii2 policies (install as require-dev)",
   "type": "phpstan-extension",
   "license": "MIT",
   "authors": [
@@ -12,6 +12,8 @@
   "keywords": [
     "phpstan",
     "yii2",
+    "static-analysis",
+    "dev-tool",
     "rules",
     "extension"
   ],

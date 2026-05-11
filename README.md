@@ -35,6 +35,12 @@ PHPStan extension with policy checks for Yii2 projects.
 
 ## Setup
 
+Install as a development dependency:
+
+```bash
+composer require --dev vix/phpstan-yii-policy-rules
+```
+
 Include extension config in PHPStan config:
 
 ```neon
