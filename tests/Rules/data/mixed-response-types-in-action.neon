@@ -1,0 +1,3 @@
+parameters:
+  scanFiles:
+    - mixed-response-types-in-action.php
