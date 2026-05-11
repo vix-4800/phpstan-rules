@@ -10,6 +10,7 @@
     }
   ],
   "keywords": [
+    "dev",
     "phpstan",
     "yii2",
     "static-analysis",
