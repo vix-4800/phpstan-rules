@@ -26,7 +26,7 @@ final class FileValidatorTooLooseRuleTest extends RuleTestCase
         return new FileValidatorTooLooseRule();
     }
 
-    public function testReportsFileValidatorsWithoutTypeConstraints(): void
+    public function testReportsVariousFileValidatorFormatsWithoutTypeConstraints(): void
     {
         $this->analyse(
             [__DIR__ . '/data/file-validator-too-loose.php'],
