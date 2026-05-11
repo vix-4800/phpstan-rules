@@ -12,6 +12,7 @@ PHPStan extension with policy checks for Yii2 projects.
     - [`yii.massSelectionWithoutLimit`](#yiimassselectionwithoutlimit)
     - [`yii.saveFalseWithoutReason`](#yiisavefalsewithoutreason)
     - [`yii.lifecycleParentCall`](#yiilifecycleparentcall)
+    - [`yii.componentInitParentCall`](#yiicomponentinitparentcall)
     - [`yii.publicAllowWithoutConstraint`](#yiipublicallowwithoutconstraint)
     - [`yii.mutatingActionAllowsGet`](#yiimutatingactionallowsget)
     - [`yii.csrfDisabledWithoutCompensatingControl`](#yiicsrfdisabledwithoutcompensatingcontrol)
