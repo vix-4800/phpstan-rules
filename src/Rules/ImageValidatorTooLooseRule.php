@@ -21,7 +21,7 @@ use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 
 /**
- * @implements Rule<ClassMethod>
+ * @implements Rule<Class_>
  */
 final readonly class ImageValidatorTooLooseRule implements Rule
 {
@@ -45,7 +45,7 @@ final readonly class ImageValidatorTooLooseRule implements Rule
 
     public function getNodeType(): string
     {
-        return ClassMethod::class;
+        return Class_::class;
     }
 
     /**
@@ -56,19 +56,13 @@ final readonly class ImageValidatorTooLooseRule implements Rule
      */
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!$node instanceof ClassMethod || $node->name->toString() !== 'rules') {
-            return [];
-        }
-
-        $class = $node->getAttribute('parent');
-
-        if (!$class instanceof Class_ || !$this->isModelClass($class, $scope)) {
+        if (!$node instanceof Class_ || !$this->isModelClass($node, $scope)) {
             return [];
         }
 
         $errors = [];
 
-        foreach ($node->stmts ?? [] as $statement) {
+        foreach ($this->getRulesMethod($node)?->stmts ?? [] as $statement) {
             if (!$statement instanceof Return_ || !$statement->expr instanceof Array_) {
                 continue;
             }
@@ -88,6 +82,17 @@ final readonly class ImageValidatorTooLooseRule implements Rule
         }
 
         return $errors;
+    }
+
+    private function getRulesMethod(Class_ $class): ?ClassMethod
+    {
+        foreach ($class->getMethods() as $method) {
+            if ($method->name->toString() === 'rules') {
+                return $method;
+            }
+        }
+
+        return null;
     }
 
     private function isModelClass(Class_ $class, Scope $scope): bool
