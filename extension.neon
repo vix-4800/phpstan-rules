@@ -29,6 +29,7 @@ parametersSchema:
       rawSqlConditionWithVariable: bool(),
       redirectReferrerWithoutFallback: bool(),
       saveFalseWithoutReason: bool(),
+      scenarioAssignedAfterLoad: bool(),
       transactionWithoutRollbackHandling: bool(),
       unboundedQueryResult: bool(),
       unknownActionInBehavior: bool(),
