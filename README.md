@@ -75,15 +75,53 @@ parameters:
             queryOneWithoutLimit: true
 ```
 
-Optional config:
+Default config from `extension.neon`:
+
+```neon
+parameters:
+    yiiPolicy:
+        rules:
+            activeDataProviderWithoutPagination: false
+            all: false
+            componentInitParentCall: false
+            controllerBeforeActionParentResultIgnored: false
+            csrfDisabledWithoutCompensatingControl: false
+            deleteAllOrUpdateAllWithoutWhere: false
+            fileValidatorTooLoose: false
+            imageValidatorTooLoose: false
+            lifecycleParentCall: false
+            lifecycleSelfSave: false
+            massSelectionWithoutLimit: false
+            missingAccessRule: false
+            missingAjaxFilterRule: false
+            missingVerbFilterRule: false
+            mixedResponseTypesInAction: false
+            mutatingActionAllowsGet: false
+            nPlusOneRelationInLoop: false
+            nativeHeaderInController: false
+            publicAllowWithoutConstraint: false
+            queryOneWithoutLimit: false
+            queryPerformanceSmell: false
+            rawSqlConditionWithVariable: false
+            redirectReferrerWithoutFallback: false
+            saveFalseWithoutReason: false
+            scenarioAssignedAfterLoad: false
+            sensitiveAttributeMarkedSafe: false
+            transactionWithoutRollbackHandling: false
+            unboundedQueryResult: false
+            unknownActionInBehavior: false
+        allowedSaveFalseNamespaces: []
+        sensitiveAttributePatterns:
+            - '~^(id|user_id|created_at|updated_at|created_by|updated_by|role|status|password_hash|auth_key|access_token|is_admin)$~i'
+```
+
+Override example:
 
 ```neon
 parameters:
     yiiPolicy:
         allowedSaveFalseNamespaces:
             - app\migrations
-        sensitiveAttributePatterns:
-            - '~^(id|user_id|created_at|updated_at|created_by|updated_by|role|status|password_hash|auth_key|access_token|is_admin)$~i'
 ```
 
 ## Versioning
