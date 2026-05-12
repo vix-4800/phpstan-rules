@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeFinder;
 
 final readonly class YiiMethod
@@ -41,24 +42,47 @@ final readonly class YiiMethod
         $finder = new NodeFinder();
 
         foreach ($finder->findInstanceOf($this->node->stmts ?? [], StaticCall::class) as $call) {
-            if (!$call->class instanceof Name) {
-                continue;
-            }
-
-            if (!$call->name instanceof Identifier) {
-                continue;
-            }
-
-            if (mb_strtolower($call->class->toString()) !== 'parent') {
-                continue;
-            }
-
-            if (mb_strtolower($call->name->toString()) === $targetMethodName) {
+            if ($this->isParentCall($call, $targetMethodName)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    public function hasIgnoredParentCallResult(?string $methodName = null): bool
+    {
+        $targetMethodName = mb_strtolower($methodName ?? $this->name());
+        $finder = new NodeFinder();
+
+        foreach ($finder->findInstanceOf($this->node->stmts ?? [], Expression::class) as $statement) {
+            if (!$statement->expr instanceof StaticCall) {
+                continue;
+            }
+
+            if ($this->isParentCall($statement->expr, $targetMethodName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function isParentCall(StaticCall $call, string $methodName): bool
+    {
+        if (!$call->class instanceof Name) {
+            return false;
+        }
+
+        if (!$call->name instanceof Identifier) {
+            return false;
+        }
+
+        if (mb_strtolower($call->class->toString()) !== 'parent') {
+            return false;
+        }
+
+        return mb_strtolower($call->name->toString()) === $methodName;
     }
 
     public function callsThisMethod(string $methodName): bool
