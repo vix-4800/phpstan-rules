@@ -196,6 +196,8 @@ services:
 
   yiiPolicy.rules.nPlusOneRelationInLoop.inner:
     class: Vix\PhpstanYiiPolicyRules\Rules\NPlusOneRelationInLoopRule
+    arguments:
+      reflectionProvider: @reflectionProvider
 
   yiiPolicy.rules.nPlusOneRelationInLoop:
     class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule

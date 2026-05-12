@@ -23,6 +23,7 @@ use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeFinder;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
@@ -32,6 +33,11 @@ use PHPStan\Rules\RuleErrorBuilder;
  */
 final readonly class NPlusOneRelationInLoopRule implements Rule
 {
+    public function __construct(
+        private ReflectionProvider $reflectionProvider,
+    ) {
+    }
+
     public function getNodeType(): string
     {
         return Namespace_::class;
@@ -106,7 +112,7 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
                     continue;
                 }
 
-                if (!in_array($relationName, $relationsByClass[$queryResult['modelClass']] ?? [], true)) {
+                if (!in_array($relationName, $this->getRelations($queryResult['modelClass'], $relationsByClass), true)) {
                     continue;
                 }
 
@@ -121,6 +127,55 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
         }
 
         return $errors;
+    }
+
+    /**
+     * @param array<string, list<string>> $relationsByClass
+     *
+     * @return list<string>
+     */
+    private function getRelations(string $modelClass, array $relationsByClass): array
+    {
+        $relations = $relationsByClass[$modelClass] ?? [];
+
+        if (!$this->reflectionProvider->hasClass($modelClass)) {
+            return $relations;
+        }
+
+        foreach ($this->reflectionProvider->getClass($modelClass)->getNativeReflection()->getMethods() as $method) {
+            $relationName = $this->getNativeActiveQueryRelationName($method);
+
+            if ($relationName === null) {
+                continue;
+            }
+
+            $relations[] = $relationName;
+        }
+
+        return array_values(array_unique($relations));
+    }
+
+    private function getNativeActiveQueryRelationName(\ReflectionMethod $method): ?string
+    {
+        $methodName = $method->getName();
+
+        if (!str_starts_with($methodName, 'get') || mb_strlen($methodName) === mb_strlen('get')) {
+            return null;
+        }
+
+        $returnType = $method->getReturnType();
+
+        if (!$returnType instanceof \ReflectionNamedType || $returnType->isBuiltin()) {
+            return null;
+        }
+
+        $returnTypeName = mb_ltrim($returnType->getName(), '\\');
+
+        if ($returnTypeName !== 'yii\db\ActiveQuery' && !str_ends_with($returnTypeName, '\ActiveQuery')) {
+            return null;
+        }
+
+        return lcfirst(mb_substr($methodName, mb_strlen('get')));
     }
 
     /**
@@ -327,6 +382,10 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
         $relations = [];
 
         foreach ($expr->items as $item) {
+            if ($item->key instanceof String_) {
+                $relations[] = $this->rootRelationName($item->key->value);
+            }
+
             if ($item->value instanceof String_) {
                 $relations[] = $this->rootRelationName($item->value->value);
             }

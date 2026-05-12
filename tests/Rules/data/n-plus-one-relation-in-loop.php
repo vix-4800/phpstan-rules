@@ -23,6 +23,8 @@ namespace yii\db {
 }
 
 namespace Fixtures {
+    use Fixtures\Models\ExternalBook;
+
     final class Author
     {
         public string $name = '';
@@ -72,6 +74,15 @@ namespace Fixtures {
             }
         }
 
+        public function withKeyedEagerLoading(): void
+        {
+            $books = Book::find()->with(['author' => static fn(\yii\db\ActiveQuery $query): \yii\db\ActiveQuery => $query])->all();
+
+            foreach ($books as $book) {
+                echo $book->author->name;
+            }
+        }
+
         public function relationOutsideLoop(): void
         {
             $books = Book::find()->all();
@@ -86,6 +97,15 @@ namespace Fixtures {
 
             foreach ($books as $book) {
                 echo $book->title;
+            }
+        }
+
+        public function externalModelWithoutEagerLoading(): void
+        {
+            $books = ExternalBook::find()->all();
+
+            foreach ($books as $book) {
+                echo $book->author->name;
             }
         }
     }
