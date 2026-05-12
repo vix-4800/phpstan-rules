@@ -41,9 +41,13 @@ parametersSchema:
 parameters:
   yiiPolicy:
     allowedSaveFalseNamespaces: []
+    sensitiveAttributePatterns:
+      - '~^(id|user_id|created_at|updated_at|created_by|updated_by|role|status|password_hash|auth_key|access_token|is_admin)$~i'
     rules:
+      activeDataProviderWithoutPagination: false
       all: false
       componentInitParentCall: false
+      controllerBeforeActionParentResultIgnored: false
       csrfDisabledWithoutCompensatingControl: false
       deleteAllOrUpdateAllWithoutWhere: false
       fileValidatorTooLoose: false
@@ -56,6 +60,7 @@ parameters:
       missingVerbFilterRule: false
       mixedResponseTypesInAction: false
       mutatingActionAllowsGet: false
+      nPlusOneRelationInLoop: false
       nativeHeaderInController: false
       publicAllowWithoutConstraint: false
       queryOneWithoutLimit: false
@@ -63,6 +68,8 @@ parameters:
       rawSqlConditionWithVariable: false
       redirectReferrerWithoutFallback: false
       saveFalseWithoutReason: false
+      scenarioAssignedAfterLoad: false
+      sensitiveAttributeMarkedSafe: false
       transactionWithoutRollbackHandling: false
       unboundedQueryResult: false
       unknownActionInBehavior: false
