@@ -21,6 +21,7 @@ parametersSchema:
       missingVerbFilterRule: bool(),
       mixedResponseTypesInAction: bool(),
       mutatingActionAllowsGet: bool(),
+      nPlusOneRelationInLoop: bool(),
       nativeHeaderInController: bool(),
       publicAllowWithoutConstraint: bool(),
       queryOneWithoutLimit: bool(),
