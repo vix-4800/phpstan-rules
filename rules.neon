@@ -304,6 +304,8 @@ services:
 
   yiiPolicy.rules.scenarioAssignedAfterLoad.inner:
     class: Vix\PhpstanYiiPolicyRules\Rules\ScenarioAssignedAfterLoadRule
+    arguments:
+      reflectionProvider: @reflectionProvider
 
   yiiPolicy.rules.scenarioAssignedAfterLoad:
     class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule

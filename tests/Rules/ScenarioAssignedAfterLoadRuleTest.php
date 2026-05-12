@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Vix\PhpstanYiiPolicyRules\Tests\Rules;
 
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
 use Vix\PhpstanYiiPolicyRules\Rules\ScenarioAssignedAfterLoadRule;
@@ -15,7 +16,9 @@ final class ScenarioAssignedAfterLoadRuleTest extends RuleTestCase
 {
     protected function getRule(): Rule
     {
-        return new ScenarioAssignedAfterLoadRule();
+        return new ScenarioAssignedAfterLoadRule(
+            self::getContainer()->getByType(ReflectionProvider::class),
+        );
     }
 
     public function testReportsScenarioAssignedAfterMassAssignment(): void
@@ -25,19 +28,27 @@ final class ScenarioAssignedAfterLoadRuleTest extends RuleTestCase
             [
                 [
                     'Assign model scenario before load(), setAttributes(), or attributes mass assignment.',
-                    41,
+                    47,
                 ],
                 [
                     'Assign model scenario before load(), setAttributes(), or attributes mass assignment.',
-                    48,
+                    54,
                 ],
                 [
                     'Assign model scenario before load(), setAttributes(), or attributes mass assignment.',
-                    55,
+                    61,
                 ],
                 [
                     'Assign model scenario before load(), setAttributes(), or attributes mass assignment.',
-                    62,
+                    68,
+                ],
+                [
+                    'Assign model scenario before load(), setAttributes(), or attributes mass assignment.',
+                    84,
+                ],
+                [
+                    'Assign model scenario before load(), setAttributes(), or attributes mass assignment.',
+                    114,
                 ],
             ],
         );

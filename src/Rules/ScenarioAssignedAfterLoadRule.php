@@ -12,23 +12,36 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Namespace_;
 use PHPStan\Analyser\Scope;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use PHPStan\Type\ObjectType;
 
 /**
- * @implements Rule<ClassMethod>
+ * @implements Rule<Namespace_>
  */
 final readonly class ScenarioAssignedAfterLoadRule implements Rule
 {
     private const array MASS_ASSIGNMENT_METHODS = ['load', 'setAttributes'];
 
+    private const string MODEL_CLASS = 'yii\base\Model';
+
+    public function __construct(
+        private ReflectionProvider $reflectionProvider,
+    ) {
+    }
+
     public function getNodeType(): string
     {
-        return ClassMethod::class;
+        return Namespace_::class;
     }
 
     /**
@@ -39,33 +52,21 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
      */
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!$node instanceof ClassMethod) {
+        if (!$node instanceof Namespace_) {
             return [];
         }
 
-        return $this->processStatements(array_values($node->stmts ?? []), []);
-    }
-
-    /**
-     * @param list<Stmt>          $statements
-     * @param array<string, bool> $loadedVariables
-     *
-     * @return list<IdentifierRuleError>
-     */
-    private function processStatements(array $statements, array $loadedVariables): array
-    {
+        $namespaceName = $node->name?->toString() ?? '';
+        $classes = $this->getClasses($node);
+        $modelClassNames = $this->getModelClassNames($classes, $namespaceName, $scope);
         $errors = [];
 
-        foreach ($statements as $statement) {
-            foreach ($statement->getSubNodeNames() as $subNodeName) {
-                $subNode = $statement->{$subNodeName};
-
-                if ($subNode instanceof Expr) {
-                    $errors = [
-                        ...$errors,
-                        ...$this->processExpression($subNode, $loadedVariables),
-                    ];
-                }
+        foreach ($classes as $class) {
+            foreach ($class->getMethods() as $method) {
+                $errors = [
+                    ...$errors,
+                    ...$this->processMethod($method, $modelClassNames, $namespaceName, $scope),
+                ];
             }
         }
 
@@ -73,24 +74,100 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
     }
 
     /**
-     * @param array<string, bool> $loadedVariables
+     * @param list<string> $modelClassNames
      *
      * @return list<IdentifierRuleError>
      */
-    private function processExpression(Expr $expr, array &$loadedVariables): array
-    {
+    private function processMethod(
+        ClassMethod $method,
+        array $modelClassNames,
+        string $namespaceName,
+        Scope $scope,
+    ): array {
+        $modelVariables = $this->getModelParameters($method, $modelClassNames, $namespaceName, $scope);
+
+        return $this->processStatements(
+            array_values($method->stmts ?? []),
+            [],
+            $modelVariables,
+            $modelClassNames,
+            $namespaceName,
+            $scope,
+        );
+    }
+
+    /**
+     * @param list<Stmt>          $statements
+     * @param array<string, bool> $loadedVariables
+     * @param array<string, bool> $modelVariables
+     * @param list<string>        $modelClassNames
+     *
+     * @return list<IdentifierRuleError>
+     */
+    private function processStatements(
+        array $statements,
+        array $loadedVariables,
+        array $modelVariables,
+        array $modelClassNames,
+        string $namespaceName,
+        Scope $scope,
+    ): array {
+        $errors = [];
+
+        foreach ($statements as $statement) {
+            $errors = [
+                ...$errors,
+                ...$this->processNodeContent(
+                    $statement,
+                    $loadedVariables,
+                    $modelVariables,
+                    $modelClassNames,
+                    $namespaceName,
+                    $scope,
+                ),
+            ];
+        }
+
+        return $errors;
+    }
+
+    /**
+     * @param array<string, bool> $loadedVariables
+     * @param array<string, bool> $modelVariables
+     * @param list<string>        $modelClassNames
+     *
+     * @return list<IdentifierRuleError>
+     */
+    private function processExpression(
+        Expr $expr,
+        array &$loadedVariables,
+        array &$modelVariables,
+        array $modelClassNames,
+        string $namespaceName,
+        Scope $scope,
+    ): array {
         $errors = [];
 
         if ($expr instanceof Assign) {
-            if ($expr->var instanceof Variable && $expr->expr instanceof New_) {
-                unset($loadedVariables[$this->variableName($expr->var)]);
+            if ($expr->var instanceof Variable) {
+                $variableName = $this->variableName($expr->var);
+                unset($loadedVariables[$variableName], $modelVariables[$variableName]);
+
+                if ($expr->expr instanceof New_ && $this->isModelInstantiation(
+                    $expr->expr,
+                    $modelClassNames,
+                    $namespaceName,
+                    $scope,
+                )) {
+                    $modelVariables[$variableName] = true;
+                }
             }
 
-            if ($this->isAttributesAssignment($expr)) {
+            if ($this->isAttributesAssignment($expr) && $this->isKnownModel($expr->var, $modelVariables, $scope)) {
                 $loadedVariables[$this->modelVariableName($expr->var)] = true;
             }
 
-            if ($this->isScenarioAssignment($expr)) {
+            if ($this->isScenarioAssignment($expr) && $this->isKnownModel($expr->var, $modelVariables, $scope)) {
                 $variableName = $this->modelVariableName($expr->var);
 
                 if (($loadedVariables[$variableName] ?? false) === true) {
@@ -100,11 +177,18 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
 
             return [
                 ...$errors,
-                ...$this->processExpression($expr->expr, $loadedVariables),
+                ...$this->processExpression(
+                    $expr->expr,
+                    $loadedVariables,
+                    $modelVariables,
+                    $modelClassNames,
+                    $namespaceName,
+                    $scope,
+                ),
             ];
         }
 
-        if ($expr instanceof MethodCall && $this->isModelMethodCall($expr)) {
+        if ($expr instanceof MethodCall && $this->isModelMethodCall($expr) && $this->isKnownModel($expr->var, $modelVariables, $scope)) {
             $variableName = $this->modelVariableName($expr->var);
 
             if ($this->isScenarioSetter($expr) && ($loadedVariables[$variableName] ?? false) === true) {
@@ -116,18 +200,17 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
             }
         }
 
-        foreach ($expr->getSubNodeNames() as $subNodeName) {
-            $subNode = $expr->{$subNodeName};
-
-            if ($subNode instanceof Expr) {
-                $errors = [
-                    ...$errors,
-                    ...$this->processExpression($subNode, $loadedVariables),
-                ];
-            }
-        }
-
-        return $errors;
+        return [
+            ...$errors,
+            ...$this->processNodeContent(
+                $expr,
+                $loadedVariables,
+                $modelVariables,
+                $modelClassNames,
+                $namespaceName,
+                $scope,
+            ),
+        ];
     }
 
     private function buildError(Node $node): IdentifierRuleError
@@ -183,6 +266,259 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
         }
 
         return '';
+    }
+
+    /**
+     * @param array<string, bool> $loadedVariables
+     * @param array<string, bool> $modelVariables
+     * @param list<string>        $modelClassNames
+     *
+     * @return list<IdentifierRuleError>
+     */
+    private function processNodeContent(
+        Node $node,
+        array &$loadedVariables,
+        array &$modelVariables,
+        array $modelClassNames,
+        string $namespaceName,
+        Scope $scope,
+    ): array {
+        $errors = [];
+
+        foreach ($node->getSubNodeNames() as $subNodeName) {
+            $subNode = $node->{$subNodeName};
+
+            if ($subNode instanceof Expr) {
+                $errors = [
+                    ...$errors,
+                    ...$this->processExpression(
+                        $subNode,
+                        $loadedVariables,
+                        $modelVariables,
+                        $modelClassNames,
+                        $namespaceName,
+                        $scope,
+                    ),
+                ];
+            }
+
+            if ($subNode instanceof Stmt) {
+                $errors = [
+                    ...$errors,
+                    ...$this->processNodeContent(
+                        $subNode,
+                        $loadedVariables,
+                        $modelVariables,
+                        $modelClassNames,
+                        $namespaceName,
+                        $scope,
+                    ),
+                ];
+            }
+
+            if (is_array($subNode)) {
+                $errors = [
+                    ...$errors,
+                    ...$this->processNodeArray(
+                        $subNode,
+                        $loadedVariables,
+                        $modelVariables,
+                        $modelClassNames,
+                        $namespaceName,
+                        $scope,
+                    ),
+                ];
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
+     * @param array<mixed>         $nodes
+     * @param array<string, bool>  $loadedVariables
+     * @param array<string, bool>  $modelVariables
+     * @param list<string>         $modelClassNames
+     *
+     * @return list<IdentifierRuleError>
+     */
+    private function processNodeArray(
+        array $nodes,
+        array &$loadedVariables,
+        array &$modelVariables,
+        array $modelClassNames,
+        string $namespaceName,
+        Scope $scope,
+    ): array {
+        $errors = [];
+
+        foreach ($nodes as $node) {
+            if ($node instanceof Expr) {
+                $errors = [
+                    ...$errors,
+                    ...$this->processExpression(
+                        $node,
+                        $loadedVariables,
+                        $modelVariables,
+                        $modelClassNames,
+                        $namespaceName,
+                        $scope,
+                    ),
+                ];
+            }
+
+            if ($node instanceof Stmt) {
+                $errors = [
+                    ...$errors,
+                    ...$this->processNodeContent(
+                        $node,
+                        $loadedVariables,
+                        $modelVariables,
+                        $modelClassNames,
+                        $namespaceName,
+                        $scope,
+                    ),
+                ];
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
+     * @param array<string, bool> $modelVariables
+     */
+    private function isKnownModel(Expr $expr, array $modelVariables, Scope $scope): bool
+    {
+        $variableName = $this->modelVariableName($expr);
+
+        if ($variableName !== '' && ($modelVariables[$variableName] ?? false) === true) {
+            return true;
+        }
+
+        return (new ObjectType(self::MODEL_CLASS))->isSuperTypeOf($scope->getType($expr))->yes();
+    }
+
+    /**
+     * @return list<Class_>
+     */
+    private function getClasses(Namespace_ $namespace): array
+    {
+        return array_values(array_filter(
+            $namespace->stmts,
+            static fn(Node $node): bool => $node instanceof Class_,
+        ));
+    }
+
+    /**
+     * @param list<Class_> $classes
+     *
+     * @return list<string>
+     */
+    private function getModelClassNames(array $classes, string $namespaceName, Scope $scope): array
+    {
+        $modelClassNames = [];
+
+        foreach ($classes as $class) {
+            if ($class->name === null || !$class->extends instanceof Name) {
+                continue;
+            }
+
+            $className = $this->qualifyName($class->name->toString(), $namespaceName);
+            $parentName = mb_ltrim($scope->resolveName($class->extends), '\\');
+
+            if ($parentName === self::MODEL_CLASS || $this->isSubclassOfModel($parentName)) {
+                $modelClassNames[] = $className;
+            }
+        }
+
+        return $modelClassNames;
+    }
+
+    /**
+     * @param list<string> $modelClassNames
+     *
+     * @return array<string, bool>
+     */
+    private function getModelParameters(
+        ClassMethod $method,
+        array $modelClassNames,
+        string $namespaceName,
+        Scope $scope,
+    ): array {
+        $modelVariables = [];
+
+        foreach ($method->params as $param) {
+            if (!$param->var instanceof Variable || !is_string($param->var->name)) {
+                continue;
+            }
+
+            $type = $param->type;
+
+            if ($type instanceof NullableType) {
+                $type = $type->type;
+            }
+
+            if (!$type instanceof Name) {
+                continue;
+            }
+
+            if (
+                $this->isModelClassName(mb_ltrim($scope->resolveName($type), '\\'), $modelClassNames)
+                || $this->isModelClassName($this->qualifyName($type->toString(), $namespaceName), $modelClassNames)
+            ) {
+                $modelVariables[$param->var->name] = true;
+            }
+        }
+
+        return $modelVariables;
+    }
+
+    /**
+     * @param list<string> $modelClassNames
+     */
+    private function isModelInstantiation(New_ $new, array $modelClassNames, string $namespaceName, Scope $scope): bool
+    {
+        if (!$new->class instanceof Name) {
+            return false;
+        }
+
+        $className = mb_ltrim($scope->resolveName($new->class), '\\');
+
+        return $this->isModelClassName($className, $modelClassNames)
+            || $this->isModelClassName($this->qualifyName($new->class->toString(), $namespaceName), $modelClassNames);
+    }
+
+    /**
+     * @param list<string> $modelClassNames
+     */
+    private function isModelClassName(string $className, array $modelClassNames): bool
+    {
+        if ($className === self::MODEL_CLASS || in_array($className, $modelClassNames, true)) {
+            return true;
+        }
+
+        return $this->isSubclassOfModel($className);
+    }
+
+    private function isSubclassOfModel(string $className): bool
+    {
+        if (!$this->reflectionProvider->hasClass($className) || !$this->reflectionProvider->hasClass(self::MODEL_CLASS)) {
+            return false;
+        }
+
+        return $this->reflectionProvider
+            ->getClass($className)
+            ->isSubclassOfClass($this->reflectionProvider->getClass(self::MODEL_CLASS));
+    }
+
+    private function qualifyName(string $name, string $namespaceName): string
+    {
+        if (str_contains($name, '\\') || $namespaceName === '') {
+            return mb_ltrim($name, '\\');
+        }
+
+        return $namespaceName . '\\' . $name;
     }
 
     private function variableName(Variable $variable): string
