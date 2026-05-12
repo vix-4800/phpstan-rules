@@ -1,4 +1,17 @@
 services:
+  yiiPolicy.rules.activeDataProviderWithoutPagination.inner:
+    class: Vix\PhpstanYiiPolicyRules\Rules\ActiveDataProviderWithoutPaginationRule
+
+  yiiPolicy.rules.activeDataProviderWithoutPagination:
+    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    arguments:
+      rule: @yiiPolicy.rules.activeDataProviderWithoutPagination.inner
+      ruleName: activeDataProviderWithoutPagination
+      allRules: %yiiPolicy.rules.all%
+      enabledRules: %yiiPolicy.rules%
+    tags:
+      - phpstan.rules.rule
+
   yiiPolicy.rules.componentInitParentCall.inner:
     class: Vix\PhpstanYiiPolicyRules\Rules\ComponentInitParentCallRule
 
@@ -7,6 +20,19 @@ services:
     arguments:
       rule: @yiiPolicy.rules.componentInitParentCall.inner
       ruleName: componentInitParentCall
+      allRules: %yiiPolicy.rules.all%
+      enabledRules: %yiiPolicy.rules%
+    tags:
+      - phpstan.rules.rule
+
+  yiiPolicy.rules.controllerBeforeActionParentResultIgnored.inner:
+    class: Vix\PhpstanYiiPolicyRules\Rules\ControllerBeforeActionParentResultIgnoredRule
+
+  yiiPolicy.rules.controllerBeforeActionParentResultIgnored:
+    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    arguments:
+      rule: @yiiPolicy.rules.controllerBeforeActionParentResultIgnored.inner
+      ruleName: controllerBeforeActionParentResultIgnored
       allRules: %yiiPolicy.rules.all%
       enabledRules: %yiiPolicy.rules%
     tags:
@@ -168,6 +194,19 @@ services:
     tags:
       - phpstan.rules.rule
 
+  yiiPolicy.rules.nPlusOneRelationInLoop.inner:
+    class: Vix\PhpstanYiiPolicyRules\Rules\NPlusOneRelationInLoopRule
+
+  yiiPolicy.rules.nPlusOneRelationInLoop:
+    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    arguments:
+      rule: @yiiPolicy.rules.nPlusOneRelationInLoop.inner
+      ruleName: nPlusOneRelationInLoop
+      allRules: %yiiPolicy.rules.all%
+      enabledRules: %yiiPolicy.rules%
+    tags:
+      - phpstan.rules.rule
+
   yiiPolicy.rules.nativeHeaderInController.inner:
     class: Vix\PhpstanYiiPolicyRules\Rules\NativeHeaderInControllerRule
 
@@ -256,6 +295,34 @@ services:
     arguments:
       rule: @yiiPolicy.rules.saveFalseWithoutReason.inner
       ruleName: saveFalseWithoutReason
+      allRules: %yiiPolicy.rules.all%
+      enabledRules: %yiiPolicy.rules%
+    tags:
+      - phpstan.rules.rule
+
+  yiiPolicy.rules.scenarioAssignedAfterLoad.inner:
+    class: Vix\PhpstanYiiPolicyRules\Rules\ScenarioAssignedAfterLoadRule
+
+  yiiPolicy.rules.scenarioAssignedAfterLoad:
+    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    arguments:
+      rule: @yiiPolicy.rules.scenarioAssignedAfterLoad.inner
+      ruleName: scenarioAssignedAfterLoad
+      allRules: %yiiPolicy.rules.all%
+      enabledRules: %yiiPolicy.rules%
+    tags:
+      - phpstan.rules.rule
+
+  yiiPolicy.rules.sensitiveAttributeMarkedSafe.inner:
+    class: Vix\PhpstanYiiPolicyRules\Rules\SensitiveAttributeMarkedSafeRule
+    arguments:
+      sensitiveAttributePatterns: %yiiPolicy.sensitiveAttributePatterns%
+
+  yiiPolicy.rules.sensitiveAttributeMarkedSafe:
+    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    arguments:
+      rule: @yiiPolicy.rules.sensitiveAttributeMarkedSafe.inner
+      ruleName: sensitiveAttributeMarkedSafe
       allRules: %yiiPolicy.rules.all%
       enabledRules: %yiiPolicy.rules%
     tags:
