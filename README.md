@@ -32,6 +32,11 @@ PHPStan extension with policy checks for Yii2 projects.
     - [`yii.unboundedQueryResult`](#yiiunboundedqueryresult)
     - [`yii.queryPerformanceSmell`](#yiiqueryperformancesmell)
     - [`yii.imageValidatorTooLoose`](#yiiimagevalidatortooloose)
+    - [`yii.activeDataProviderWithoutPagination`](#yiiactivedataproviderwithoutpagination)
+    - [`yii.controllerBeforeActionParentResultIgnored`](#yiicontrollerbeforeactionparentresultignored)
+    - [`yii.nPlusOneRelationInLoop`](#yiinplusonerelationinloop)
+    - [`yii.scenarioAssignedAfterLoad`](#yiiscenarioassignedafterload)
+    - [`yii.sensitiveAttributeMarkedSafe`](#yiisensitiveattributemarkedsafe)
 
 ## Setup
 
@@ -77,6 +82,8 @@ parameters:
     yiiPolicy:
         allowedSaveFalseNamespaces:
             - app\migrations
+        sensitiveAttributePatterns:
+            - '~^(id|user_id|created_at|updated_at|created_by|updated_by|role|status|password_hash|auth_key|access_token|is_admin)$~i'
 ```
 
 ## Versioning
@@ -143,7 +150,9 @@ This catches overly broad upload rules such as `[['file'], 'file']`. `maxSize` i
 
 ### `yii.lifecycleParentCall`
 
-Reports Active Record overrides of `beforeValidate()`, `beforeSave()`, `afterSave()`, `afterFind()`, and `afterDelete()` that do not call the matching `parent::*()` method.
+Reports Active Record overrides of `beforeValidate()`, `beforeSave()`, `beforeDelete()`, `afterSave()`, `afterFind()`, and `afterDelete()` that do not call the matching `parent::*()` method.
+
+`beforeValidate()`, `beforeSave()`, and `beforeDelete()` must also use the parent result.
 
 Skipping the parent call can break Yii events, attached behaviors, and audit hooks.
 
@@ -221,3 +230,27 @@ Covered patterns include `count(Model::find()->all())` / `sizeof((new Query())->
 Reports Yii `image` validator rules that do not declare any file type, size, or dimension constraint.
 
 At least one of `extensions`, `mimeTypes`, `maxSize`, `minWidth`, or `maxWidth` should be present for `[['field'], 'image']`.
+
+### `yii.activeDataProviderWithoutPagination`
+
+Reports `ActiveDataProvider` and `SqlDataProvider` instances with `'pagination' => false` in web controller/action context.
+
+### `yii.controllerBeforeActionParentResultIgnored`
+
+Reports controller/action `beforeAction()` overrides that call `parent::beforeAction()` but ignore its boolean result.
+
+### `yii.nPlusOneRelationInLoop`
+
+Reports Active Record relation reads inside loops over `find()->all()` results when the relation is not loaded with `with()` or `joinWith()`.
+
+### `yii.scenarioAssignedAfterLoad`
+
+Reports Yii model scenario changes after `load()`, `setAttributes()`, or `$model->attributes = ...`.
+
+Set scenario before mass assignment.
+
+### `yii.sensitiveAttributeMarkedSafe`
+
+Reports sensitive attributes that are mass assignable without an `on` or `except` scenario restriction.
+
+Sensitive attributes are matched by `yiiPolicy.sensitiveAttributePatterns`.
