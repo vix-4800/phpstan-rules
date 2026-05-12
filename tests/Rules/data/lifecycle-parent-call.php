@@ -97,6 +97,44 @@ namespace Fixtures {
         }
     }
 
+    final class MissingBeforeDeleteModel extends \yii\db\ActiveRecord
+    {
+        public function beforeDelete(): bool
+        {
+            return true;
+        }
+    }
+
+    final class IgnoredBeforeValidateParentResultModel extends \yii\db\ActiveRecord
+    {
+        public function beforeValidate(): bool
+        {
+            parent::beforeValidate();
+
+            return true;
+        }
+    }
+
+    final class IgnoredBeforeSaveParentResultModel extends \yii\db\ActiveRecord
+    {
+        public function beforeSave(bool $insert): bool
+        {
+            parent::beforeSave($insert);
+
+            return true;
+        }
+    }
+
+    final class IgnoredBeforeDeleteParentResultModel extends \yii\db\ActiveRecord
+    {
+        public function beforeDelete(): bool
+        {
+            parent::beforeDelete();
+
+            return true;
+        }
+    }
+
     final class SafeLifecycleModel extends \yii\db\ActiveRecord
     {
         public function beforeValidate(): bool
@@ -130,7 +168,7 @@ namespace Fixtures {
 
         public function beforeDelete(): bool
         {
-            return true;
+            return parent::beforeDelete();
         }
     }
 }

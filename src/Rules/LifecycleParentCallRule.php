@@ -21,9 +21,16 @@ final readonly class LifecycleParentCallRule implements Rule
     private const array REQUIRED_PARENT_CALL_METHODS = [
         'beforeValidate',
         'beforeSave',
+        'beforeDelete',
         'afterSave',
         'afterFind',
         'afterDelete',
+    ];
+
+    private const array PARENT_RESULT_METHODS = [
+        'beforeValidate',
+        'beforeSave',
+        'beforeDelete',
     ];
 
     private YiiActiveRecordFactory $activeRecordFactory;
@@ -65,18 +72,32 @@ final readonly class LifecycleParentCallRule implements Rule
                 continue;
             }
 
-            if ($method->hasParentCall($methodName)) {
+            if (!$method->hasParentCall($methodName)) {
+                $errors[] = RuleErrorBuilder::message(sprintf(
+                    'ActiveRecord lifecycle method \'%s()\' must call parent::%s().',
+                    $methodName,
+                    $methodName,
+                ))
+                    ->identifier('yii.lifecycleParentCall')
+                    ->line($method->line())
+                    ->build();
+
                 continue;
             }
 
-            $errors[] = RuleErrorBuilder::message(sprintf(
-                'ActiveRecord lifecycle method \'%s()\' must call parent::%s().',
-                $methodName,
-                $methodName,
-            ))
-                ->identifier('yii.lifecycleParentCall')
-                ->line($method->line())
-                ->build();
+            if (
+                in_array($methodName, self::PARENT_RESULT_METHODS, true)
+                && $method->hasIgnoredParentCallResult($methodName)
+            ) {
+                $errors[] = RuleErrorBuilder::message(sprintf(
+                    'ActiveRecord lifecycle method \'%s()\' must use parent::%s() result.',
+                    $methodName,
+                    $methodName,
+                ))
+                    ->identifier('yii.beforeHookParentResultIgnored')
+                    ->line($method->line())
+                    ->build();
+            }
         }
 
         return $errors;

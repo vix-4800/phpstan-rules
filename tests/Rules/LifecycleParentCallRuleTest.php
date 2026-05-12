@@ -52,6 +52,22 @@ final class LifecycleParentCallRuleTest extends RuleTestCase
                     'ActiveRecord lifecycle method \'afterDelete()\' must call parent::afterDelete().',
                     95,
                 ],
+                [
+                    'ActiveRecord lifecycle method \'beforeDelete()\' must call parent::beforeDelete().',
+                    102,
+                ],
+                [
+                    'ActiveRecord lifecycle method \'beforeValidate()\' must use parent::beforeValidate() result.',
+                    110,
+                ],
+                [
+                    'ActiveRecord lifecycle method \'beforeSave()\' must use parent::beforeSave() result.',
+                    120,
+                ],
+                [
+                    'ActiveRecord lifecycle method \'beforeDelete()\' must use parent::beforeDelete() result.',
+                    130,
+                ],
             ],
         );
     }
