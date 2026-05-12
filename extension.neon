@@ -4,6 +4,7 @@ includes:
 parametersSchema:
   yiiPolicy: structure([
     allowedSaveFalseNamespaces: listOf(string()),
+    sensitiveAttributePatterns: listOf(string()),
     rules: structure([
       activeDataProviderWithoutPagination: bool(),
       all: bool(),
@@ -30,6 +31,7 @@ parametersSchema:
       redirectReferrerWithoutFallback: bool(),
       saveFalseWithoutReason: bool(),
       scenarioAssignedAfterLoad: bool(),
+      sensitiveAttributeMarkedSafe: bool(),
       transactionWithoutRollbackHandling: bool(),
       unboundedQueryResult: bool(),
       unknownActionInBehavior: bool(),
