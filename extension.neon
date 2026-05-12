@@ -5,6 +5,7 @@ parametersSchema:
   yiiPolicy: structure([
     allowedSaveFalseNamespaces: listOf(string()),
     rules: structure([
+      activeDataProviderWithoutPagination: bool(),
       all: bool(),
       componentInitParentCall: bool(),
       csrfDisabledWithoutCompensatingControl: bool(),
