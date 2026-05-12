@@ -8,6 +8,7 @@ parametersSchema:
       activeDataProviderWithoutPagination: bool(),
       all: bool(),
       componentInitParentCall: bool(),
+      controllerBeforeActionParentResultIgnored: bool(),
       csrfDisabledWithoutCompensatingControl: bool(),
       deleteAllOrUpdateAllWithoutWhere: bool(),
       fileValidatorTooLoose: bool(),
