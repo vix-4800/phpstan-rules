@@ -1,6 +1,11 @@
 # Rule Reference
 
+This page documents the rules currently shipped in this package.
+
+## Table of Contents
+
 - [Rule Reference](#rule-reference)
+  - [Table of Contents](#table-of-contents)
   - [Yii2](#yii2)
     - [`yii.missingAccessRule`](#yiimissingaccessrule)
     - [`yii.missingVerbFilterRule`](#yiimissingverbfilterrule)
@@ -30,8 +35,6 @@
     - [`yii.nPlusOneRelationInLoop`](#yiinplusonerelationinloop)
     - [`yii.scenarioAssignedAfterLoad`](#yiiscenarioassignedafterload)
     - [`yii.sensitiveAttributeMarkedSafe`](#yiisensitiveattributemarkedsafe)
-
-This page documents the rules currently shipped in this package.
 
 ## Yii2
 
