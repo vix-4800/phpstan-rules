@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Vix\PhpstanRules\Rules;
 
+use Node\VariadicPlaceholder;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -45,6 +46,17 @@ final class NodeHelpers
         return $arg !== null && self::arrayHasKey($arg->value, $key);
     }
 
+    /**
+     * @param list<Arg|VariadicPlaceholder> $args
+     * @param int                           $index
+     */
+    public static function argAt(array $args, int $index): ?Arg
+    {
+        $arg = $args[$index] ?? null;
+
+        return $arg instanceof Arg ? $arg : null;
+    }
+
     public static function arrayHasKey(Expr $expr, string $key): bool
     {
         if (!$expr instanceof Array_) {
@@ -52,10 +64,6 @@ final class NodeHelpers
         }
 
         foreach ($expr->items as $item) {
-            if ($item === null) {
-                continue;
-            }
-
             if ($item->key === null) {
                 continue;
             }
@@ -79,7 +87,11 @@ final class NodeHelpers
 
     public static function isZeroLike(Expr $expr): bool
     {
-        return $expr instanceof Int_ && $expr->value === 0;
+        if ($expr instanceof Int_) {
+            return $expr->value === 0;
+        }
+
+        return self::isFalseLike($expr);
     }
 
     public static function isRemoteString(Expr $expr): bool
@@ -96,7 +108,7 @@ final class NodeHelpers
             return self::isRemoteString($expr->right);
         }
 
-        return true;
+        return false;
     }
 
     public static function isFunctionCall(Expr $expr, string $functionName): bool
