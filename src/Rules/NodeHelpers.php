@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Vix\PhpstanRules\Rules;
 
-use Node\VariadicPlaceholder;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -18,6 +17,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\VariadicPlaceholder;
 
 final class NodeHelpers
 {
@@ -47,8 +47,8 @@ final class NodeHelpers
     }
 
     /**
-     * @param list<Arg|VariadicPlaceholder> $args
-     * @param int                           $index
+     * @param array<int|string, Arg|VariadicPlaceholder> $args
+     * @param int                                        $index
      */
     public static function argAt(array $args, int $index): ?Arg
     {
