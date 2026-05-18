@@ -1,372 +1,373 @@
 services:
-  yiiPolicy.rules.activeDataProviderWithoutPagination.inner:
+  phpstanRules.yii2.rules.activeDataProviderWithoutPagination.inner:
     class: Vix\PhpstanRules\Rules\ActiveDataProviderWithoutPaginationRule
 
-  yiiPolicy.rules.activeDataProviderWithoutPagination:
+  phpstanRules.yii2.rules.activeDataProviderWithoutPagination:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.activeDataProviderWithoutPagination.inner
+      rule: @phpstanRules.yii2.rules.activeDataProviderWithoutPagination.inner
       ruleName: activeDataProviderWithoutPagination
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.componentInitParentCall.inner:
+  phpstanRules.yii2.rules.componentInitParentCall.inner:
     class: Vix\PhpstanRules\Rules\ComponentInitParentCallRule
 
-  yiiPolicy.rules.componentInitParentCall:
+  phpstanRules.yii2.rules.componentInitParentCall:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.componentInitParentCall.inner
+      rule: @phpstanRules.yii2.rules.componentInitParentCall.inner
       ruleName: componentInitParentCall
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.controllerBeforeActionParentResultIgnored.inner:
+  phpstanRules.yii2.rules.controllerBeforeActionParentResultIgnored.inner:
     class: Vix\PhpstanRules\Rules\ControllerBeforeActionParentResultIgnoredRule
 
-  yiiPolicy.rules.controllerBeforeActionParentResultIgnored:
+  phpstanRules.yii2.rules.controllerBeforeActionParentResultIgnored:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.controllerBeforeActionParentResultIgnored.inner
+      rule: @phpstanRules.yii2.rules.controllerBeforeActionParentResultIgnored.inner
       ruleName: controllerBeforeActionParentResultIgnored
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.csrfDisabledWithoutCompensatingControl.inner:
+  phpstanRules.yii2.rules.csrfDisabledWithoutCompensatingControl.inner:
     class: Vix\PhpstanRules\Rules\CsrfDisabledWithoutCompensatingControlRule
 
-  yiiPolicy.rules.csrfDisabledWithoutCompensatingControl:
+  phpstanRules.yii2.rules.csrfDisabledWithoutCompensatingControl:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.csrfDisabledWithoutCompensatingControl.inner
+      rule: @phpstanRules.yii2.rules.csrfDisabledWithoutCompensatingControl.inner
       ruleName: csrfDisabledWithoutCompensatingControl
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.deleteAllOrUpdateAllWithoutWhere.inner:
+  phpstanRules.yii2.rules.deleteAllOrUpdateAllWithoutWhere.inner:
     class: Vix\PhpstanRules\Rules\DeleteAllOrUpdateAllWithoutWhereRule
 
-  yiiPolicy.rules.deleteAllOrUpdateAllWithoutWhere:
+  phpstanRules.yii2.rules.deleteAllOrUpdateAllWithoutWhere:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.deleteAllOrUpdateAllWithoutWhere.inner
+      rule: @phpstanRules.yii2.rules.deleteAllOrUpdateAllWithoutWhere.inner
       ruleName: deleteAllOrUpdateAllWithoutWhere
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.fileValidatorTooLoose.inner:
+  phpstanRules.yii2.rules.fileValidatorTooLoose.inner:
     class: Vix\PhpstanRules\Rules\FileValidatorTooLooseRule
 
-  yiiPolicy.rules.fileValidatorTooLoose:
+  phpstanRules.yii2.rules.fileValidatorTooLoose:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.fileValidatorTooLoose.inner
+      rule: @phpstanRules.yii2.rules.fileValidatorTooLoose.inner
       ruleName: fileValidatorTooLoose
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.imageValidatorTooLoose.inner:
+  phpstanRules.yii2.rules.imageValidatorTooLoose.inner:
     class: Vix\PhpstanRules\Rules\ImageValidatorTooLooseRule
 
-  yiiPolicy.rules.imageValidatorTooLoose:
+  phpstanRules.yii2.rules.imageValidatorTooLoose:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.imageValidatorTooLoose.inner
+      rule: @phpstanRules.yii2.rules.imageValidatorTooLoose.inner
       ruleName: imageValidatorTooLoose
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.lifecycleParentCall.inner:
+  phpstanRules.yii2.rules.lifecycleParentCall.inner:
     class: Vix\PhpstanRules\Rules\LifecycleParentCallRule
 
-  yiiPolicy.rules.lifecycleParentCall:
+  phpstanRules.yii2.rules.lifecycleParentCall:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.lifecycleParentCall.inner
+      rule: @phpstanRules.yii2.rules.lifecycleParentCall.inner
       ruleName: lifecycleParentCall
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.lifecycleSelfSave.inner:
+  phpstanRules.yii2.rules.lifecycleSelfSave.inner:
     class: Vix\PhpstanRules\Rules\LifecycleSelfSaveRule
 
-  yiiPolicy.rules.lifecycleSelfSave:
+  phpstanRules.yii2.rules.lifecycleSelfSave:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.lifecycleSelfSave.inner
+      rule: @phpstanRules.yii2.rules.lifecycleSelfSave.inner
       ruleName: lifecycleSelfSave
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.massSelectionWithoutLimit.inner:
+  phpstanRules.yii2.rules.massSelectionWithoutLimit.inner:
     class: Vix\PhpstanRules\Rules\MassSelectionWithoutLimitRule
 
-  yiiPolicy.rules.massSelectionWithoutLimit:
+  phpstanRules.yii2.rules.massSelectionWithoutLimit:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.massSelectionWithoutLimit.inner
+      rule: @phpstanRules.yii2.rules.massSelectionWithoutLimit.inner
       ruleName: massSelectionWithoutLimit
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.missingAccessRule.inner:
+  phpstanRules.yii2.rules.missingAccessRule.inner:
     class: Vix\PhpstanRules\Rules\MissingAccessRule
 
-  yiiPolicy.rules.missingAccessRule:
+  phpstanRules.yii2.rules.missingAccessRule:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.missingAccessRule.inner
+      rule: @phpstanRules.yii2.rules.missingAccessRule.inner
       ruleName: missingAccessRule
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.missingAjaxFilterRule.inner:
+  phpstanRules.yii2.rules.missingAjaxFilterRule.inner:
     class: Vix\PhpstanRules\Rules\MissingAjaxFilterRule
 
-  yiiPolicy.rules.missingAjaxFilterRule:
+  phpstanRules.yii2.rules.missingAjaxFilterRule:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.missingAjaxFilterRule.inner
+      rule: @phpstanRules.yii2.rules.missingAjaxFilterRule.inner
       ruleName: missingAjaxFilterRule
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.missingVerbFilterRule.inner:
+  phpstanRules.yii2.rules.missingVerbFilterRule.inner:
     class: Vix\PhpstanRules\Rules\MissingVerbFilterRule
 
-  yiiPolicy.rules.missingVerbFilterRule:
+  phpstanRules.yii2.rules.missingVerbFilterRule:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.missingVerbFilterRule.inner
+      rule: @phpstanRules.yii2.rules.missingVerbFilterRule.inner
       ruleName: missingVerbFilterRule
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.mixedResponseTypesInAction.inner:
+  phpstanRules.yii2.rules.mixedResponseTypesInAction.inner:
     class: Vix\PhpstanRules\Rules\MixedResponseTypesInActionRule
 
-  yiiPolicy.rules.mixedResponseTypesInAction:
+  phpstanRules.yii2.rules.mixedResponseTypesInAction:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.mixedResponseTypesInAction.inner
+      rule: @phpstanRules.yii2.rules.mixedResponseTypesInAction.inner
       ruleName: mixedResponseTypesInAction
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.mutatingActionAllowsGet.inner:
+  phpstanRules.yii2.rules.mutatingActionAllowsGet.inner:
     class: Vix\PhpstanRules\Rules\MutatingActionAllowsGetRule
 
-  yiiPolicy.rules.mutatingActionAllowsGet:
+  phpstanRules.yii2.rules.mutatingActionAllowsGet:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.mutatingActionAllowsGet.inner
+      rule: @phpstanRules.yii2.rules.mutatingActionAllowsGet.inner
       ruleName: mutatingActionAllowsGet
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.nPlusOneRelationInLoop.inner:
+  phpstanRules.yii2.rules.nPlusOneRelationInLoop.inner:
     class: Vix\PhpstanRules\Rules\NPlusOneRelationInLoopRule
     arguments:
       reflectionProvider: @reflectionProvider
 
-  yiiPolicy.rules.nPlusOneRelationInLoop:
+  phpstanRules.yii2.rules.nPlusOneRelationInLoop:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.nPlusOneRelationInLoop.inner
+      rule: @phpstanRules.yii2.rules.nPlusOneRelationInLoop.inner
       ruleName: nPlusOneRelationInLoop
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.nativeHeaderInController.inner:
+  phpstanRules.yii2.rules.nativeHeaderInController.inner:
     class: Vix\PhpstanRules\Rules\NativeHeaderInControllerRule
 
-  yiiPolicy.rules.nativeHeaderInController:
+  phpstanRules.yii2.rules.nativeHeaderInController:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.nativeHeaderInController.inner
+      rule: @phpstanRules.yii2.rules.nativeHeaderInController.inner
       ruleName: nativeHeaderInController
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.publicAllowWithoutConstraint.inner:
+  phpstanRules.yii2.rules.publicAllowWithoutConstraint.inner:
     class: Vix\PhpstanRules\Rules\PublicAllowWithoutConstraintRule
 
-  yiiPolicy.rules.publicAllowWithoutConstraint:
+  phpstanRules.yii2.rules.publicAllowWithoutConstraint:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.publicAllowWithoutConstraint.inner
+      rule: @phpstanRules.yii2.rules.publicAllowWithoutConstraint.inner
       ruleName: publicAllowWithoutConstraint
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.queryOneWithoutLimit.inner:
+  phpstanRules.yii2.rules.queryOneWithoutLimit.inner:
     class: Vix\PhpstanRules\Rules\QueryOneWithoutLimitRule
 
-  yiiPolicy.rules.queryOneWithoutLimit:
+  phpstanRules.yii2.rules.queryOneWithoutLimit:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.queryOneWithoutLimit.inner
+      rule: @phpstanRules.yii2.rules.queryOneWithoutLimit.inner
       ruleName: queryOneWithoutLimit
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.queryPerformanceSmell.inner:
+  phpstanRules.yii2.rules.queryPerformanceSmell.inner:
     class: Vix\PhpstanRules\Rules\QueryPerformanceSmellRule
 
-  yiiPolicy.rules.queryPerformanceSmell:
+  phpstanRules.yii2.rules.queryPerformanceSmell:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.queryPerformanceSmell.inner
+      rule: @phpstanRules.yii2.rules.queryPerformanceSmell.inner
       ruleName: queryPerformanceSmell
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.rawSqlConditionWithVariable.inner:
+  phpstanRules.yii2.rules.rawSqlConditionWithVariable.inner:
     class: Vix\PhpstanRules\Rules\RawSqlConditionWithVariableRule
 
-  yiiPolicy.rules.rawSqlConditionWithVariable:
+  phpstanRules.yii2.rules.rawSqlConditionWithVariable:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.rawSqlConditionWithVariable.inner
+      rule: @phpstanRules.yii2.rules.rawSqlConditionWithVariable.inner
       ruleName: rawSqlConditionWithVariable
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.redirectReferrerWithoutFallback.inner:
+  phpstanRules.yii2.rules.redirectReferrerWithoutFallback.inner:
     class: Vix\PhpstanRules\Rules\RedirectReferrerWithoutFallbackRule
 
-  yiiPolicy.rules.redirectReferrerWithoutFallback:
+  phpstanRules.yii2.rules.redirectReferrerWithoutFallback:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.redirectReferrerWithoutFallback.inner
+      rule: @phpstanRules.yii2.rules.redirectReferrerWithoutFallback.inner
       ruleName: redirectReferrerWithoutFallback
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.saveFalseWithoutReason.inner:
+  phpstanRules.yii2.rules.saveFalseWithoutReason.inner:
     class: Vix\PhpstanRules\Rules\SaveFalseWithoutReasonRule
     arguments:
-      allowedNamespaces: %yiiPolicy.allowedSaveFalseNamespaces%
+      allowedNamespaces: %phpstanRules.yii2.allowedSaveFalseNamespaces%
 
-  yiiPolicy.rules.saveFalseWithoutReason:
+  phpstanRules.yii2.rules.saveFalseWithoutReason:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.saveFalseWithoutReason.inner
+      rule: @phpstanRules.yii2.rules.saveFalseWithoutReason.inner
       ruleName: saveFalseWithoutReason
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.scenarioAssignedAfterLoad.inner:
+  phpstanRules.yii2.rules.scenarioAssignedAfterLoad.inner:
     class: Vix\PhpstanRules\Rules\ScenarioAssignedAfterLoadRule
     arguments:
       reflectionProvider: @reflectionProvider
 
-  yiiPolicy.rules.scenarioAssignedAfterLoad:
+  phpstanRules.yii2.rules.scenarioAssignedAfterLoad:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.scenarioAssignedAfterLoad.inner
+      rule: @phpstanRules.yii2.rules.scenarioAssignedAfterLoad.inner
       ruleName: scenarioAssignedAfterLoad
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.sensitiveAttributeMarkedSafe.inner:
+  phpstanRules.yii2.rules.sensitiveAttributeMarkedSafe.inner:
     class: Vix\PhpstanRules\Rules\SensitiveAttributeMarkedSafeRule
     arguments:
-      sensitiveAttributePatterns: %yiiPolicy.sensitiveAttributePatterns%
+      reflectionProvider: @reflectionProvider
+      sensitiveAttributePatterns: %phpstanRules.yii2.sensitiveAttributePatterns%
 
-  yiiPolicy.rules.sensitiveAttributeMarkedSafe:
+  phpstanRules.yii2.rules.sensitiveAttributeMarkedSafe:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.sensitiveAttributeMarkedSafe.inner
+      rule: @phpstanRules.yii2.rules.sensitiveAttributeMarkedSafe.inner
       ruleName: sensitiveAttributeMarkedSafe
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.transactionWithoutRollbackHandling.inner:
+  phpstanRules.yii2.rules.transactionWithoutRollbackHandling.inner:
     class: Vix\PhpstanRules\Rules\TransactionWithoutRollbackHandlingRule
 
-  yiiPolicy.rules.transactionWithoutRollbackHandling:
+  phpstanRules.yii2.rules.transactionWithoutRollbackHandling:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.transactionWithoutRollbackHandling.inner
+      rule: @phpstanRules.yii2.rules.transactionWithoutRollbackHandling.inner
       ruleName: transactionWithoutRollbackHandling
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.unboundedQueryResult.inner:
+  phpstanRules.yii2.rules.unboundedQueryResult.inner:
     class: Vix\PhpstanRules\Rules\UnboundedQueryResultRule
 
-  yiiPolicy.rules.unboundedQueryResult:
+  phpstanRules.yii2.rules.unboundedQueryResult:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.unboundedQueryResult.inner
+      rule: @phpstanRules.yii2.rules.unboundedQueryResult.inner
       ruleName: unboundedQueryResult
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
 
-  yiiPolicy.rules.unknownActionInBehavior.inner:
+  phpstanRules.yii2.rules.unknownActionInBehavior.inner:
     class: Vix\PhpstanRules\Rules\UnknownActionInBehaviorRule
 
-  yiiPolicy.rules.unknownActionInBehavior:
+  phpstanRules.yii2.rules.unknownActionInBehavior:
     class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
-      rule: @yiiPolicy.rules.unknownActionInBehavior.inner
+      rule: @phpstanRules.yii2.rules.unknownActionInBehavior.inner
       ruleName: unknownActionInBehavior
-      allRules: %yiiPolicy.rules.all%
-      enabledRules: %yiiPolicy.rules%
+      allRules: %phpstanRules.yii2.rules.all%
+      enabledRules: %phpstanRules.yii2.rules%
     tags:
       - phpstan.rules.rule
