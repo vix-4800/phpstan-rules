@@ -6,10 +6,12 @@ namespace Vix\PhpstanRules\Rules;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\FuncCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use PHPStan\Type\Constant\ConstantStringType;
 
 /**
  * @implements Rule<Expr>
@@ -22,18 +24,20 @@ final class RemoteFileGetContentsRule implements Rule
     }
 
     /**
-     * @param Node  $node
+     * @param Expr  $node
      * @param Scope $scope
      *
      * @return list<IdentifierRuleError>
      */
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!NodeHelpers::isFunctionCall($node, 'file_get_contents') || !isset($node->args[0])) {
+        if (!$node instanceof FuncCall || !NodeHelpers::isFunctionCall($node, 'file_get_contents')) {
             return [];
         }
 
-        if (!NodeHelpers::isRemoteString($node->args[0]->value)) {
+        $path = NodeHelpers::argAt($node->args, 0);
+
+        if ($path === null || !$this->isRemoteString($path->value, $scope)) {
             return [];
         }
 
@@ -42,5 +46,22 @@ final class RemoteFileGetContentsRule implements Rule
                 ->identifier('vix.remoteFileGetContents')
                 ->build(),
         ];
+    }
+
+    private function isRemoteString(Expr $expr, Scope $scope): bool
+    {
+        if (NodeHelpers::isRemoteString($expr)) {
+            return true;
+        }
+
+        return array_any(
+            $scope->getType($expr)->getConstantStrings(),
+            fn(ConstantStringType $stringType): bool => $this->constantStringIsRemote($stringType),
+        );
+    }
+
+    private function constantStringIsRemote(ConstantStringType $stringType): bool
+    {
+        return preg_match('#^https?://#i', $stringType->getValue()) === 1;
     }
 }
