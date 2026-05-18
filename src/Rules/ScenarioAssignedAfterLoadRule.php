@@ -45,14 +45,12 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
     }
 
     /**
+     * @param Namespace_ $node
+     *
      * @return list<IdentifierRuleError>
      */
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!$node instanceof Namespace_) {
-            return [];
-        }
-
         $namespaceName = $node->name?->toString() ?? '';
         $classes = $this->getClasses($node);
         $modelClassNames = $this->getModelClassNames($classes, $namespaceName, $scope);
