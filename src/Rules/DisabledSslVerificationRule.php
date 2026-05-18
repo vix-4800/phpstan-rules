@@ -31,17 +31,13 @@ final class DisabledSslVerificationRule implements Rule
     }
 
     /**
-     * @param Node  $node
+     * @param Expr  $node
      * @param Scope $scope
      *
      * @return list<IdentifierRuleError>
      */
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!$node instanceof Expr) {
-            return [];
-        }
-
         if ($node instanceof FuncCall && NodeHelpers::isFunctionCall($node, 'curl_setopt')) {
             return $this->processCurlSetopt($node);
         }
