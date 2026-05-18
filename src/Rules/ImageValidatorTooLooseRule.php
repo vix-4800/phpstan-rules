@@ -49,14 +49,14 @@ final readonly class ImageValidatorTooLooseRule implements Rule
     }
 
     /**
-     * @param Node  $node
-     * @param Scope $scope
+     * @param Class_ $node
+     * @param Scope  $scope
      *
      * @return list<IdentifierRuleError>
      */
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!$node instanceof Class_ || !$this->isModelClass($node, $scope)) {
+        if (!$this->isModelClass($node, $scope)) {
             return [];
         }
 

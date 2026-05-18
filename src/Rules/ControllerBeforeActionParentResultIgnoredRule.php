@@ -34,17 +34,13 @@ final readonly class ControllerBeforeActionParentResultIgnoredRule implements Ru
     }
 
     /**
-     * @param Node  $node
-     * @param Scope $scope
+     * @param Class_ $node
+     * @param Scope  $scope
      *
      * @return list<IdentifierRuleError>
      */
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!$node instanceof Class_) {
-            return [];
-        }
-
         if (!$this->isControllerOrAction($node, $scope)) {
             return [];
         }

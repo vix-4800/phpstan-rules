@@ -46,17 +46,13 @@ final readonly class LifecycleParentCallRule implements Rule
     }
 
     /**
-     * @param Node  $node
-     * @param Scope $scope
+     * @param Class_ $node
+     * @param Scope  $scope
      *
      * @return list<IdentifierRuleError>
      */
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!$node instanceof Class_) {
-            return [];
-        }
-
         $activeRecord = $this->activeRecordFactory->getActiveRecord($node, $scope);
 
         if ($activeRecord === null) {

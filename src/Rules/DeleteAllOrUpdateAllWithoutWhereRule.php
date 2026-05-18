@@ -30,7 +30,7 @@ final readonly class DeleteAllOrUpdateAllWithoutWhereRule implements Rule
     }
 
     /**
-     * @param Node  $node
+     * @param Expr  $node
      * @param Scope $scope
      *
      * @return list<IdentifierRuleError>

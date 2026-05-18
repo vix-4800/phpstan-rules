@@ -49,17 +49,13 @@ final readonly class RawSqlConditionWithVariableRule implements Rule
     }
 
     /**
-     * @param Node  $node
-     * @param Scope $scope
+     * @param MethodCall $node
+     * @param Scope      $scope
      *
      * @return list<IdentifierRuleError>
      */
     public function processNode(Node $node, Scope $scope): array
     {
-        if (!$node instanceof MethodCall) {
-            return [];
-        }
-
         if (!$node->name instanceof Identifier) {
             return [];
         }
