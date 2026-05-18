@@ -49,6 +49,6 @@
   },
   "scripts": {
     "test": "php -d memory_limit=1G vendor/bin/phpunit --colors=always",
-    "static-analysis": "vendor/bin/phpstan analyse src --level=max --no-progress --memory-limit=1G"
+    "static-analysis": "vendor/bin/phpstan analyze src --level=max --no-progress --memory-limit=1G"
   }
 }
