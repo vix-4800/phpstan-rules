@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Vix\PhpstanYiiPolicyRules\Rules;
+namespace Vix\PhpstanRules\Rules;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr;
@@ -19,7 +19,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
-use Vix\PhpstanYiiPolicyRules\Support\YiiClassHierarchy;
+use Vix\PhpstanRules\Support\YiiClassHierarchy;
 
 /**
  * @implements Rule<Class_>

@@ -39,12 +39,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Vix\\PhpstanYiiPolicyRules\\": "src/"
+      "Vix\\PhpstanRules\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Vix\\PhpstanYiiPolicyRules\\Tests\\": "tests/"
+      "Vix\\PhpstanRules\\Tests\\": "tests/"
     }
   },
   "scripts": {

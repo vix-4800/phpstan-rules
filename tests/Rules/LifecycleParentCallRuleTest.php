@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Vix\PhpstanYiiPolicyRules\Tests\Rules;
+namespace Vix\PhpstanRules\Tests\Rules;
 
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
-use Vix\PhpstanYiiPolicyRules\Rules\LifecycleParentCallRule;
+use Vix\PhpstanRules\Rules\LifecycleParentCallRule;
 
 /**
  * @extends RuleTestCase<LifecycleParentCallRule>

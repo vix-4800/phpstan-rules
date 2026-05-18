@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Vix\PhpstanYiiPolicyRules\Tests\Rules;
+namespace Vix\PhpstanRules\Tests\Rules;
 
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
-use Vix\PhpstanYiiPolicyRules\Rules\ActiveDataProviderWithoutPaginationRule;
+use Vix\PhpstanRules\Rules\ActiveDataProviderWithoutPaginationRule;
 
 /**
  * @extends RuleTestCase<ActiveDataProviderWithoutPaginationRule>

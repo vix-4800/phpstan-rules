@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Vix\PhpstanYiiPolicyRules\Rules;
+namespace Vix\PhpstanRules\Rules;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
@@ -10,7 +10,7 @@ use PHPStan\Analyser\Scope;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
-use Vix\PhpstanYiiPolicyRules\Support\QueryChainInspector;
+use Vix\PhpstanRules\Support\QueryChainInspector;
 
 /**
  * @implements Rule<MethodCall>

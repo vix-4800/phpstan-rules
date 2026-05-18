@@ -1,9 +1,9 @@
 services:
   yiiPolicy.rules.activeDataProviderWithoutPagination.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\ActiveDataProviderWithoutPaginationRule
+    class: Vix\PhpstanRules\Rules\ActiveDataProviderWithoutPaginationRule
 
   yiiPolicy.rules.activeDataProviderWithoutPagination:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.activeDataProviderWithoutPagination.inner
       ruleName: activeDataProviderWithoutPagination
@@ -13,10 +13,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.componentInitParentCall.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\ComponentInitParentCallRule
+    class: Vix\PhpstanRules\Rules\ComponentInitParentCallRule
 
   yiiPolicy.rules.componentInitParentCall:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.componentInitParentCall.inner
       ruleName: componentInitParentCall
@@ -26,10 +26,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.controllerBeforeActionParentResultIgnored.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\ControllerBeforeActionParentResultIgnoredRule
+    class: Vix\PhpstanRules\Rules\ControllerBeforeActionParentResultIgnoredRule
 
   yiiPolicy.rules.controllerBeforeActionParentResultIgnored:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.controllerBeforeActionParentResultIgnored.inner
       ruleName: controllerBeforeActionParentResultIgnored
@@ -39,10 +39,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.csrfDisabledWithoutCompensatingControl.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\CsrfDisabledWithoutCompensatingControlRule
+    class: Vix\PhpstanRules\Rules\CsrfDisabledWithoutCompensatingControlRule
 
   yiiPolicy.rules.csrfDisabledWithoutCompensatingControl:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.csrfDisabledWithoutCompensatingControl.inner
       ruleName: csrfDisabledWithoutCompensatingControl
@@ -52,10 +52,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.deleteAllOrUpdateAllWithoutWhere.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\DeleteAllOrUpdateAllWithoutWhereRule
+    class: Vix\PhpstanRules\Rules\DeleteAllOrUpdateAllWithoutWhereRule
 
   yiiPolicy.rules.deleteAllOrUpdateAllWithoutWhere:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.deleteAllOrUpdateAllWithoutWhere.inner
       ruleName: deleteAllOrUpdateAllWithoutWhere
@@ -65,10 +65,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.fileValidatorTooLoose.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\FileValidatorTooLooseRule
+    class: Vix\PhpstanRules\Rules\FileValidatorTooLooseRule
 
   yiiPolicy.rules.fileValidatorTooLoose:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.fileValidatorTooLoose.inner
       ruleName: fileValidatorTooLoose
@@ -78,10 +78,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.imageValidatorTooLoose.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\ImageValidatorTooLooseRule
+    class: Vix\PhpstanRules\Rules\ImageValidatorTooLooseRule
 
   yiiPolicy.rules.imageValidatorTooLoose:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.imageValidatorTooLoose.inner
       ruleName: imageValidatorTooLoose
@@ -91,10 +91,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.lifecycleParentCall.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\LifecycleParentCallRule
+    class: Vix\PhpstanRules\Rules\LifecycleParentCallRule
 
   yiiPolicy.rules.lifecycleParentCall:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.lifecycleParentCall.inner
       ruleName: lifecycleParentCall
@@ -104,10 +104,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.lifecycleSelfSave.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\LifecycleSelfSaveRule
+    class: Vix\PhpstanRules\Rules\LifecycleSelfSaveRule
 
   yiiPolicy.rules.lifecycleSelfSave:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.lifecycleSelfSave.inner
       ruleName: lifecycleSelfSave
@@ -117,10 +117,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.massSelectionWithoutLimit.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\MassSelectionWithoutLimitRule
+    class: Vix\PhpstanRules\Rules\MassSelectionWithoutLimitRule
 
   yiiPolicy.rules.massSelectionWithoutLimit:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.massSelectionWithoutLimit.inner
       ruleName: massSelectionWithoutLimit
@@ -130,10 +130,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.missingAccessRule.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\MissingAccessRule
+    class: Vix\PhpstanRules\Rules\MissingAccessRule
 
   yiiPolicy.rules.missingAccessRule:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.missingAccessRule.inner
       ruleName: missingAccessRule
@@ -143,10 +143,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.missingAjaxFilterRule.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\MissingAjaxFilterRule
+    class: Vix\PhpstanRules\Rules\MissingAjaxFilterRule
 
   yiiPolicy.rules.missingAjaxFilterRule:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.missingAjaxFilterRule.inner
       ruleName: missingAjaxFilterRule
@@ -156,10 +156,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.missingVerbFilterRule.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\MissingVerbFilterRule
+    class: Vix\PhpstanRules\Rules\MissingVerbFilterRule
 
   yiiPolicy.rules.missingVerbFilterRule:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.missingVerbFilterRule.inner
       ruleName: missingVerbFilterRule
@@ -169,10 +169,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.mixedResponseTypesInAction.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\MixedResponseTypesInActionRule
+    class: Vix\PhpstanRules\Rules\MixedResponseTypesInActionRule
 
   yiiPolicy.rules.mixedResponseTypesInAction:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.mixedResponseTypesInAction.inner
       ruleName: mixedResponseTypesInAction
@@ -182,10 +182,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.mutatingActionAllowsGet.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\MutatingActionAllowsGetRule
+    class: Vix\PhpstanRules\Rules\MutatingActionAllowsGetRule
 
   yiiPolicy.rules.mutatingActionAllowsGet:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.mutatingActionAllowsGet.inner
       ruleName: mutatingActionAllowsGet
@@ -195,12 +195,12 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.nPlusOneRelationInLoop.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\NPlusOneRelationInLoopRule
+    class: Vix\PhpstanRules\Rules\NPlusOneRelationInLoopRule
     arguments:
       reflectionProvider: @reflectionProvider
 
   yiiPolicy.rules.nPlusOneRelationInLoop:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.nPlusOneRelationInLoop.inner
       ruleName: nPlusOneRelationInLoop
@@ -210,10 +210,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.nativeHeaderInController.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\NativeHeaderInControllerRule
+    class: Vix\PhpstanRules\Rules\NativeHeaderInControllerRule
 
   yiiPolicy.rules.nativeHeaderInController:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.nativeHeaderInController.inner
       ruleName: nativeHeaderInController
@@ -223,10 +223,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.publicAllowWithoutConstraint.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\PublicAllowWithoutConstraintRule
+    class: Vix\PhpstanRules\Rules\PublicAllowWithoutConstraintRule
 
   yiiPolicy.rules.publicAllowWithoutConstraint:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.publicAllowWithoutConstraint.inner
       ruleName: publicAllowWithoutConstraint
@@ -236,10 +236,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.queryOneWithoutLimit.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\QueryOneWithoutLimitRule
+    class: Vix\PhpstanRules\Rules\QueryOneWithoutLimitRule
 
   yiiPolicy.rules.queryOneWithoutLimit:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.queryOneWithoutLimit.inner
       ruleName: queryOneWithoutLimit
@@ -249,10 +249,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.queryPerformanceSmell.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\QueryPerformanceSmellRule
+    class: Vix\PhpstanRules\Rules\QueryPerformanceSmellRule
 
   yiiPolicy.rules.queryPerformanceSmell:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.queryPerformanceSmell.inner
       ruleName: queryPerformanceSmell
@@ -262,10 +262,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.rawSqlConditionWithVariable.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\RawSqlConditionWithVariableRule
+    class: Vix\PhpstanRules\Rules\RawSqlConditionWithVariableRule
 
   yiiPolicy.rules.rawSqlConditionWithVariable:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.rawSqlConditionWithVariable.inner
       ruleName: rawSqlConditionWithVariable
@@ -275,10 +275,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.redirectReferrerWithoutFallback.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\RedirectReferrerWithoutFallbackRule
+    class: Vix\PhpstanRules\Rules\RedirectReferrerWithoutFallbackRule
 
   yiiPolicy.rules.redirectReferrerWithoutFallback:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.redirectReferrerWithoutFallback.inner
       ruleName: redirectReferrerWithoutFallback
@@ -288,12 +288,12 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.saveFalseWithoutReason.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\SaveFalseWithoutReasonRule
+    class: Vix\PhpstanRules\Rules\SaveFalseWithoutReasonRule
     arguments:
       allowedNamespaces: %yiiPolicy.allowedSaveFalseNamespaces%
 
   yiiPolicy.rules.saveFalseWithoutReason:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.saveFalseWithoutReason.inner
       ruleName: saveFalseWithoutReason
@@ -303,12 +303,12 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.scenarioAssignedAfterLoad.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\ScenarioAssignedAfterLoadRule
+    class: Vix\PhpstanRules\Rules\ScenarioAssignedAfterLoadRule
     arguments:
       reflectionProvider: @reflectionProvider
 
   yiiPolicy.rules.scenarioAssignedAfterLoad:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.scenarioAssignedAfterLoad.inner
       ruleName: scenarioAssignedAfterLoad
@@ -318,12 +318,12 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.sensitiveAttributeMarkedSafe.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\SensitiveAttributeMarkedSafeRule
+    class: Vix\PhpstanRules\Rules\SensitiveAttributeMarkedSafeRule
     arguments:
       sensitiveAttributePatterns: %yiiPolicy.sensitiveAttributePatterns%
 
   yiiPolicy.rules.sensitiveAttributeMarkedSafe:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.sensitiveAttributeMarkedSafe.inner
       ruleName: sensitiveAttributeMarkedSafe
@@ -333,10 +333,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.transactionWithoutRollbackHandling.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\TransactionWithoutRollbackHandlingRule
+    class: Vix\PhpstanRules\Rules\TransactionWithoutRollbackHandlingRule
 
   yiiPolicy.rules.transactionWithoutRollbackHandling:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.transactionWithoutRollbackHandling.inner
       ruleName: transactionWithoutRollbackHandling
@@ -346,10 +346,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.unboundedQueryResult.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\UnboundedQueryResultRule
+    class: Vix\PhpstanRules\Rules\UnboundedQueryResultRule
 
   yiiPolicy.rules.unboundedQueryResult:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.unboundedQueryResult.inner
       ruleName: unboundedQueryResult
@@ -359,10 +359,10 @@ services:
       - phpstan.rules.rule
 
   yiiPolicy.rules.unknownActionInBehavior.inner:
-    class: Vix\PhpstanYiiPolicyRules\Rules\UnknownActionInBehaviorRule
+    class: Vix\PhpstanRules\Rules\UnknownActionInBehaviorRule
 
   yiiPolicy.rules.unknownActionInBehavior:
-    class: Vix\PhpstanYiiPolicyRules\Support\ConfigurableRule
+    class: Vix\PhpstanRules\Support\ConfigurableRule
     arguments:
       rule: @yiiPolicy.rules.unknownActionInBehavior.inner
       ruleName: unknownActionInBehavior

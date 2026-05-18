@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Vix\PhpstanYiiPolicyRules\Tests\Rules;
+namespace Vix\PhpstanRules\Tests\Rules;
 
 use PHPStan\Rules\Rule;
 use PHPStan\Testing\RuleTestCase;
-use Vix\PhpstanYiiPolicyRules\Rules\UnboundedQueryResultRule;
+use Vix\PhpstanRules\Rules\UnboundedQueryResultRule;
 
 /**
  * @extends RuleTestCase<UnboundedQueryResultRule>

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Vix\PhpstanYiiPolicyRules\Support;
+namespace Vix\PhpstanRules\Support;
 
 use PhpParser\Node\Stmt\Class_;
 

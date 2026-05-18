@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Vix\PhpstanYiiPolicyRules\Tests\Support;
+namespace Vix\PhpstanRules\Tests\Support;
 
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeFinder;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
-use Vix\PhpstanYiiPolicyRules\Support\YiiMethod;
+use Vix\PhpstanRules\Support\YiiMethod;
 
 final class YiiMethodTest extends TestCase
 {

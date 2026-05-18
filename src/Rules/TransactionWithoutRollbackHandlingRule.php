@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Vix\PhpstanYiiPolicyRules\Rules;
+namespace Vix\PhpstanRules\Rules;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
