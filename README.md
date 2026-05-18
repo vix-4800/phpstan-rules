@@ -34,6 +34,9 @@ Enable all currently available rules:
 ```neon
 parameters:
     phpstanRules:
+        php:
+            rules:
+                all: true
         yii2:
             rules:
                 all: true
@@ -44,6 +47,10 @@ Or enable selected rules:
 ```neon
 parameters:
     phpstanRules:
+        php:
+            rules:
+                remoteFileGetContents: true
+                disabledSslVerification: true
         yii2:
             rules:
                 missingAccessRule: true
@@ -56,6 +63,12 @@ Current config from `extension.neon`:
 ```neon
 parameters:
     phpstanRules:
+        php:
+            rules:
+                all: false
+                disabledSslVerification: false
+                httpClientWithoutTimeout: false
+                remoteFileGetContents: false
         yii2:
             rules:
                 activeDataProviderWithoutPagination: false
