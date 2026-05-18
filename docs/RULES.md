@@ -6,6 +6,10 @@ This page documents the rules currently shipped in this package.
 
 - [Rule Reference](#rule-reference)
   - [Table of Contents](#table-of-contents)
+  - [PHP](#php)
+    - [`php.remoteFileGetContents`](#phpremotefilegetcontents)
+    - [`php.disabledSslVerification`](#phpdisabledsslverification)
+    - [`php.httpClientWithoutTimeout`](#phphttpclientwithouttimeout)
   - [Yii2](#yii2)
     - [`yii.missingAccessRule`](#yiimissingaccessrule)
     - [`yii.missingVerbFilterRule`](#yiimissingverbfilterrule)
@@ -35,6 +39,68 @@ This page documents the rules currently shipped in this package.
     - [`yii.nPlusOneRelationInLoop`](#yiinplusonerelationinloop)
     - [`yii.scenarioAssignedAfterLoad`](#yiiscenarioassignedafterload)
     - [`yii.sensitiveAttributeMarkedSafe`](#yiisensitiveattributemarkedsafe)
+
+## PHP
+
+### `php.remoteFileGetContents`
+
+Detects direct remote URL reads through `file_get_contents()`.
+
+Before
+
+```php
+$body = file_get_contents('https://example.com/api');
+```
+
+After
+
+```php
+$client->request('GET', 'https://example.com/api', ['timeout' => 10]);
+```
+
+### `php.disabledSslVerification`
+
+Detects HTTP client and curl calls that disable TLS certificate verification.
+
+Before
+
+```php
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+
+$client->request('GET', 'https://example.com', ['verify' => false]);
+```
+
+After
+
+```php
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+
+$client->request('GET', 'https://example.com', ['verify' => true]);
+```
+
+### `php.httpClientWithoutTimeout`
+
+Detects HTTP client construction, request calls, and `curl_exec()` calls without an explicit timeout.
+
+Before
+
+```php
+$client = new Client();
+$client->request('GET', 'https://example.com');
+curl_exec($curl);
+```
+
+After
+
+```php
+$client = new Client(['timeout' => 10]);
+$client->request('GET', 'https://example.com', ['timeout' => 10]);
+
+curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+curl_exec($curl);
+```
 
 ## Yii2
 
