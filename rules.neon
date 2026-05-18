@@ -1,4 +1,43 @@
 services:
+  phpstanRules.php.rules.disabledSslVerification.inner:
+    class: Vix\PhpstanRules\Rules\DisabledSslVerificationRule
+
+  phpstanRules.php.rules.disabledSslVerification:
+    class: Vix\PhpstanRules\Support\ConfigurableRule
+    arguments:
+      rule: @phpstanRules.php.rules.disabledSslVerification.inner
+      ruleName: disabledSslVerification
+      allRules: %phpstanRules.php.rules.all%
+      enabledRules: %phpstanRules.php.rules%
+    tags:
+      - phpstan.rules.rule
+
+  phpstanRules.php.rules.httpClientWithoutTimeout.inner:
+    class: Vix\PhpstanRules\Rules\HttpClientWithoutTimeoutRule
+
+  phpstanRules.php.rules.httpClientWithoutTimeout:
+    class: Vix\PhpstanRules\Support\ConfigurableRule
+    arguments:
+      rule: @phpstanRules.php.rules.httpClientWithoutTimeout.inner
+      ruleName: httpClientWithoutTimeout
+      allRules: %phpstanRules.php.rules.all%
+      enabledRules: %phpstanRules.php.rules%
+    tags:
+      - phpstan.rules.rule
+
+  phpstanRules.php.rules.remoteFileGetContents.inner:
+    class: Vix\PhpstanRules\Rules\RemoteFileGetContentsRule
+
+  phpstanRules.php.rules.remoteFileGetContents:
+    class: Vix\PhpstanRules\Support\ConfigurableRule
+    arguments:
+      rule: @phpstanRules.php.rules.remoteFileGetContents.inner
+      ruleName: remoteFileGetContents
+      allRules: %phpstanRules.php.rules.all%
+      enabledRules: %phpstanRules.php.rules%
+    tags:
+      - phpstan.rules.rule
+
   phpstanRules.yii2.rules.activeDataProviderWithoutPagination.inner:
     class: Vix\PhpstanRules\Rules\ActiveDataProviderWithoutPaginationRule
 

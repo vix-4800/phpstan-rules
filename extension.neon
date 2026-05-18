@@ -3,6 +3,14 @@ includes:
 
 parametersSchema:
   phpstanRules: structure([
+    php: structure([
+      rules: structure([
+        all: bool(),
+        disabledSslVerification: bool(),
+        httpClientWithoutTimeout: bool(),
+        remoteFileGetContents: bool(),
+      ]),
+    ]),
     yii2: structure([
       allowedSaveFalseNamespaces: listOf(string()),
       sensitiveAttributePatterns: listOf(string()),
@@ -42,6 +50,12 @@ parametersSchema:
 
 parameters:
   phpstanRules:
+    php:
+      rules:
+        all: false
+        disabledSslVerification: false
+        httpClientWithoutTimeout: false
+        remoteFileGetContents: false
     yii2:
       allowedSaveFalseNamespaces: []
       sensitiveAttributePatterns:
