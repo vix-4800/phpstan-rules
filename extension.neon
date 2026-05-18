@@ -2,74 +2,77 @@ includes:
   - rules.neon
 
 parametersSchema:
-  yiiPolicy: structure([
-    allowedSaveFalseNamespaces: listOf(string()),
-    sensitiveAttributePatterns: listOf(string()),
-    rules: structure([
-      activeDataProviderWithoutPagination: bool(),
-      all: bool(),
-      componentInitParentCall: bool(),
-      controllerBeforeActionParentResultIgnored: bool(),
-      csrfDisabledWithoutCompensatingControl: bool(),
-      deleteAllOrUpdateAllWithoutWhere: bool(),
-      fileValidatorTooLoose: bool(),
-      imageValidatorTooLoose: bool(),
-      lifecycleParentCall: bool(),
-      lifecycleSelfSave: bool(),
-      massSelectionWithoutLimit: bool(),
-      missingAccessRule: bool(),
-      missingAjaxFilterRule: bool(),
-      missingVerbFilterRule: bool(),
-      mixedResponseTypesInAction: bool(),
-      mutatingActionAllowsGet: bool(),
-      nPlusOneRelationInLoop: bool(),
-      nativeHeaderInController: bool(),
-      publicAllowWithoutConstraint: bool(),
-      queryOneWithoutLimit: bool(),
-      queryPerformanceSmell: bool(),
-      rawSqlConditionWithVariable: bool(),
-      redirectReferrerWithoutFallback: bool(),
-      saveFalseWithoutReason: bool(),
-      scenarioAssignedAfterLoad: bool(),
-      sensitiveAttributeMarkedSafe: bool(),
-      transactionWithoutRollbackHandling: bool(),
-      unboundedQueryResult: bool(),
-      unknownActionInBehavior: bool(),
+  phpstanRules: structure([
+    yii2: structure([
+      allowedSaveFalseNamespaces: listOf(string()),
+      sensitiveAttributePatterns: listOf(string()),
+      rules: structure([
+        activeDataProviderWithoutPagination: bool(),
+        all: bool(),
+        componentInitParentCall: bool(),
+        controllerBeforeActionParentResultIgnored: bool(),
+        csrfDisabledWithoutCompensatingControl: bool(),
+        deleteAllOrUpdateAllWithoutWhere: bool(),
+        fileValidatorTooLoose: bool(),
+        imageValidatorTooLoose: bool(),
+        lifecycleParentCall: bool(),
+        lifecycleSelfSave: bool(),
+        massSelectionWithoutLimit: bool(),
+        missingAccessRule: bool(),
+        missingAjaxFilterRule: bool(),
+        missingVerbFilterRule: bool(),
+        mixedResponseTypesInAction: bool(),
+        mutatingActionAllowsGet: bool(),
+        nPlusOneRelationInLoop: bool(),
+        nativeHeaderInController: bool(),
+        publicAllowWithoutConstraint: bool(),
+        queryOneWithoutLimit: bool(),
+        queryPerformanceSmell: bool(),
+        rawSqlConditionWithVariable: bool(),
+        redirectReferrerWithoutFallback: bool(),
+        saveFalseWithoutReason: bool(),
+        scenarioAssignedAfterLoad: bool(),
+        sensitiveAttributeMarkedSafe: bool(),
+        transactionWithoutRollbackHandling: bool(),
+        unboundedQueryResult: bool(),
+        unknownActionInBehavior: bool(),
+      ]),
     ]),
   ])
 
 parameters:
-  yiiPolicy:
-    allowedSaveFalseNamespaces: []
-    sensitiveAttributePatterns:
-      - '~^(id|user_id|created_at|updated_at|created_by|updated_by|role|status|password_hash|auth_key|access_token|is_admin)$~i'
-    rules:
-      activeDataProviderWithoutPagination: false
-      all: false
-      componentInitParentCall: false
-      controllerBeforeActionParentResultIgnored: false
-      csrfDisabledWithoutCompensatingControl: false
-      deleteAllOrUpdateAllWithoutWhere: false
-      fileValidatorTooLoose: false
-      imageValidatorTooLoose: false
-      lifecycleParentCall: false
-      lifecycleSelfSave: false
-      massSelectionWithoutLimit: false
-      missingAccessRule: false
-      missingAjaxFilterRule: false
-      missingVerbFilterRule: false
-      mixedResponseTypesInAction: false
-      mutatingActionAllowsGet: false
-      nPlusOneRelationInLoop: false
-      nativeHeaderInController: false
-      publicAllowWithoutConstraint: false
-      queryOneWithoutLimit: false
-      queryPerformanceSmell: false
-      rawSqlConditionWithVariable: false
-      redirectReferrerWithoutFallback: false
-      saveFalseWithoutReason: false
-      scenarioAssignedAfterLoad: false
-      sensitiveAttributeMarkedSafe: false
-      transactionWithoutRollbackHandling: false
-      unboundedQueryResult: false
-      unknownActionInBehavior: false
+  phpstanRules:
+    yii2:
+      allowedSaveFalseNamespaces: []
+      sensitiveAttributePatterns:
+        - '~^(id|user_id|created_at|updated_at|created_by|updated_by|role|status|password_hash|auth_key|access_token|is_admin)$~i'
+      rules:
+        activeDataProviderWithoutPagination: false
+        all: false
+        componentInitParentCall: false
+        controllerBeforeActionParentResultIgnored: false
+        csrfDisabledWithoutCompensatingControl: false
+        deleteAllOrUpdateAllWithoutWhere: false
+        fileValidatorTooLoose: false
+        imageValidatorTooLoose: false
+        lifecycleParentCall: false
+        lifecycleSelfSave: false
+        massSelectionWithoutLimit: false
+        missingAccessRule: false
+        missingAjaxFilterRule: false
+        missingVerbFilterRule: false
+        mixedResponseTypesInAction: false
+        mutatingActionAllowsGet: false
+        nPlusOneRelationInLoop: false
+        nativeHeaderInController: false
+        publicAllowWithoutConstraint: false
+        queryOneWithoutLimit: false
+        queryPerformanceSmell: false
+        rawSqlConditionWithVariable: false
+        redirectReferrerWithoutFallback: false
+        saveFalseWithoutReason: false
+        scenarioAssignedAfterLoad: false
+        sensitiveAttributeMarkedSafe: false
+        transactionWithoutRollbackHandling: false
+        unboundedQueryResult: false
+        unknownActionInBehavior: false
