@@ -10,6 +10,8 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\IdentifierRuleError;
@@ -36,17 +38,24 @@ final class DisabledSslVerificationRule implements Rule
      */
     public function processNode(Node $node, Scope $scope): array
     {
-        if (NodeHelpers::isFunctionCall($node, 'curl_setopt')) {
+        if (!$node instanceof Expr) {
+            return [];
+        }
+
+        if ($node instanceof FuncCall && NodeHelpers::isFunctionCall($node, 'curl_setopt')) {
             return $this->processCurlSetopt($node);
         }
 
-        if (NodeHelpers::isFunctionCall($node, 'curl_setopt_array')) {
-            return $this->processCurlSetoptArray($node->args[1] ?? null);
+        if ($node instanceof FuncCall && NodeHelpers::isFunctionCall($node, 'curl_setopt_array')) {
+            return $this->processCurlSetoptArray(NodeHelpers::argAt($node->args, 1));
         }
 
-        if ($node instanceof Expr && NodeHelpers::isRequestCall($node)) {
-            return NodeHelpers::optionArrayHasKey($node->args[2] ?? null, 'verify')
-                && $this->isVerifyFalse($node->args[2]->value)
+        if (($node instanceof MethodCall || $node instanceof StaticCall) && NodeHelpers::isRequestCall($node)) {
+            $options = NodeHelpers::argAt($node->getArgs(), 2);
+
+            return $options !== null
+                && NodeHelpers::optionArrayHasKey($options, 'verify')
+                && $this->isVerifyFalse($options->value)
                     ? [$this->error()]
                     : [];
         }
@@ -61,15 +70,18 @@ final class DisabledSslVerificationRule implements Rule
      */
     private function processCurlSetopt(FuncCall $node): array
     {
-        if (!isset($node->args[1], $node->args[2])) {
+        $option = NodeHelpers::argAt($node->args, 1);
+        $value = NodeHelpers::argAt($node->args, 2);
+
+        if ($option === null || $value === null) {
             return [];
         }
 
-        if ($this->isSslVerifyPeer($node->args[1]->value) && NodeHelpers::isFalseLike($node->args[2]->value)) {
+        if ($this->isSslVerifyPeer($option->value) && NodeHelpers::isFalseLike($value->value)) {
             return [$this->error()];
         }
 
-        if ($this->isSslVerifyHost($node->args[1]->value) && NodeHelpers::isZeroLike($node->args[2]->value)) {
+        if ($this->isSslVerifyHost($option->value) && NodeHelpers::isZeroLike($value->value)) {
             return [$this->error()];
         }
 
@@ -88,10 +100,6 @@ final class DisabledSslVerificationRule implements Rule
         }
 
         foreach ($arg->value->items as $item) {
-            if ($item === null) {
-                continue;
-            }
-
             if ($item->key === null) {
                 continue;
             }
@@ -115,10 +123,6 @@ final class DisabledSslVerificationRule implements Rule
         }
 
         foreach ($expr->items as $item) {
-            if ($item === null) {
-                continue;
-            }
-
             if ($item->key === null) {
                 continue;
             }
