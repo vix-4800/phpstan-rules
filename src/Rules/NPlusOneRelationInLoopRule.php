@@ -27,6 +27,8 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use ReflectionMethod;
+use ReflectionNamedType;
 
 /**
  * @implements Rule<Namespace_>
@@ -73,7 +75,9 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
     }
 
     /**
+     * @param ClassMethod                 $method
      * @param array<string, list<string>> $relationsByClass
+     * @param string                      $namespaceName
      *
      * @return list<IdentifierRuleError>
      */
@@ -84,14 +88,22 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
         $finder = new NodeFinder();
 
         foreach ($finder->findInstanceOf($method->stmts ?? [], Foreach_::class) as $foreach) {
-            if (!$foreach->expr instanceof Variable || !$foreach->valueVar instanceof Variable) {
+            if (!$foreach->expr instanceof Variable) {
+                continue;
+            }
+
+            if (!$foreach->valueVar instanceof Variable) {
                 continue;
             }
 
             $collectionName = $this->variableName($foreach->expr);
             $itemName = $this->variableName($foreach->valueVar);
 
-            if ($collectionName === '' || $itemName === '') {
+            if ($collectionName === '') {
+                continue;
+            }
+
+            if ($itemName === '') {
                 continue;
             }
 
@@ -130,6 +142,7 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
     }
 
     /**
+     * @param string                      $modelClass
      * @param array<string, list<string>> $relationsByClass
      *
      * @return list<string>
@@ -155,7 +168,7 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
         return array_values(array_unique($relations));
     }
 
-    private function getNativeActiveQueryRelationName(\ReflectionMethod $method): ?string
+    private function getNativeActiveQueryRelationName(ReflectionMethod $method): ?string
     {
         $methodName = $method->getName();
 
@@ -165,7 +178,7 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
 
         $returnType = $method->getReturnType();
 
-        if (!$returnType instanceof \ReflectionNamedType || $returnType->isBuiltin()) {
+        if (!$returnType instanceof ReflectionNamedType || $returnType->isBuiltin()) {
             return null;
         }
 
@@ -179,6 +192,8 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
     }
 
     /**
+     * @param Namespace_ $namespace
+     *
      * @return list<Class_>
      */
     private function getClasses(Namespace_ $namespace): array
@@ -191,6 +206,7 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
 
     /**
      * @param list<Class_> $classes
+     * @param string       $namespaceName
      *
      * @return array<string, list<string>>
      */
@@ -234,7 +250,7 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
         return lcfirst(mb_substr($methodName, mb_strlen('get')));
     }
 
-    private function isActiveQueryReturnType(Node|null $returnType): bool
+    private function isActiveQueryReturnType(?Node $returnType): bool
     {
         if ($returnType instanceof NullableType) {
             $returnType = $returnType->type;
@@ -255,6 +271,9 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
     }
 
     /**
+     * @param ClassMethod $method
+     * @param string      $namespaceName
+     *
      * @return array<string, array{modelClass: string, eagerRelations: list<string>}>
      */
     private function getQueryResultAssignments(ClassMethod $method, string $namespaceName): array
@@ -286,6 +305,9 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
     }
 
     /**
+     * @param Expr   $expr
+     * @param string $namespaceName
+     *
      * @return array{modelClass: string, eagerRelations: list<string>}|null
      */
     private function getQueryResult(Expr $expr, string $namespaceName): ?array
@@ -311,6 +333,8 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
     }
 
     /**
+     * @param MethodCall $terminalCall
+     *
      * @return list<MethodCall>
      */
     private function getMethodChain(MethodCall $terminalCall): array
@@ -347,7 +371,11 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
         $relations = [];
 
         foreach ($chain as $call) {
-            if (!$call->name instanceof Identifier || !in_array($call->name->toString(), ['with', 'joinWith'], true)) {
+            if (!$call->name instanceof Identifier) {
+                continue;
+            }
+
+            if (!in_array($call->name->toString(), ['with', 'joinWith'], true)) {
                 continue;
             }
 
@@ -367,6 +395,8 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
     }
 
     /**
+     * @param Expr $expr
+     *
      * @return list<string>
      */
     private function getRelationNames(Expr $expr): array
@@ -386,15 +416,20 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
                 $relations[] = $this->rootRelationName($item->key->value);
             }
 
-            if ($item->value instanceof String_) {
-                $relations[] = $this->rootRelationName($item->value->value);
+            if (!$item->value instanceof String_) {
+                continue;
             }
+
+            $relations[] = $this->rootRelationName($item->value->value);
         }
 
         return $relations;
     }
 
     /**
+     * @param Foreach_ $foreach
+     * @param string   $itemName
+     *
      * @return list<PropertyFetch>
      */
     private function getRelationFetches(Foreach_ $foreach, string $itemName): array
@@ -403,7 +438,11 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
         $finder = new NodeFinder();
 
         foreach ($finder->findInstanceOf($foreach->stmts, PropertyFetch::class) as $propertyFetch) {
-            if (!$propertyFetch->var instanceof Variable || !$propertyFetch->name instanceof Identifier) {
+            if (!$propertyFetch->var instanceof Variable) {
+                continue;
+            }
+
+            if (!$propertyFetch->name instanceof Identifier) {
                 continue;
             }
 
@@ -418,6 +457,7 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
     }
 
     /**
+     * @param string       $relationName
      * @param list<string> $eagerRelations
      */
     private function isEagerLoaded(string $relationName, array $eagerRelations): bool

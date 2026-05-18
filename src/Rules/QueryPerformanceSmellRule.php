@@ -216,7 +216,7 @@ final readonly class QueryPerformanceSmellRule implements Rule
 
     /**
      * @param array<int|string, Arg|VariadicPlaceholder> $args
-     * @param int                                         $index
+     * @param int                                        $index
      */
     private function getArgument(array $args, int $index): ?Arg
     {

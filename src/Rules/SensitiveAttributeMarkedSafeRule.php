@@ -33,7 +33,8 @@ final readonly class SensitiveAttributeMarkedSafeRule implements Rule
     private YiiClassHierarchy $classHierarchy;
 
     /**
-     * @param list<string> $sensitiveAttributePatterns
+     * @param ReflectionProvider $reflectionProvider
+     * @param list<string>       $sensitiveAttributePatterns
      */
     public function __construct(
         ReflectionProvider $reflectionProvider,
@@ -72,7 +73,11 @@ final readonly class SensitiveAttributeMarkedSafeRule implements Rule
         $errors = [];
 
         foreach ($rulesMethod->stmts ?? [] as $statement) {
-            if (!$statement instanceof Return_ || !$statement->expr instanceof Array_) {
+            if (!$statement instanceof Return_) {
+                continue;
+            }
+
+            if (!$statement->expr instanceof Array_) {
                 continue;
             }
 
@@ -81,7 +86,11 @@ final readonly class SensitiveAttributeMarkedSafeRule implements Rule
                     continue;
                 }
 
-                if ($this->hasScenarioRestriction($item->value) || $this->isUnsafeValidator($item->value)) {
+                if ($this->hasScenarioRestriction($item->value)) {
+                    continue;
+                }
+
+                if ($this->isUnsafeValidator($item->value)) {
                     continue;
                 }
 
@@ -101,6 +110,8 @@ final readonly class SensitiveAttributeMarkedSafeRule implements Rule
     }
 
     /**
+     * @param Array_ $rule
+     *
      * @return list<string>
      */
     private function getSensitiveAttributes(Array_ $rule): array
@@ -114,15 +125,17 @@ final readonly class SensitiveAttributeMarkedSafeRule implements Rule
 
         if ($attributeExpr instanceof Array_) {
             foreach ($attributeExpr->items as $item) {
-                if ($item->value instanceof String_) {
-                    $attributes[] = $item->value->value;
+                if (!$item->value instanceof String_) {
+                    continue;
                 }
+
+                $attributes[] = $item->value->value;
             }
         }
 
         return array_values(array_filter(
             $attributes,
-            fn(string $attribute): bool => $this->isSensitiveAttribute($attribute),
+            $this->isSensitiveAttribute(...),
         ));
     }
 
@@ -173,13 +186,10 @@ final readonly class SensitiveAttributeMarkedSafeRule implements Rule
 
     private function isSensitiveAttribute(string $attribute): bool
     {
-        foreach ($this->sensitiveAttributePatterns as $pattern) {
-            if (preg_match($pattern, $attribute) === 1) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $this->sensitiveAttributePatterns,
+            static fn(string $pattern): bool => preg_match($pattern, $attribute) === 1,
+        );
     }
 
     private function findRulesMethod(Class_ $class): ?ClassMethod

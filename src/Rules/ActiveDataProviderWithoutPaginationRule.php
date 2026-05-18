@@ -77,7 +77,11 @@ final readonly class ActiveDataProviderWithoutPaginationRule implements Rule
 
             $config = $this->getArgument($new->args, 0);
 
-            if (!$config instanceof Arg || !$config->value instanceof Array_) {
+            if (!$config instanceof Arg) {
+                continue;
+            }
+
+            if (!$config->value instanceof Array_) {
                 continue;
             }
 
@@ -116,7 +120,11 @@ final readonly class ActiveDataProviderWithoutPaginationRule implements Rule
     private function hasDisabledPagination(Array_ $config): bool
     {
         foreach ($config->items as $item) {
-            if (!$item->key instanceof String_ || $item->key->value !== 'pagination') {
+            if (!$item->key instanceof String_) {
+                continue;
+            }
+
+            if ($item->key->value !== 'pagination') {
                 continue;
             }
 
@@ -128,7 +136,7 @@ final readonly class ActiveDataProviderWithoutPaginationRule implements Rule
 
     /**
      * @param array<int|string, Arg|VariadicPlaceholder> $args
-     * @param int                                         $index
+     * @param int                                        $index
      */
     private function getArgument(array $args, int $index): ?Arg
     {

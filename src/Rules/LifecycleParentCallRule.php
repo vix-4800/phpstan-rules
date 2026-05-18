@@ -86,18 +86,20 @@ final readonly class LifecycleParentCallRule implements Rule
             }
 
             if (
-                in_array($methodName, self::PARENT_RESULT_METHODS, true)
-                && $method->hasIgnoredParentCallResult($methodName)
+                !in_array($methodName, self::PARENT_RESULT_METHODS, true)
+                || !$method->hasIgnoredParentCallResult($methodName)
             ) {
-                $errors[] = RuleErrorBuilder::message(sprintf(
-                    'ActiveRecord lifecycle method \'%s()\' must use parent::%s() result.',
-                    $methodName,
-                    $methodName,
-                ))
-                    ->identifier('yii.beforeHookParentResultIgnored')
-                    ->line($method->line())
-                    ->build();
+                continue;
             }
+
+            $errors[] = RuleErrorBuilder::message(sprintf(
+                'ActiveRecord lifecycle method \'%s()\' must use parent::%s() result.',
+                $methodName,
+                $methodName,
+            ))
+                ->identifier('yii.beforeHookParentResultIgnored')
+                ->line($method->line())
+                ->build();
         }
 
         return $errors;

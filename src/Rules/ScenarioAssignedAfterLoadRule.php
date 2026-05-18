@@ -45,9 +45,6 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
     }
 
     /**
-     * @param Node  $node
-     * @param Scope $scope
-     *
      * @return list<IdentifierRuleError>
      */
     public function processNode(Node $node, Scope $scope): array
@@ -153,12 +150,14 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
                 $variableName = $this->variableName($expr->var);
                 unset($loadedVariables[$variableName], $modelVariables[$variableName]);
 
-                if ($expr->expr instanceof New_ && $this->isModelInstantiation(
-                    $expr->expr,
-                    $modelClassNames,
-                    $namespaceName,
-                    $scope,
-                )) {
+                if (
+                    $expr->expr instanceof New_ && $this->isModelInstantiation(
+                        $expr->expr,
+                        $modelClassNames,
+                        $namespaceName,
+                        $scope,
+                    )
+                ) {
                     $modelVariables[$variableName] = true;
                 }
             }
@@ -316,29 +315,31 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
                 ];
             }
 
-            if (is_array($subNode)) {
-                $errors = [
-                    ...$errors,
-                    ...$this->processNodeArray(
-                        $subNode,
-                        $loadedVariables,
-                        $modelVariables,
-                        $modelClassNames,
-                        $namespaceName,
-                        $scope,
-                    ),
-                ];
+            if (!is_array($subNode)) {
+                continue;
             }
+
+            $errors = [
+                ...$errors,
+                ...$this->processNodeArray(
+                    $subNode,
+                    $loadedVariables,
+                    $modelVariables,
+                    $modelClassNames,
+                    $namespaceName,
+                    $scope,
+                ),
+            ];
         }
 
         return $errors;
     }
 
     /**
-     * @param array<mixed>         $nodes
-     * @param array<string, bool>  $loadedVariables
-     * @param array<string, bool>  $modelVariables
-     * @param list<string>         $modelClassNames
+     * @param array<mixed>        $nodes
+     * @param array<string, bool> $loadedVariables
+     * @param array<string, bool> $modelVariables
+     * @param list<string>        $modelClassNames
      *
      * @return list<IdentifierRuleError>
      */
@@ -367,19 +368,21 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
                 ];
             }
 
-            if ($node instanceof Stmt) {
-                $errors = [
-                    ...$errors,
-                    ...$this->processNodeContent(
-                        $node,
-                        $loadedVariables,
-                        $modelVariables,
-                        $modelClassNames,
-                        $namespaceName,
-                        $scope,
-                    ),
-                ];
+            if (!($node instanceof Stmt)) {
+                continue;
             }
+
+            $errors = [
+                ...$errors,
+                ...$this->processNodeContent(
+                    $node,
+                    $loadedVariables,
+                    $modelVariables,
+                    $modelClassNames,
+                    $namespaceName,
+                    $scope,
+                ),
+            ];
         }
 
         return $errors;
@@ -396,7 +399,7 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
             return true;
         }
 
-        return (new ObjectType(self::MODEL_CLASS))->isSuperTypeOf($scope->getType($expr))->yes();
+        return new ObjectType(self::MODEL_CLASS)->isSuperTypeOf($scope->getType($expr))->yes();
     }
 
     /**
@@ -420,16 +423,22 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
         $modelClassNames = [];
 
         foreach ($classes as $class) {
-            if ($class->name === null || !$class->extends instanceof Name) {
+            if ($class->name === null) {
+                continue;
+            }
+
+            if (!$class->extends instanceof Name) {
                 continue;
             }
 
             $className = $this->qualifyName($class->name->toString(), $namespaceName);
             $parentName = mb_ltrim($scope->resolveName($class->extends), '\\');
 
-            if ($parentName === self::MODEL_CLASS || $this->isSubclassOfModel($parentName)) {
-                $modelClassNames[] = $className;
+            if ($parentName !== self::MODEL_CLASS && !$this->isSubclassOfModel($parentName)) {
+                continue;
             }
+
+            $modelClassNames[] = $className;
         }
 
         return $modelClassNames;
@@ -449,7 +458,11 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
         $modelVariables = [];
 
         foreach ($method->params as $param) {
-            if (!$param->var instanceof Variable || !is_string($param->var->name)) {
+            if (!$param->var instanceof Variable) {
+                continue;
+            }
+
+            if (!is_string($param->var->name)) {
                 continue;
             }
 
@@ -464,11 +477,13 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
             }
 
             if (
-                $this->isModelClassName(mb_ltrim($scope->resolveName($type), '\\'), $modelClassNames)
-                || $this->isModelClassName($this->qualifyName($type->toString(), $namespaceName), $modelClassNames)
+                !$this->isModelClassName(mb_ltrim($scope->resolveName($type), '\\'), $modelClassNames)
+                && !$this->isModelClassName($this->qualifyName($type->toString(), $namespaceName), $modelClassNames)
             ) {
-                $modelVariables[$param->var->name] = true;
+                continue;
             }
+
+            $modelVariables[$param->var->name] = true;
         }
 
         return $modelVariables;
@@ -485,8 +500,11 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
 
         $className = mb_ltrim($scope->resolveName($new->class), '\\');
 
-        return $this->isModelClassName($className, $modelClassNames)
-            || $this->isModelClassName($this->qualifyName($new->class->toString(), $namespaceName), $modelClassNames);
+        if ($this->isModelClassName($className, $modelClassNames)) {
+            return true;
+        }
+
+        return $this->isModelClassName($this->qualifyName($new->class->toString(), $namespaceName), $modelClassNames);
     }
 
     /**
