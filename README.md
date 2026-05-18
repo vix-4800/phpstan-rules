@@ -77,8 +77,6 @@ parameters:
                 queryOneWithoutLimit: true
 ```
 
-Legacy `yiiPolicy` config is still supported for backward compatibility.
-
 Default Yii2 config from `extension.neon`:
 
 ```neon
@@ -117,7 +115,7 @@ parameters:
                 unknownActionInBehavior: false
             allowedSaveFalseNamespaces: []
             sensitiveAttributePatterns:
-                - '~^(id|user_id|created_at|updated_at|created_by|updated_by|role|status|password_hash|auth_key|access_token|is_admin)$~i'
+                - '~^(id|user_id|created_at|updated_at|created_by|updated_by|role|status|...|is_admin)$~i'
 ```
 
 Override example:
@@ -152,7 +150,8 @@ composer require --dev vix/phpstan-rules:0.1.x-dev
 
 Checks Yii controller actions for matching `yii\filters\AccessControl` behavior.
 
-Public methods named `action*` must be covered by `AccessControl`. Rule respects behavior `only` and `except`, and also checks nested `rules[*].actions` when present.
+Public methods named `action*` must be covered by `AccessControl`.
+Rule respects behavior `only` and `except`, and also checks nested `rules[*].actions` when present.
 
 ### `yii.missingVerbFilterRule`
 
@@ -164,7 +163,8 @@ Public methods named `action*` must be listed in behavior `actions`. Rule respec
 
 Checks AJAX-style Yii controller actions for matching `yii\filters\AjaxFilter` behavior.
 
-Action is treated as AJAX endpoint when method body calls `asJson()` or references `yii\web\Response::FORMAT_JSON`. Rule respects behavior `only` and `except`.
+Action is treated as AJAX endpoint when method body calls `asJson()`
+or references `yii\web\Response::FORMAT_JSON`. Rule respects behavior `only` and `except`.
 
 ### `yii.unknownActionInBehavior`
 
@@ -194,7 +194,8 @@ This catches overly broad upload rules such as `[['file'], 'file']`. `maxSize` i
 
 ### `yii.lifecycleParentCall`
 
-Reports Active Record overrides of `beforeValidate()`, `beforeSave()`, `beforeDelete()`, `afterSave()`, `afterFind()`, and `afterDelete()` that do not call the matching `parent::*()` method.
+Reports Active Record overrides of `beforeValidate()`, `beforeSave()`, `beforeDelete()`,
+`afterSave()`, `afterFind()`, and `afterDelete()` that do not call the matching `parent::*()` method.
 
 `beforeValidate()`, `beforeSave()`, and `beforeDelete()` must also use the parent result.
 
@@ -221,7 +222,9 @@ Reports `AccessControl` rules with `'allow' => true` but without `roles`, `permi
 
 Reports mutating controller actions whose configured `VerbFilter` allows `GET`/`HEAD` or omits a mutating HTTP verb.
 
-Mutation detection covers common Active Record writes such as `updateAttributes()`, `updateCounters()`, `updateAllCounters()`, `insert(false)`, `update(false)`, and common filesystem writes such as `rename()`, `unlink()`, `mkdir()`, and `rmdir()`.
+Mutation detection covers common Active Record writes such as `updateAttributes()`,
+`updateCounters()`, `updateAllCounters()`, `insert(false)`, and `update(false)`, plus common
+filesystem writes such as `rename()`, `unlink()`, `mkdir()`, and `rmdir()`.
 
 ### `yii.csrfDisabledWithoutCompensatingControl`
 
@@ -231,7 +234,8 @@ Use only for endpoints with an explicit compensating control such as signature v
 
 ### `yii.rawSqlConditionWithVariable`
 
-Reports raw SQL strings built with interpolation or concatenated variables in `where()`-style conditions, `join()` / `on()`, `from()`, `orderBy()`, and `createCommand()`.
+Reports raw SQL strings built with interpolation or concatenated variables in `where()`-style
+conditions, `join()` / `on()`, `from()`, `orderBy()`, and `createCommand()`.
 
 ### `yii.deleteAllOrUpdateAllWithoutWhere`
 
@@ -267,7 +271,12 @@ The rule treats `batch()`, `each()`, `exists()`, `count()`, and DataProvider usa
 
 Reports Yii query expressions that execute unnecessary or inefficient SQL/data loading when a cheaper Yii API is available.
 
-Covered patterns include `count(Model::find()->all())` / `sizeof((new Query())->column())`, `one() === null` / `one() !== null` existence checks, query `count()` comparisons such as `count() >= 1`, `count() !== 0`, `count() === 0`, `count() < 1` and mirrored variants such as `0 < count()`, plus `findOne(Yii::$app->user->id)` / `findOne(Yii::$app->user->identity->id)` current-user lookups that should reuse `Yii::$app->user->identity`.
+Covered patterns include `count(Model::find()->all())` / `sizeof((new Query())->column())`,
+`one() === null` / `one() !== null` existence checks, query `count()` comparisons such as
+`count() >= 1`, `count() !== 0`, `count() === 0`, `count() < 1`, and mirrored variants such as
+`0 < count()`, plus `findOne(Yii::$app->user->id)` /
+`findOne(Yii::$app->user->identity->id)` current-user lookups that should reuse
+`Yii::$app->user->identity`.
 
 ### `yii.imageValidatorTooLoose`
 
