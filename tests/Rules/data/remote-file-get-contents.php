@@ -6,6 +6,8 @@ namespace RemoteFileGetContentsFixture;
 
 function remoteReads(string $url, string $path): void
 {
+    $remoteUrl = 'https://example.com/from-variable.json';
+
     file_get_contents(__FILE__);
     file_get_contents('/tmp/local-file.txt');
     file_get_contents('https://example.com/data.json');
@@ -16,4 +18,5 @@ function remoteReads(string $url, string $path): void
     file_get_contents('/tmp/' . $path);
     file_get_contents($url);
     file_get_contents($path);
+    file_get_contents($remoteUrl);
 }
