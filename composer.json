@@ -1,6 +1,6 @@
 {
   "name": "vix/phpstan-rules",
-  "description": "PHPStan rules (install as require-dev)",
+  "description": "PHPStan rules package with framework-specific rule sets",
   "type": "phpstan-extension",
   "license": "MIT",
   "authors": [

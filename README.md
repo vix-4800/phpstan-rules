@@ -1,14 +1,14 @@
-# PHPStan Yii Policy Rules
+# PHPStan Rules
 
-PHPStan extension with policy checks for Yii2 projects.
+PHPStan rules package with framework-specific rule sets. Current rule set: Yii2.
 
-[![PHPStan](https://github.com/vix-4800/phpstan-yii-policy-rules/actions/workflows/phpstan.yml/badge.svg)](https://github.com/vix-4800/phpstan-yii-policy-rules/actions/workflows/phpstan.yml)
-[![Tests](https://github.com/vix-4800/phpstan-yii-policy-rules/actions/workflows/php.yml/badge.svg)](https://github.com/vix-4800/phpstan-yii-policy-rules/actions/workflows/php.yml)
+[![PHPStan](https://github.com/vix-4800/phpstan-rules/actions/workflows/phpstan.yml/badge.svg)](https://github.com/vix-4800/phpstan-rules/actions/workflows/phpstan.yml)
+[![Tests](https://github.com/vix-4800/phpstan-rules/actions/workflows/php.yml/badge.svg)](https://github.com/vix-4800/phpstan-rules/actions/workflows/php.yml)
 
-- [PHPStan Yii Policy Rules](#phpstan-yii-policy-rules)
+- [PHPStan Rules](#phpstan-rules)
   - [Setup](#setup)
   - [Versioning](#versioning)
-  - [Rules](#rules)
+  - [Yii2 Rules](#yii2-rules)
     - [`yii.missingAccessRule`](#yiimissingaccessrule)
     - [`yii.missingVerbFilterRule`](#yiimissingverbfilterrule)
     - [`yii.missingAjaxFilterRule`](#yiimissingajaxfilterrule)
@@ -43,85 +43,91 @@ PHPStan extension with policy checks for Yii2 projects.
 Install as a development dependency:
 
 ```bash
-composer require --dev vix/phpstan-yii-policy-rules
+composer require --dev vix/phpstan-rules
 ```
 
 Include extension config in PHPStan config:
 
 ```neon
 includes:
-    - vendor/vix/phpstan-yii-policy-rules/extension.neon
+    - vendor/vix/phpstan-rules/extension.neon
 ```
 
 When `phpstan/extension-installer` is installed, `extension.neon` is loaded automatically.
 
-Enable all rules:
+Enable all Yii2 rules:
 
 ```neon
 parameters:
-    yiiPolicy:
-        rules:
-            all: true
+    phpstanRules:
+        yii2:
+            rules:
+                all: true
 ```
 
-Or enable selected rules:
+Or enable selected Yii2 rules:
 
 ```neon
 parameters:
-    yiiPolicy:
-        rules:
-            missingAccessRule: true
-            missingVerbFilterRule: true
-            queryOneWithoutLimit: true
+    phpstanRules:
+        yii2:
+            rules:
+                missingAccessRule: true
+                missingVerbFilterRule: true
+                queryOneWithoutLimit: true
 ```
 
-Default config from `extension.neon`:
+Legacy `yiiPolicy` config is still supported for backward compatibility.
+
+Default Yii2 config from `extension.neon`:
 
 ```neon
 parameters:
-    yiiPolicy:
-        rules:
-            activeDataProviderWithoutPagination: false
-            all: false
-            componentInitParentCall: false
-            controllerBeforeActionParentResultIgnored: false
-            csrfDisabledWithoutCompensatingControl: false
-            deleteAllOrUpdateAllWithoutWhere: false
-            fileValidatorTooLoose: false
-            imageValidatorTooLoose: false
-            lifecycleParentCall: false
-            lifecycleSelfSave: false
-            massSelectionWithoutLimit: false
-            missingAccessRule: false
-            missingAjaxFilterRule: false
-            missingVerbFilterRule: false
-            mixedResponseTypesInAction: false
-            mutatingActionAllowsGet: false
-            nPlusOneRelationInLoop: false
-            nativeHeaderInController: false
-            publicAllowWithoutConstraint: false
-            queryOneWithoutLimit: false
-            queryPerformanceSmell: false
-            rawSqlConditionWithVariable: false
-            redirectReferrerWithoutFallback: false
-            saveFalseWithoutReason: false
-            scenarioAssignedAfterLoad: false
-            sensitiveAttributeMarkedSafe: false
-            transactionWithoutRollbackHandling: false
-            unboundedQueryResult: false
-            unknownActionInBehavior: false
-        allowedSaveFalseNamespaces: []
-        sensitiveAttributePatterns:
-            - '~^(id|user_id|created_at|updated_at|created_by|updated_by|role|status|password_hash|auth_key|access_token|is_admin)$~i'
+    phpstanRules:
+        yii2:
+            rules:
+                activeDataProviderWithoutPagination: false
+                all: false
+                componentInitParentCall: false
+                controllerBeforeActionParentResultIgnored: false
+                csrfDisabledWithoutCompensatingControl: false
+                deleteAllOrUpdateAllWithoutWhere: false
+                fileValidatorTooLoose: false
+                imageValidatorTooLoose: false
+                lifecycleParentCall: false
+                lifecycleSelfSave: false
+                massSelectionWithoutLimit: false
+                missingAccessRule: false
+                missingAjaxFilterRule: false
+                missingVerbFilterRule: false
+                mixedResponseTypesInAction: false
+                mutatingActionAllowsGet: false
+                nPlusOneRelationInLoop: false
+                nativeHeaderInController: false
+                publicAllowWithoutConstraint: false
+                queryOneWithoutLimit: false
+                queryPerformanceSmell: false
+                rawSqlConditionWithVariable: false
+                redirectReferrerWithoutFallback: false
+                saveFalseWithoutReason: false
+                scenarioAssignedAfterLoad: false
+                sensitiveAttributeMarkedSafe: false
+                transactionWithoutRollbackHandling: false
+                unboundedQueryResult: false
+                unknownActionInBehavior: false
+            allowedSaveFalseNamespaces: []
+            sensitiveAttributePatterns:
+                - '~^(id|user_id|created_at|updated_at|created_by|updated_by|role|status|password_hash|auth_key|access_token|is_admin)$~i'
 ```
 
 Override example:
 
 ```neon
 parameters:
-    yiiPolicy:
-        allowedSaveFalseNamespaces:
-            - app\migrations
+    phpstanRules:
+        yii2:
+            allowedSaveFalseNamespaces:
+                - app\migrations
 ```
 
 ## Versioning
@@ -136,11 +142,11 @@ This package follows Semantic Versioning.
 Example constraints:
 
 ```bash
-composer require --dev vix/phpstan-yii-policy-rules:^0.1
-composer require --dev vix/phpstan-yii-policy-rules:0.1.x-dev
+composer require --dev vix/phpstan-rules:^0.1
+composer require --dev vix/phpstan-rules:0.1.x-dev
 ```
 
-## Rules
+## Yii2 Rules
 
 ### `yii.missingAccessRule`
 
@@ -177,7 +183,7 @@ Use `limit()` or `page()` before `all()` when loading records from `find()`.
 Reports calls to `save(false)`. Calls without explicit attribute list are reported as higher risk than
 `save(false, ['field'])`.
 
-Use validation, or place explicitly allowed namespaces in `yiiPolicy.allowedSaveFalseNamespaces` when validation bypass is expected.
+Use validation, or place explicitly allowed namespaces in `phpstanRules.yii2.allowedSaveFalseNamespaces` when validation bypass is expected.
 Namespaces containing `migrations`, `tests`, `seeders`, or `seeds` are allowed.
 
 ### `yii.fileValidatorTooLoose`
@@ -291,4 +297,4 @@ Set scenario before mass assignment.
 
 Reports sensitive attributes that are mass assignable without an `on` or `except` scenario restriction.
 
-Sensitive attributes are matched by `yiiPolicy.sensitiveAttributePatterns`.
+Sensitive attributes are matched by `phpstanRules.yii2.sensitiveAttributePatterns`.
