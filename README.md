@@ -2,7 +2,7 @@
 
 PHPStan rules package with framework-specific rule sets.
 
-[![Tests](https://github.com/vix-4800/phpstan-rules/actions/workflows/php.yml/badge.svg)](https://github.com/vix-4800/phpstan-rules/actions/workflows/php.yml)
+[![Tests](https://github.com/vix-4800/phpstan-rules/actions/workflows/tests.yml/badge.svg)](https://github.com/vix-4800/phpstan-rules/actions/workflows/tests.yml)
 [![PHPStan](https://github.com/vix-4800/phpstan-rules/actions/workflows/phpstan.yml/badge.svg)](https://github.com/vix-4800/phpstan-rules/actions/workflows/phpstan.yml)
 [![PHP Version](https://img.shields.io/badge/php-%5E8.4-blue)](https://www.php.net/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
