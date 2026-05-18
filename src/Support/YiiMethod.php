@@ -41,13 +41,10 @@ final readonly class YiiMethod
         $targetMethodName = mb_strtolower($methodName ?? $this->name());
         $finder = new NodeFinder();
 
-        foreach ($finder->findInstanceOf($this->node->stmts ?? [], StaticCall::class) as $call) {
-            if ($this->isParentCall($call, $targetMethodName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $finder->findInstanceOf($this->node->stmts ?? [], StaticCall::class),
+            fn(StaticCall $call): bool => $this->isParentCall($call, $targetMethodName),
+        );
     }
 
     public function hasIgnoredParentCallResult(?string $methodName = null): bool
