@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Vix\PhpstanRules\Rules;
 
-use Node\Stmt;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\ArrayItem;
@@ -12,9 +11,12 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PHPStan\Analyser\Scope;
@@ -43,8 +45,8 @@ final class HttpClientWithoutTimeoutRule implements Rule
             return $this->processNewClient($node);
         }
 
-        if ($node instanceof Expr && NodeHelpers::isRequestCall($node)) {
-            return $this->hasTimeoutOption($node->args[2] ?? null) ? [] : [$this->error()];
+        if (($node instanceof MethodCall || $node instanceof StaticCall) && NodeHelpers::isRequestCall($node)) {
+            return $this->hasTimeoutOption(NodeHelpers::argAt($node->getArgs(), 2)) ? [] : [$this->error()];
         }
 
         if ($node instanceof ClassMethod || $node instanceof Function_) {
@@ -63,11 +65,11 @@ final class HttpClientWithoutTimeoutRule implements Rule
             return [];
         }
 
-        return $this->hasTimeoutOption($node->args[0] ?? null) ? [] : [$this->error()];
+        return $this->hasTimeoutOption(NodeHelpers::argAt($node->args, 0)) ? [] : [$this->error()];
     }
 
     /**
-     * @param list<Stmt> $statements
+     * @param array<Stmt> $statements
      *
      * @return list<IdentifierRuleError>
      */
@@ -86,7 +88,7 @@ final class HttpClientWithoutTimeoutRule implements Rule
                     continue;
                 }
 
-                $errors[] = $this->error();
+                $errors[] = $this->error($expr->getLine());
             }
         }
 
@@ -145,14 +147,17 @@ final class HttpClientWithoutTimeoutRule implements Rule
         }
 
         if (NodeHelpers::nameEquals($expr->name, 'curl_setopt')) {
-            return isset($expr->args[1])
-                && $this->isCurlTimeoutConstant($expr->args[1]->value);
+            $option = NodeHelpers::argAt($expr->args, 1);
+
+            return $option !== null && $this->isCurlTimeoutConstant($option->value);
         }
 
         if (NodeHelpers::nameEquals($expr->name, 'curl_setopt_array')) {
-            return isset($expr->args[1])
-                && $expr->args[1]->value instanceof Array_
-                && $this->curlOptionArrayHasTimeout($expr->args[1]->value);
+            $options = NodeHelpers::argAt($expr->args, 1);
+
+            return $options !== null
+                && $options->value instanceof Array_
+                && $this->curlOptionArrayHasTimeout($options->value);
         }
 
         return false;
@@ -182,17 +187,23 @@ final class HttpClientWithoutTimeoutRule implements Rule
     {
         return array_any(
             $array->items,
-            fn(ArrayItem $item): bool => $item?->key !== null && $this->isCurlTimeoutConstant($item->key),
+            fn(ArrayItem $item): bool => $item->key !== null && $this->isCurlTimeoutConstant($item->key),
         );
     }
 
     private function firstArgKey(Expr $expr): string
     {
-        if (!$expr instanceof FuncCall || !isset($expr->args[0])) {
+        if (!$expr instanceof FuncCall) {
             return '';
         }
 
-        $arg = $expr->args[0]->value;
+        $firstArg = NodeHelpers::argAt($expr->args, 0);
+
+        if ($firstArg === null) {
+            return '';
+        }
+
+        $arg = $firstArg->value;
 
         if ($arg instanceof Variable && is_string($arg->name)) {
             return '$' . $arg->name;
@@ -201,10 +212,15 @@ final class HttpClientWithoutTimeoutRule implements Rule
         return spl_object_hash($arg);
     }
 
-    private function error(): IdentifierRuleError
+    private function error(?int $line = null): IdentifierRuleError
     {
-        return RuleErrorBuilder::message(self::MESSAGE)
-            ->identifier('vix.httpClientWithoutTimeout')
-            ->build();
+        $builder = RuleErrorBuilder::message(self::MESSAGE)
+            ->identifier('vix.httpClientWithoutTimeout');
+
+        if ($line !== null) {
+            $builder->line($line);
+        }
+
+        return $builder->build();
     }
 }
