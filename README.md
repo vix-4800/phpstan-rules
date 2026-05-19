@@ -33,7 +33,7 @@ Enable all currently available rules:
 
 ```neon
 parameters:
-    phpstanRules:
+    vixPhpstan:
         php:
             rules:
                 all: true
@@ -46,7 +46,7 @@ Or enable selected rules:
 
 ```neon
 parameters:
-    phpstanRules:
+    vixPhpstan:
         php:
             rules:
                 remoteFileGetContents: true
@@ -62,7 +62,7 @@ Current config from `extension.neon`:
 
 ```neon
 parameters:
-    phpstanRules:
+    vixPhpstan:
         php:
             rules:
                 all: false
@@ -109,7 +109,7 @@ Override example:
 
 ```neon
 parameters:
-    phpstanRules:
+    vixPhpstan:
         yii2:
             allowedSaveFalseNamespaces:
                 - app\migrations

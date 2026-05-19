@@ -2,7 +2,7 @@ includes:
   - rules.neon
 
 parametersSchema:
-  phpstanRules: structure([
+  vixPhpstan: structure([
     php: structure([
       rules: structure([
         all: bool(),
@@ -49,7 +49,7 @@ parametersSchema:
   ])
 
 parameters:
-  phpstanRules:
+  vixPhpstan:
     php:
       rules:
         all: false

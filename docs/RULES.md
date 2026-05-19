@@ -254,7 +254,7 @@ Parameters
 
 ```neon
 parameters:
-    phpstanRules:
+    vixPhpstan:
         yii2:
             allowedSaveFalseNamespaces:
                 - app\migrations
@@ -713,7 +713,7 @@ Parameters
 
 ```neon
 parameters:
-    phpstanRules:
+    vixPhpstan:
         yii2:
             sensitiveAttributePatterns:
                 - '~^(role|status|is_admin|access_token)$~i'
