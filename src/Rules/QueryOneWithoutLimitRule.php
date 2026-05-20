@@ -44,7 +44,6 @@ final readonly class QueryOneWithoutLimitRule implements Rule
         return [
             RuleErrorBuilder::message('Call limit(1) before one().')
                 ->identifier('yii.queryOneWithoutLimit')
-                ->warning()
                 ->build(),
         ];
     }

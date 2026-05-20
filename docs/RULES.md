@@ -480,7 +480,7 @@ try {
 
 ### `yii.queryOneWithoutLimit`
 
-Detects `one()` query chains that do not make the `LIMIT 1` intent explicit and reports them as warnings.
+Detects `one()` query chains that do not make the `LIMIT 1` intent explicit.
 
 Before
 
