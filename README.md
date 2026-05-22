@@ -89,6 +89,7 @@ parameters:
                 mutatingActionAllowsGet: false
                 nPlusOneRelationInLoop: false
                 nativeHeaderInController: false
+                responseStatusCodeAssignmentInController: false
                 publicAllowWithoutConstraint: false
                 queryOneWithoutLimit: false
                 queryPerformanceSmell: false

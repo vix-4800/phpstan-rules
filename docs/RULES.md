@@ -31,6 +31,7 @@ This page documents the rules currently shipped in this package.
     - [`yii.queryOneWithoutLimit`](#yiiqueryonewithoutlimit)
     - [`yii.redirectReferrerWithoutFallback`](#yiiredirectreferrerwithoutfallback)
     - [`yii.nativeHeaderInController`](#yiinativeheaderincontroller)
+    - [`yii.responseStatusCodeAssignmentInController`](#yiiresponsestatuscodeassignmentincontroller)
     - [`yii.mixedResponseTypesInAction`](#yiimixedresponsetypesinaction)
     - [`yii.unboundedQueryResult`](#yiiunboundedqueryresult)
     - [`yii.queryPerformanceSmell`](#yiiqueryperformancesmell)
@@ -548,6 +549,24 @@ After
 
 ```php
 return $this->redirect(['site/login']);
+```
+
+### `yii.responseStatusCodeAssignmentInController`
+
+Detects direct `Yii::$app->response->statusCode = ...` assignments inside Yii controllers.
+
+Before
+
+```php
+Yii::$app->response->statusCode = 202;
+
+return $this->asJson(['success' => true]);
+```
+
+After
+
+```php
+return $this->asJson(['success' => true])->setStatusCode(202);
 ```
 
 ### `yii.mixedResponseTypesInAction`
