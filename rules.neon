@@ -274,6 +274,19 @@ services:
     tags:
       - phpstan.rules.rule
 
+  vixPhpstan.yii2.rules.responseFormatAssignmentInController.inner:
+    class: Vix\PhpstanRules\Rules\ResponseFormatAssignmentInControllerRule
+
+  vixPhpstan.yii2.rules.responseFormatAssignmentInController:
+    class: Vix\PhpstanRules\Support\ConfigurableRule
+    arguments:
+      rule: @vixPhpstan.yii2.rules.responseFormatAssignmentInController.inner
+      ruleName: responseFormatAssignmentInController
+      allRules: %vixPhpstan.yii2.rules.all%
+      enabledRules: %vixPhpstan.yii2.rules%
+    tags:
+      - phpstan.rules.rule
+
   vixPhpstan.yii2.rules.publicAllowWithoutConstraint.inner:
     class: Vix\PhpstanRules\Rules\PublicAllowWithoutConstraintRule
 

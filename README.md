@@ -94,6 +94,7 @@ parameters:
                 queryPerformanceSmell: false
                 rawSqlConditionWithVariable: false
                 redirectReferrerWithoutFallback: false
+                responseFormatAssignmentInController: false
                 saveFalseWithoutReason: false
                 scenarioAssignedAfterLoad: false
                 sensitiveAttributeMarkedSafe: false
