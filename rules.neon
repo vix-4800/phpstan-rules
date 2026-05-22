@@ -287,6 +287,19 @@ services:
     tags:
       - phpstan.rules.rule
 
+  vixPhpstan.yii2.rules.responseStatusCodeAssignmentInController.inner:
+    class: Vix\PhpstanRules\Rules\ResponseStatusCodeAssignmentInControllerRule
+
+  vixPhpstan.yii2.rules.responseStatusCodeAssignmentInController:
+    class: Vix\PhpstanRules\Support\ConfigurableRule
+    arguments:
+      rule: @vixPhpstan.yii2.rules.responseStatusCodeAssignmentInController.inner
+      ruleName: responseStatusCodeAssignmentInController
+      allRules: %vixPhpstan.yii2.rules.all%
+      enabledRules: %vixPhpstan.yii2.rules%
+    tags:
+      - phpstan.rules.rule
+
   vixPhpstan.yii2.rules.publicAllowWithoutConstraint.inner:
     class: Vix\PhpstanRules\Rules\PublicAllowWithoutConstraintRule
 
