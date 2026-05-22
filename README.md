@@ -100,6 +100,7 @@ parameters:
                 transactionWithoutRollbackHandling: false
                 unboundedQueryResult: false
                 unknownActionInBehavior: false
+                webControllerOnlyActions: false
             allowedSaveFalseNamespaces: []
             sensitiveAttributePatterns:
                 - '~^(id|user_id|created_at|updated_at|created_by|updated_by|role|status|...|is_admin)$~i'

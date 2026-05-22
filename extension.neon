@@ -44,6 +44,7 @@ parametersSchema:
         transactionWithoutRollbackHandling: bool(),
         unboundedQueryResult: bool(),
         unknownActionInBehavior: bool(),
+        webControllerOnlyActions: bool(),
       ]),
     ]),
   ])
@@ -90,3 +91,4 @@ parameters:
         transactionWithoutRollbackHandling: false
         unboundedQueryResult: false
         unknownActionInBehavior: false
+        webControllerOnlyActions: false
