@@ -15,6 +15,7 @@ This page documents the rules currently shipped in this package.
     - [`yii.missingVerbFilterRule`](#yiimissingverbfilterrule)
     - [`yii.missingAjaxFilterRule`](#yiimissingajaxfilterrule)
     - [`yii.unknownActionInBehavior`](#yiiunknownactioninbehavior)
+    - [`yii.webControllerOnlyActions`](#yiiwebcontrolleronlyactions)
     - [`yii.massSelectionWithoutLimit`](#yiimassselectionwithoutlimit)
     - [`yii.saveFalseWithoutReason`](#yiisavefalsewithoutreason)
     - [`yii.fileValidatorTooLoose`](#yiifilevalidatortooloose)
@@ -213,6 +214,28 @@ After
 
 ```php
 'only' => ['index']
+```
+
+### `yii.webControllerOnlyActions`
+
+Detects custom methods inside `yii\web\Controller` descendants. Web controllers should keep only public `action*()` methods plus standard Yii overrides such as `behaviors()` and `beforeAction()`.
+
+Before
+
+```php
+protected function loadModel(): Post
+{
+    // ...
+}
+```
+
+After
+
+```php
+public function actionView(int $id): Response
+{
+    // ...
+}
 ```
 
 ### `yii.massSelectionWithoutLimit`

@@ -1,0 +1,3 @@
+parameters:
+  scanFiles:
+    - web-controller-only-actions.php
