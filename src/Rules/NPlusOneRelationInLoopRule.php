@@ -29,15 +29,20 @@ use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use ReflectionMethod;
 use ReflectionNamedType;
+use Vix\PhpstanRules\Support\AstNameResolver;
+use Vix\PhpstanRules\Support\QueryChainInspector;
 
 /**
  * @implements Rule<Namespace_>
  */
 final readonly class NPlusOneRelationInLoopRule implements Rule
 {
+    private QueryChainInspector $queryChainInspector;
+
     public function __construct(
         private ReflectionProvider $reflectionProvider,
     ) {
+        $this->queryChainInspector = new QueryChainInspector();
     }
 
     public function getNodeType(): string
@@ -215,7 +220,7 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
                 continue;
             }
 
-            $className = $this->qualifyName($class->name->toString(), $namespaceName);
+            $className = AstNameResolver::qualifyName($class->name->toString(), $namespaceName);
 
             foreach ($class->getMethods() as $method) {
                 $relationName = $this->getActiveQueryRelationName($method);
@@ -256,12 +261,7 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
             return false;
         }
 
-        $className = mb_ltrim($returnType->toString(), '\\');
-        $resolvedName = $returnType->getAttribute('resolvedName');
-
-        if ($resolvedName instanceof Name) {
-            $className = mb_ltrim($resolvedName->toString(), '\\');
-        }
+        $className = AstNameResolver::resolveName($returnType);
 
         return $className === 'yii\db\ActiveQuery' || str_ends_with($className, '\ActiveQuery');
     }
@@ -312,7 +312,7 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
             return null;
         }
 
-        $source = $this->getQuerySource($expr);
+        $source = $this->queryChainInspector->getQuerySource($expr);
 
         if (!$source instanceof StaticCall || !$source->name instanceof Identifier || $source->name->toString() !== 'find') {
             return null;
@@ -324,37 +324,8 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
 
         return [
             'modelClass' => $this->resolveClassName($source->class, $namespaceName),
-            'eagerRelations' => $this->getEagerRelations($this->getMethodChain($expr)),
+            'eagerRelations' => $this->getEagerRelations($this->queryChainInspector->getMethodChain($expr)),
         ];
-    }
-
-    /**
-     * @param MethodCall $terminalCall
-     *
-     * @return list<MethodCall>
-     */
-    private function getMethodChain(MethodCall $terminalCall): array
-    {
-        $chain = [];
-        $expr = $terminalCall;
-
-        while ($expr instanceof MethodCall) {
-            $chain[] = $expr;
-            $expr = $expr->var;
-        }
-
-        return $chain;
-    }
-
-    private function getQuerySource(MethodCall $terminalCall): Expr
-    {
-        $expr = $terminalCall->var;
-
-        while ($expr instanceof MethodCall) {
-            $expr = $expr->var;
-        }
-
-        return $expr;
     }
 
     /**
@@ -469,16 +440,7 @@ final readonly class NPlusOneRelationInLoopRule implements Rule
             return mb_ltrim($resolvedName->toString(), '\\');
         }
 
-        return $this->qualifyName($name->toString(), $namespaceName);
-    }
-
-    private function qualifyName(string $name, string $namespaceName): string
-    {
-        if (str_contains($name, '\\') || $namespaceName === '') {
-            return mb_ltrim($name, '\\');
-        }
-
-        return $namespaceName . '\\' . $name;
+        return AstNameResolver::qualifyName($name->toString(), $namespaceName);
     }
 
     private function rootRelationName(string $relationName): string

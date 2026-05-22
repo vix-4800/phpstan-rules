@@ -115,7 +115,7 @@ final readonly class UnknownActionInBehaviorRule implements Rule
                 continue;
             }
 
-            $actions = new YiiControllerBehavior($item->value)->arrayItem('actions');
+            $actions = YiiControllerBehavior::arrayItemFromArray($item->value, 'actions');
 
             if (!$actions instanceof Array_) {
                 continue;

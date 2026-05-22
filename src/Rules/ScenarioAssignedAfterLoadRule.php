@@ -24,6 +24,7 @@ use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use PHPStan\Type\ObjectType;
+use Vix\PhpstanRules\Support\AstNameResolver;
 
 /**
  * @implements Rule<Namespace_>
@@ -429,7 +430,7 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
                 continue;
             }
 
-            $className = $this->qualifyName($class->name->toString(), $namespaceName);
+            $className = AstNameResolver::qualifyName($class->name->toString(), $namespaceName);
             $parentName = mb_ltrim($scope->resolveName($class->extends), '\\');
 
             if ($parentName !== self::MODEL_CLASS && !$this->isSubclassOfModel($parentName)) {
@@ -476,7 +477,7 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
 
             if (
                 !$this->isModelClassName(mb_ltrim($scope->resolveName($type), '\\'), $modelClassNames)
-                && !$this->isModelClassName($this->qualifyName($type->toString(), $namespaceName), $modelClassNames)
+                && !$this->isModelClassName(AstNameResolver::qualifyName($type->toString(), $namespaceName), $modelClassNames)
             ) {
                 continue;
             }
@@ -502,7 +503,7 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
             return true;
         }
 
-        return $this->isModelClassName($this->qualifyName($new->class->toString(), $namespaceName), $modelClassNames);
+        return $this->isModelClassName(AstNameResolver::qualifyName($new->class->toString(), $namespaceName), $modelClassNames);
     }
 
     /**
@@ -526,15 +527,6 @@ final readonly class ScenarioAssignedAfterLoadRule implements Rule
         return $this->reflectionProvider
             ->getClass($className)
             ->isSubclassOfClass($this->reflectionProvider->getClass(self::MODEL_CLASS));
-    }
-
-    private function qualifyName(string $name, string $namespaceName): string
-    {
-        if (str_contains($name, '\\') || $namespaceName === '') {
-            return mb_ltrim($name, '\\');
-        }
-
-        return $namespaceName . '\\' . $name;
     }
 
     private function variableName(Variable $variable): string

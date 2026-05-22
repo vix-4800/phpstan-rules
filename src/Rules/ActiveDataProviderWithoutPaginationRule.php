@@ -5,20 +5,19 @@ declare(strict_types=1);
 namespace Vix\PhpstanRules\Rules;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\VariadicPlaceholder;
 use PhpParser\NodeFinder;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use Vix\PhpstanRules\Support\AstNameResolver;
 use Vix\PhpstanRules\Support\YiiClassHierarchy;
 
 /**
@@ -71,9 +70,9 @@ final readonly class ActiveDataProviderWithoutPaginationRule implements Rule
                 continue;
             }
 
-            $config = $this->getArgument($new->args, 0);
+            $config = NodeHelpers::argAt($new->args, 0);
 
-            if (!$config instanceof Arg) {
+            if ($config === null) {
                 continue;
             }
 
@@ -102,12 +101,7 @@ final readonly class ActiveDataProviderWithoutPaginationRule implements Rule
             return false;
         }
 
-        $className = mb_ltrim($new->class->toString(), '\\');
-        $resolvedName = $new->class->getAttribute('resolvedName');
-
-        if ($resolvedName instanceof Name) {
-            $className = mb_ltrim($resolvedName->toString(), '\\');
-        }
+        $className = AstNameResolver::resolveName($new->class);
 
         return in_array($className, self::DATA_PROVIDER_CLASSES, true)
             || in_array($new->class->toString(), ['ActiveDataProvider', 'SqlDataProvider'], true);
@@ -130,14 +124,4 @@ final readonly class ActiveDataProviderWithoutPaginationRule implements Rule
         return false;
     }
 
-    /**
-     * @param array<int|string, Arg|VariadicPlaceholder> $args
-     * @param int                                        $index
-     */
-    private function getArgument(array $args, int $index): ?Arg
-    {
-        $arg = $args[$index] ?? null;
-
-        return $arg instanceof Arg ? $arg : null;
-    }
 }

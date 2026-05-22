@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Vix\PhpstanRules\Rules;
 
 use PhpParser\Node;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
@@ -20,6 +18,7 @@ use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use Vix\PhpstanRules\Support\YiiClassHierarchy;
+use Vix\PhpstanRules\Support\YiiRuleArrayInspector;
 
 /**
  * @implements Rule<Class_>
@@ -60,7 +59,7 @@ final readonly class SensitiveAttributeMarkedSafeRule implements Rule
             return [];
         }
 
-        $rulesMethod = $this->findRulesMethod($node);
+        $rulesMethod = YiiRuleArrayInspector::findRulesMethod($node);
 
         if ($rulesMethod === null) {
             return [];
@@ -113,7 +112,7 @@ final readonly class SensitiveAttributeMarkedSafeRule implements Rule
     private function getSensitiveAttributes(Array_ $rule): array
     {
         $attributes = [];
-        $attributeExpr = $this->getAttributeExpr($rule);
+        $attributeExpr = YiiRuleArrayInspector::attributeExpr($rule);
 
         if ($attributeExpr instanceof String_) {
             $attributes[] = $attributeExpr->value;
@@ -135,30 +134,9 @@ final readonly class SensitiveAttributeMarkedSafeRule implements Rule
         ));
     }
 
-    private function getAttributeExpr(Array_ $rule): Expr
-    {
-        foreach ($rule->items as $item) {
-            if ($item->key instanceof String_ && $item->key->value === 'attributes') {
-                return $item->value;
-            }
-        }
-
-        return $rule->items[0]->value;
-    }
-
     private function hasScenarioRestriction(Array_ $rule): bool
     {
-        foreach ($rule->items as $item) {
-            if (!$item->key instanceof String_) {
-                continue;
-            }
-
-            if (in_array($item->key->value, ['on', 'except'], true)) {
-                return true;
-            }
-        }
-
-        return false;
+        return YiiRuleArrayInspector::hasAnyKey($rule, ['on', 'except']);
     }
 
     private function isUnsafeValidator(Array_ $rule): bool
@@ -188,14 +166,4 @@ final readonly class SensitiveAttributeMarkedSafeRule implements Rule
         );
     }
 
-    private function findRulesMethod(Class_ $class): ?ClassMethod
-    {
-        foreach ($class->getMethods() as $method) {
-            if ($method->name->toString() === 'rules') {
-                return $method;
-            }
-        }
-
-        return null;
-    }
 }

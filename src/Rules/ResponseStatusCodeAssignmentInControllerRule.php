@@ -17,6 +17,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use Vix\PhpstanRules\Support\AstNameResolver;
 use Vix\PhpstanRules\Support\YiiController;
 use Vix\PhpstanRules\Support\YiiControllerFactory;
 
@@ -97,17 +98,6 @@ final readonly class ResponseStatusCodeAssignmentInControllerRule implements Rul
             return false;
         }
 
-        return $this->isYiiClassName($assign->var->var->var->class);
-    }
-
-    private function isYiiClassName(Name $name): bool
-    {
-        $resolvedName = $name->getAttribute('resolvedName');
-
-        if ($resolvedName instanceof Name) {
-            return mb_ltrim($resolvedName->toString(), '\\') === 'Yii';
-        }
-
-        return mb_ltrim($name->toString(), '\\') === 'Yii';
+        return AstNameResolver::resolveName($assign->var->var->var->class) === 'Yii';
     }
 }

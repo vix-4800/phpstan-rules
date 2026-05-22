@@ -6,7 +6,6 @@ namespace Vix\PhpstanRules\Rules;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
@@ -104,7 +103,7 @@ final readonly class MissingAccessRule implements Rule
                 continue;
             }
 
-            $actions = $this->getStringListItem($item->value, 'actions');
+            $actions = YiiControllerBehavior::stringListFromArrayItem($item->value, 'actions');
 
             if ($actions === null || in_array($actionId, $actions, true)) {
                 return true;
@@ -114,40 +113,4 @@ final readonly class MissingAccessRule implements Rule
         return false;
     }
 
-    /**
-     * @param Array_ $array
-     * @param string $key
-     *
-     * @return list<string>|null
-     */
-    private function getStringListItem(Array_ $array, string $key): ?array
-    {
-        foreach ($array->items as $item) {
-            if (!$item->key instanceof String_) {
-                continue;
-            }
-
-            if ($item->key->value !== $key) {
-                continue;
-            }
-
-            if (!$item->value instanceof Array_) {
-                return null;
-            }
-
-            $strings = [];
-
-            foreach ($item->value->items as $valueItem) {
-                if (!$valueItem->value instanceof String_) {
-                    return null;
-                }
-
-                $strings[] = $valueItem->value->value;
-            }
-
-            return $strings;
-        }
-
-        return null;
-    }
 }

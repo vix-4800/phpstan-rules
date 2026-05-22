@@ -25,7 +25,9 @@ use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use Vix\PhpstanRules\Support\YiiController;
 use Vix\PhpstanRules\Support\YiiControllerAction;
+use Vix\PhpstanRules\Support\YiiControllerBehavior;
 use Vix\PhpstanRules\Support\YiiControllerFactory;
+use Vix\PhpstanRules\Support\YiiRuleArrayInspector;
 
 /**
  * @implements Rule<Class_>
@@ -236,44 +238,18 @@ final readonly class MutatingActionAllowsGetRule implements Rule
                 continue;
             }
 
-            foreach ($actions->items as $item) {
-                if (!$item->key instanceof String_) {
-                    continue;
-                }
+            $verbs = YiiControllerBehavior::arrayItemFromArray($actions, $action->id());
 
-                if ($item->key->value !== $action->id()) {
-                    continue;
-                }
-
-                if (!$item->value instanceof Array_) {
-                    return null;
-                }
-
-                return $this->getVerbList($item->value);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @param Array_ $verbs
-     *
-     * @return list<string>|null
-     */
-    private function getVerbList(Array_ $verbs): ?array
-    {
-        $values = [];
-
-        foreach ($verbs->items as $item) {
-            if (!$item->value instanceof String_) {
+            if (!$verbs instanceof Array_) {
                 return null;
             }
 
-            $values[] = mb_strtoupper($item->value->value);
+            $verbList = YiiRuleArrayInspector::stringList($verbs);
+
+            return $verbList === null ? null : array_map(mb_strtoupper(...), $verbList);
         }
 
-        return $values;
+        return null;
     }
 
     /**

@@ -21,6 +21,7 @@ use Vix\PhpstanRules\Support\YiiController;
 use Vix\PhpstanRules\Support\YiiControllerAction;
 use Vix\PhpstanRules\Support\YiiControllerBehavior;
 use Vix\PhpstanRules\Support\YiiControllerFactory;
+use Vix\PhpstanRules\Support\AstNameResolver;
 
 /**
  * @implements Rule<Class_>
@@ -100,7 +101,7 @@ final readonly class MissingAjaxFilterRule implements Rule
             && $node->name instanceof Identifier
             && $node->name->toString() === 'FORMAT_JSON'
             && $node->class instanceof Name
-            && $this->isClassName($node->class, self::RESPONSE);
+            && AstNameResolver::matchesClassName($node->class, self::RESPONSE);
     }
 
     private function hasAjaxFilterForAction(YiiController $controller, YiiControllerAction $action): bool
@@ -111,15 +112,4 @@ final readonly class MissingAjaxFilterRule implements Rule
         );
     }
 
-    private function isClassName(Name $name, string $className): bool
-    {
-        $resolvedName = $name->getAttribute('resolvedName');
-
-        if ($resolvedName instanceof Name) {
-            return mb_ltrim($resolvedName->toString(), '\\') === $className;
-        }
-
-        return mb_ltrim($name->toString(), '\\') === $className
-            || mb_substr($className, mb_strrpos($className, '\\') + 1) === $name->toString();
-    }
 }

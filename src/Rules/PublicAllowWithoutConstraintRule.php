@@ -8,7 +8,6 @@ use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ConstFetch;
-use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
@@ -16,7 +15,9 @@ use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use Vix\PhpstanRules\Support\YiiController;
+use Vix\PhpstanRules\Support\YiiControllerBehavior;
 use Vix\PhpstanRules\Support\YiiControllerFactory;
+use Vix\PhpstanRules\Support\YiiRuleArrayInspector;
 
 /**
  * @implements Rule<Class_>
@@ -102,23 +103,13 @@ final readonly class PublicAllowWithoutConstraintRule implements Rule
 
     private function isPublicAllowWithoutConstraint(Array_ $rule): bool
     {
-        $allow = $this->getArrayItem($rule, 'allow');
+        $allow = YiiControllerBehavior::arrayItemFromArray($rule, 'allow');
 
         if (!$this->isTrueLiteral($allow)) {
             return false;
         }
 
-        foreach ($rule->items as $item) {
-            if (!$item->key instanceof String_) {
-                continue;
-            }
-
-            if (in_array($item->key->value, self::CONSTRAINT_KEYS, true)) {
-                return false;
-            }
-        }
-
-        return true;
+        return !YiiRuleArrayInspector::hasAnyKey($rule, self::CONSTRAINT_KEYS);
     }
 
     private function isTrueLiteral(?Expr $expr): bool
@@ -127,20 +118,4 @@ final readonly class PublicAllowWithoutConstraintRule implements Rule
             && mb_strtolower($expr->name->toString()) === 'true';
     }
 
-    private function getArrayItem(Array_ $array, string $key): ?Expr
-    {
-        foreach ($array->items as $item) {
-            if (!$item->key instanceof String_) {
-                continue;
-            }
-
-            if ($item->key->value !== $key) {
-                continue;
-            }
-
-            return $item->value;
-        }
-
-        return null;
-    }
 }

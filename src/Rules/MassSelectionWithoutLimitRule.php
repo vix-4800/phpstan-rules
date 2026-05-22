@@ -6,7 +6,6 @@ namespace Vix\PhpstanRules\Rules;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Identifier;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
@@ -51,10 +50,6 @@ final readonly class MassSelectionWithoutLimitRule implements Rule
 
     private function isUnboundedFindAll(MethodCall $methodCall): bool
     {
-        if (!$methodCall->name instanceof Identifier || $methodCall->name->toString() !== 'all') {
-            return false;
-        }
-
         return $this->queryChainInspector->isUnboundedQueryCall($methodCall, ['all']);
     }
 }

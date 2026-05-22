@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Vix\PhpstanRules\Rules;
 
 use PhpParser\Node;
-use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\BinaryOp;
@@ -26,7 +25,6 @@ use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\Int_;
-use PhpParser\Node\VariadicPlaceholder;
 use PhpParser\Node\VarLikeIdentifier;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\IdentifierRuleError;
@@ -190,9 +188,9 @@ final readonly class QueryPerformanceSmellRule implements Rule
             return false;
         }
 
-        $firstArgument = $this->getArgument($funcCall->args, 0);
+        $firstArgument = NodeHelpers::argAt($funcCall->args, 0);
 
-        return $firstArgument instanceof Arg
+        return $firstArgument !== null
             && $firstArgument->value instanceof MethodCall
             && $this->queryChainInspector->isQueryCall($firstArgument->value, ['all', 'column']);
     }
@@ -209,20 +207,9 @@ final readonly class QueryPerformanceSmellRule implements Rule
             return false;
         }
 
-        $firstArgument = $this->getArgument($staticCall->args, 0);
+        $firstArgument = NodeHelpers::argAt($staticCall->args, 0);
 
-        return $firstArgument instanceof Arg && $this->containsYiiCurrentUserReference($firstArgument->value);
-    }
-
-    /**
-     * @param array<int|string, Arg|VariadicPlaceholder> $args
-     * @param int                                        $index
-     */
-    private function getArgument(array $args, int $index): ?Arg
-    {
-        $arg = $args[$index] ?? null;
-
-        return $arg instanceof Arg ? $arg : null;
+        return $firstArgument !== null && $this->containsYiiCurrentUserReference($firstArgument->value);
     }
 
     private function containsYiiCurrentUserReference(Expr $expr): bool
@@ -273,11 +260,11 @@ final readonly class QueryPerformanceSmellRule implements Rule
 
     private function isNamedMethodCall(MethodCall $methodCall, string $methodName): bool
     {
-        return $methodCall->name instanceof Identifier && $methodCall->name->toString() === $methodName;
+        return NodeHelpers::nameEquals($methodCall->name, $methodName);
     }
 
     private function isNull(Expr $expr): bool
     {
-        return $expr instanceof ConstFetch && mb_strtolower($expr->name->toString()) === 'null';
+        return $expr instanceof ConstFetch && NodeHelpers::nameEquals($expr->name, 'null');
     }
 }

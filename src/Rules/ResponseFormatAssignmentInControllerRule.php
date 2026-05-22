@@ -18,6 +18,7 @@ use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use Vix\PhpstanRules\Support\AstNameResolver;
 use Vix\PhpstanRules\Support\YiiController;
 use Vix\PhpstanRules\Support\YiiControllerFactory;
 
@@ -105,8 +106,8 @@ final readonly class ResponseFormatAssignmentInControllerRule implements Rule
             return false;
         }
 
-        return $this->isClassName($node->var->var->class, 'Yii')
-            || $this->isClassName($node->var->var->class, 'yii\BaseYii');
+        return AstNameResolver::matchesClassName($node->var->var->class, 'Yii')
+            || AstNameResolver::matchesClassName($node->var->var->class, 'yii\BaseYii');
     }
 
     private function isJsonOrXmlResponseFormat(Node $node): bool
@@ -115,23 +116,11 @@ final readonly class ResponseFormatAssignmentInControllerRule implements Rule
             !$node instanceof ClassConstFetch
             || !$node->name instanceof Identifier
             || !$node->class instanceof Name
-            || !$this->isClassName($node->class, self::RESPONSE_CLASS)
+            || !AstNameResolver::matchesClassName($node->class, self::RESPONSE_CLASS)
         ) {
             return false;
         }
 
         return in_array($node->name->toString(), ['FORMAT_JSON', 'FORMAT_XML'], true);
-    }
-
-    private function isClassName(Name $name, string $className): bool
-    {
-        $resolvedName = $name->getAttribute('resolvedName');
-
-        if ($resolvedName instanceof Name) {
-            return mb_ltrim($resolvedName->toString(), '\\') === $className;
-        }
-
-        return mb_ltrim($name->toString(), '\\') === $className
-            || mb_substr($className, mb_strrpos($className, '\\') + 1) === $name->toString();
     }
 }

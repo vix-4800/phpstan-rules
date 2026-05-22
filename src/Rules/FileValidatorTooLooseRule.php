@@ -11,7 +11,6 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeFinder;
 use PHPStan\Analyser\Scope;
@@ -20,6 +19,7 @@ use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
 use Vix\PhpstanRules\Support\YiiClassHierarchy;
+use Vix\PhpstanRules\Support\YiiRuleArrayInspector;
 
 /**
  * @implements Rule<Class_>
@@ -29,8 +29,6 @@ final readonly class FileValidatorTooLooseRule implements Rule
     private const string MODEL_CLASS = 'yii\base\Model';
 
     private const string FILE_VALIDATOR_CLASS = 'yii\validators\FileValidator';
-
-    private const int VALIDATOR_INDEX = 1;
 
     private YiiClassHierarchy $classHierarchy;
 
@@ -56,7 +54,7 @@ final readonly class FileValidatorTooLooseRule implements Rule
             return [];
         }
 
-        $rulesMethod = $this->findRulesMethod($node);
+        $rulesMethod = YiiRuleArrayInspector::findRulesMethod($node);
 
         if ($rulesMethod === null) {
             return [];
@@ -97,63 +95,42 @@ final readonly class FileValidatorTooLooseRule implements Rule
 
     private function isFileValidatorRule(Array_ $rule): bool
     {
-        $validator = $rule->items[self::VALIDATOR_INDEX] ?? null;
+        $validator = YiiRuleArrayInspector::validatorExpr($rule);
 
         if ($validator === null) {
             return false;
         }
 
-        if ($validator->value instanceof String_) {
-            return strcasecmp($validator->value->value, 'file') === 0;
+        if ($validator instanceof String_) {
+            return strcasecmp($validator->value, 'file') === 0;
         }
 
-        if (!$validator->value instanceof ClassConstFetch || !$validator->value->name instanceof Identifier) {
+        if (!$validator instanceof ClassConstFetch || !$validator->name instanceof Identifier) {
             return false;
         }
 
-        if (strcasecmp($validator->value->name->toString(), 'class') !== 0) {
+        if (strcasecmp($validator->name->toString(), 'class') !== 0) {
             return false;
         }
 
-        if (!$validator->value->class instanceof Name) {
+        if (!$validator->class instanceof Name) {
             return false;
         }
 
-        $className = mb_ltrim($validator->value->class->toString(), '\\');
+        $className = mb_ltrim($validator->class->toString(), '\\');
 
         return in_array($className, [self::FILE_VALIDATOR_CLASS, 'FileValidator'], true);
     }
 
     private function hasTypeConstraint(Array_ $rule): bool
     {
-        foreach ($rule->items as $item) {
-            if (!$item->key instanceof String_) {
-                continue;
-            }
-
-            if (in_array($item->key->value, ['extensions', 'mimeTypes'], true)) {
-                return true;
-            }
-        }
-
-        return false;
+        return YiiRuleArrayInspector::hasAnyKey($rule, ['extensions', 'mimeTypes']);
     }
 
     private function validatorLine(Array_ $rule): int
     {
-        $validator = $rule->items[self::VALIDATOR_INDEX] ?? null;
+        $validator = YiiRuleArrayInspector::validatorExpr($rule);
 
-        return $validator?->value->getStartLine() ?? $rule->getStartLine();
-    }
-
-    private function findRulesMethod(Class_ $class): ?ClassMethod
-    {
-        foreach ($class->getMethods() as $method) {
-            if ($method->name->toString() === 'rules') {
-                return $method;
-            }
-        }
-
-        return null;
+        return $validator?->getStartLine() ?? $rule->getStartLine();
     }
 }
