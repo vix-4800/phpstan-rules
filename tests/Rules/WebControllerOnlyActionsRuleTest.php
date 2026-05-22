@@ -34,19 +34,19 @@ final class WebControllerOnlyActionsRuleTest extends RuleTestCase
             [
                 [
                     'Web controller method \'helper()\' is not allowed; keep only public action*() methods and standard Yii overrides.',
-                    39,
-                ],
-                [
-                    'Web controller method \'loadModel()\' is not allowed; keep only public action*() methods and standard Yii overrides.',
                     44,
                 ],
                 [
+                    'Web controller method \'loadModel()\' is not allowed; keep only public action*() methods and standard Yii overrides.',
+                    48,
+                ],
+                [
                     'Web controller method \'actionInternal()\' is not allowed; keep only public action*() methods and standard Yii overrides.',
-                    49,
+                    52,
                 ],
                 [
                     'Web controller method \'action()\' is not allowed; keep only public action*() methods and standard Yii overrides.',
-                    54,
+                    56,
                 ],
             ],
         );
