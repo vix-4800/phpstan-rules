@@ -36,7 +36,12 @@ final readonly class YiiControllerBehavior
 
     public function arrayItem(string $key): ?Expr
     {
-        foreach ($this->node->items as $item) {
+        return self::arrayItemFromArray($this->node, $key);
+    }
+
+    public static function arrayItemFromArray(Array_ $array, string $key): ?Expr
+    {
+        foreach ($array->items as $item) {
             if (!$item->key instanceof String_) {
                 continue;
             }
@@ -58,7 +63,18 @@ final readonly class YiiControllerBehavior
      */
     public function stringListItem(string $key): ?array
     {
-        $value = $this->arrayItem($key);
+        return self::stringListFromArrayItem($this->node, $key);
+    }
+
+    /**
+     * @param Array_ $array
+     * @param string $key
+     *
+     * @return list<string>|null
+     */
+    public static function stringListFromArrayItem(Array_ $array, string $key): ?array
+    {
+        $value = self::arrayItemFromArray($array, $key);
 
         if (!$value instanceof Array_) {
             return null;

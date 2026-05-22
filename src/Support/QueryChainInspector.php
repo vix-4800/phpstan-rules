@@ -55,13 +55,36 @@ final readonly class QueryChainInspector
             return false;
         }
 
+        return $this->isQuerySource($this->getQuerySource($terminalCall));
+    }
+
+    /**
+     * @param MethodCall $terminalCall
+     *
+     * @return list<MethodCall>
+     */
+    public function getMethodChain(MethodCall $terminalCall): array
+    {
+        $chain = [];
+        $expr = $terminalCall;
+
+        while ($expr instanceof MethodCall) {
+            $chain[] = $expr;
+            $expr = $expr->var;
+        }
+
+        return $chain;
+    }
+
+    public function getQuerySource(MethodCall $terminalCall): Expr
+    {
         $expr = $terminalCall->var;
 
         while ($expr instanceof MethodCall) {
             $expr = $expr->var;
         }
 
-        return $this->isQuerySource($expr);
+        return $expr;
     }
 
     /**

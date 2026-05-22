@@ -208,7 +208,7 @@ final readonly class YiiControllerFactory
             && $value->name->toString() === 'class'
             && $value->class instanceof Name
         ) {
-            return $this->isClassName($value->class, $className);
+            return AstNameResolver::matchesClassName($value->class, $className);
         }
 
         if ($value instanceof String_) {
@@ -216,21 +216,9 @@ final readonly class YiiControllerFactory
         }
 
         if ($value instanceof ConstFetch) {
-            return $this->isClassName($value->name, $className);
+            return AstNameResolver::matchesClassName($value->name, $className);
         }
 
         return false;
-    }
-
-    private function isClassName(Name $name, string $className): bool
-    {
-        $resolvedName = $name->getAttribute('resolvedName');
-
-        if ($resolvedName instanceof Name) {
-            return mb_ltrim($resolvedName->toString(), '\\') === $className;
-        }
-
-        return mb_ltrim($name->toString(), '\\') === $className
-            || mb_substr($className, mb_strrpos($className, '\\') + 1) === $name->toString();
     }
 }
