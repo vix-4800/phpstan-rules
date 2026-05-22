@@ -31,6 +31,7 @@ This page documents the rules currently shipped in this package.
     - [`yii.queryOneWithoutLimit`](#yiiqueryonewithoutlimit)
     - [`yii.redirectReferrerWithoutFallback`](#yiiredirectreferrerwithoutfallback)
     - [`yii.nativeHeaderInController`](#yiinativeheaderincontroller)
+    - [`yii.responseFormatAssignmentInController`](#yiiresponseformatassignmentincontroller)
     - [`yii.responseStatusCodeAssignmentInController`](#yiiresponsestatuscodeassignmentincontroller)
     - [`yii.mixedResponseTypesInAction`](#yiimixedresponsetypesinaction)
     - [`yii.unboundedQueryResult`](#yiiunboundedqueryresult)
@@ -549,6 +550,23 @@ After
 
 ```php
 return $this->redirect(['site/login']);
+```
+
+### `yii.responseFormatAssignmentInController`
+
+Detects `Yii::$app->response->format = Response::FORMAT_JSON` and `FORMAT_XML` assignments inside Yii controllers.
+
+Before
+
+```php
+Yii::$app->response->format = Response::FORMAT_JSON;
+return ['ok' => true];
+```
+
+After
+
+```php
+return $this->asJson(['ok' => true]);
 ```
 
 ### `yii.responseStatusCodeAssignmentInController`

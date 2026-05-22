@@ -39,6 +39,7 @@ parametersSchema:
         queryPerformanceSmell: bool(),
         rawSqlConditionWithVariable: bool(),
         redirectReferrerWithoutFallback: bool(),
+        responseFormatAssignmentInController: bool(),
         saveFalseWithoutReason: bool(),
         scenarioAssignedAfterLoad: bool(),
         sensitiveAttributeMarkedSafe: bool(),
@@ -87,6 +88,7 @@ parameters:
         queryPerformanceSmell: false
         rawSqlConditionWithVariable: false
         redirectReferrerWithoutFallback: false
+        responseFormatAssignmentInController: false
         saveFalseWithoutReason: false
         scenarioAssignedAfterLoad: false
         sensitiveAttributeMarkedSafe: false
