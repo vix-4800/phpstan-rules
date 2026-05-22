@@ -33,6 +33,7 @@ parametersSchema:
         mutatingActionAllowsGet: bool(),
         nPlusOneRelationInLoop: bool(),
         nativeHeaderInController: bool(),
+        responseStatusCodeAssignmentInController: bool(),
         publicAllowWithoutConstraint: bool(),
         queryOneWithoutLimit: bool(),
         queryPerformanceSmell: bool(),
@@ -80,6 +81,7 @@ parameters:
         mutatingActionAllowsGet: false
         nPlusOneRelationInLoop: false
         nativeHeaderInController: false
+        responseStatusCodeAssignmentInController: false
         publicAllowWithoutConstraint: false
         queryOneWithoutLimit: false
         queryPerformanceSmell: false

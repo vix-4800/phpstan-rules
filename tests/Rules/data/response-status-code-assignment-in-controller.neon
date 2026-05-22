@@ -1,0 +1,3 @@
+parameters:
+  scanFiles:
+    - response-status-code-assignment-in-controller.php
