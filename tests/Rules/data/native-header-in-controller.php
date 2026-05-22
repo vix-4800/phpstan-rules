@@ -14,12 +14,30 @@ namespace yii\web {
     }
 }
 
+namespace yii\rest {
+    class Controller extends \yii\web\Controller
+    {
+    }
+}
+
 namespace Fixtures {
     final class HeaderController extends \yii\web\Controller
     {
         public function actionJson(): void
         {
             header('Content-Type: application/json');
+        }
+
+        public function behaviors(): array
+        {
+            header('X-Controller-Behavior: value');
+
+            return [];
+        }
+
+        private function sendHeader(): void
+        {
+            header('X-Private: value');
         }
     }
 
@@ -28,6 +46,14 @@ namespace Fixtures {
         public function send(): void
         {
             header('X-Test: value');
+        }
+    }
+
+    final class RestHeaderController extends \yii\rest\Controller
+    {
+        public function actionJson(): void
+        {
+            header('X-Rest: value');
         }
     }
 }

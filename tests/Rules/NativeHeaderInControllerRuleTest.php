@@ -33,8 +33,8 @@ final class NativeHeaderInControllerRuleTest extends RuleTestCase
             [__DIR__ . '/data/native-header-in-controller.php'],
             [
                 [
-                    'Do not call native header() inside Yii controllers; use response component or asJson().',
-                    22,
+                    'Do not call native header() inside Yii web controller actions; use response component or asJson().',
+                    28,
                 ],
             ],
         );

@@ -8,13 +8,14 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeFinder;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Rules\IdentifierRuleError;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
-use Vix\PhpstanRules\Support\YiiController;
+use Vix\PhpstanRules\Support\YiiClassHierarchy;
 use Vix\PhpstanRules\Support\YiiControllerFactory;
 
 /**
@@ -22,10 +23,12 @@ use Vix\PhpstanRules\Support\YiiControllerFactory;
  */
 final readonly class NativeHeaderInControllerRule implements Rule
 {
+    private YiiClassHierarchy $classHierarchy;
     private YiiControllerFactory $controllerFactory;
 
     public function __construct(ReflectionProvider $reflectionProvider)
     {
+        $this->classHierarchy = new YiiClassHierarchy($reflectionProvider);
         $this->controllerFactory = new YiiControllerFactory($reflectionProvider);
     }
 
@@ -42,26 +45,40 @@ final readonly class NativeHeaderInControllerRule implements Rule
      */
     public function processNode(Node $node, Scope $scope): array
     {
+        if (!$this->isWebController($node, $scope)) {
+            return [];
+        }
+
         $controller = $this->controllerFactory->getController($node, $scope);
 
         if ($controller === null) {
             return [];
         }
 
-        return $this->findNativeHeaders($controller);
+        $errors = [];
+
+        foreach ($controller->actions() as $action) {
+            $errors = [...$errors, ...$this->findNativeHeaders($action->method())];
+        }
+
+        return $errors;
+    }
+
+    private function isWebController(Class_ $class, Scope $scope): bool
+    {
+        return $this->classHierarchy->isSubclassOfAny($class, $scope, ['yii\web\Controller'])
+            && !$this->classHierarchy->isSubclassOfAny($class, $scope, ['yii\rest\Controller']);
     }
 
     /**
-     * @param YiiController $controller
-     *
      * @return list<IdentifierRuleError>
      */
-    private function findNativeHeaders(YiiController $controller): array
+    private function findNativeHeaders(ClassMethod $action): array
     {
         $finder = new NodeFinder();
         $errors = [];
 
-        foreach ($finder->findInstanceOf($controller->node()->stmts, FuncCall::class) as $funcCall) {
+        foreach ($finder->findInstanceOf($action->stmts ?? [], FuncCall::class) as $funcCall) {
             if (!$funcCall->name instanceof Name) {
                 continue;
             }
@@ -71,7 +88,7 @@ final readonly class NativeHeaderInControllerRule implements Rule
             }
 
             $errors[] = RuleErrorBuilder::message(
-                'Do not call native header() inside Yii controllers; use response component or asJson().',
+                'Do not call native header() inside Yii web controller actions; use response component or asJson().',
             )
                 ->identifier('yii.nativeHeaderInController')
                 ->line($funcCall->getStartLine())

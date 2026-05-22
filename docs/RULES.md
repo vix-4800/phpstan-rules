@@ -535,7 +535,7 @@ return $this->redirect(Yii::$app->request->referrer ?: ['index']);
 
 ### `yii.nativeHeaderInController`
 
-Detects native `header()` calls inside Yii controllers.
+Detects native `header()` calls inside `yii\web\Controller` action methods.
 
 Before
 
