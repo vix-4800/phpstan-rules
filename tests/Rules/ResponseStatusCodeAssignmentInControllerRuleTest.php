@@ -34,11 +34,11 @@ final class ResponseStatusCodeAssignmentInControllerRuleTest extends RuleTestCas
             [
                 [
                     'Do not assign Yii::$app->response->statusCode inside Yii controllers; return a response and call setStatusCode() instead.',
-                    53,
+                    59,
                 ],
                 [
                     'Do not assign Yii::$app->response->statusCode inside Yii controllers; return a response and call setStatusCode() instead.',
-                    59,
+                    66,
                 ],
             ],
         );
